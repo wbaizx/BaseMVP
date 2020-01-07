@@ -8,17 +8,21 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
 import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
+import com.basemvp.util.LogUtil
 import com.google.android.material.appbar.AppBarLayout
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_coordinator1.*
 
 @Route(path = RouteString.COORDINATOR1, name = "折叠滚动布局 coordinator1")
 class Coordinator1Activity : BaseActivity() {
+    private val TAG = "Coordinator1Activity"
 
     override fun getContentView() = R.layout.activity_coordinator1
 
     override fun setImmersionBar() {
-        ImmersionBar.with(this).titleBar(R.id.toolbar).init()
+        ImmersionBar.with(this)
+            .titleBar(R.id.toolbar)
+            .init()
     }
 
     override fun initView() {
@@ -40,7 +44,6 @@ class Coordinator1Activity : BaseActivity() {
         coordinator1Adapter.addHeaderView(headerView)
         coordinator1Adapter.addHeaderView(headerView2)
 
-
         appBar.post {
             val layoutParams = appBar.layoutParams as CoordinatorLayout.LayoutParams
             val behavior = layoutParams.behavior as AppBarLayout.Behavior
@@ -49,6 +52,22 @@ class Coordinator1Activity : BaseActivity() {
                     return true
                 }
             })
+        }
+
+        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBar, offset ->
+            val off = -offset.toFloat()
+            toolbar.alpha = off / appBar.totalScrollRange
+            testArea.y = appBar.totalScrollRange.toFloat() + toolbar.paddingTop
+            testArea.translationX = -off
+            LogUtil.log(TAG, "addOnOffsetChangedListener $off  -  ${appBar.totalScrollRange}")
+        })
+
+        toolbarImg.setOnClickListener {
+            LogUtil.log(TAG, "toolbarImg click")
+        }
+
+        testArea.setOnClickListener {
+            LogUtil.log(TAG, "testArea click")
         }
     }
 
