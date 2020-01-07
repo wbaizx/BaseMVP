@@ -1,4 +1,4 @@
-package com.basemvp.mian.show_fragment
+package com.basemvp.main.show_fragment
 
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R

@@ -1,4 +1,4 @@
-package com.basemvp.mian.damping_rc
+package com.basemvp.main.damping_rc
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper

@@ -46,6 +46,9 @@ dependencies {
     //design 不稳定版本
     implementation 'com.google.android.material:material:1.2.0-alpha03'
 
+    //adapter 不稳定版本
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta6'
+
     //路由 跳转
     implementation 'com.alibaba:arouter-api:1.5.0'
     kapt 'com.alibaba:arouter-compiler:1.2.2'
@@ -58,6 +61,6 @@ dependencies {
     // fragment快速实现（可选）
 //    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
-    //adapter 不稳定版本
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta6'
+    //折叠布局滑动冲突解决方案
+//    implementation 'com.github.yuruiyin:AppbarLayoutBehavior:v1.0.3'
 }

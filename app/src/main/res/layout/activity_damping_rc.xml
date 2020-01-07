@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mian.damping_rc.DampingRCActivity">
+    tools:context=".main.damping_rc.DampingRCActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"

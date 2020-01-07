@@ -1,4 +1,4 @@
-package com.basemvp.mian
+package com.basemvp.main
 
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -28,6 +28,10 @@ class MainActivity : BaseActivity() {
 
         showDialog.setOnClickListener {
             ARouter.getInstance().build(RouteString.DIALOG).navigation()
+        }
+
+        coordinator1.setOnClickListener {
+            ARouter.getInstance().build(RouteString.COORDINATOR1).navigation()
         }
 
         exit.setOnClickListener {

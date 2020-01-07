@@ -1,4 +1,4 @@
-package com.basemvp.mian.show_dialog
+package com.basemvp.main.show_dialog
 
 import android.os.Bundle
 import com.alibaba.android.arouter.facade.annotation.Route

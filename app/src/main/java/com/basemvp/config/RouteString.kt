@@ -6,4 +6,5 @@ object RouteString {
     const val VP_FRAMENT = "/test/viewpager+fragment"
     const val SHOW_FRAMENT = "/test/show_add+fragment"
     const val DIALOG = "/test/show_dialog"
+    const val COORDINATOR1 = "/test/coordinator1"
 }
