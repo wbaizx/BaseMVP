@@ -34,6 +34,14 @@ class MainActivity : BaseActivity() {
             ARouter.getInstance().build(RouteString.COORDINATOR1).navigation()
         }
 
+        recyclerViewTransition.setOnClickListener {
+            ARouter.getInstance().build(RouteString.RECYCLEVIEW_TRANSITION).navigation()
+        }
+
+        itemAnimation1.setOnClickListener {
+            ARouter.getInstance().build(RouteString.ITEM_ANIMATION1).navigation()
+        }
+
         exit.setOnClickListener {
             APP.exitApp()
         }

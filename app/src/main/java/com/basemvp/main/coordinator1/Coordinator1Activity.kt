@@ -13,7 +13,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_coordinator1.*
 
-@Route(path = RouteString.COORDINATOR1, name = "折叠滚动布局 coordinator1")
+@Route(path = RouteString.COORDINATOR1, name = "折叠滚动布局第一种 coordinator1")
 class Coordinator1Activity : BaseActivity() {
     private val TAG = "Coordinator1Activity"
 
@@ -36,13 +36,7 @@ class Coordinator1Activity : BaseActivity() {
             recyclerView,
             false
         )
-        val headerView2: View = LayoutInflater.from(this).inflate(
-            R.layout.default_header_layout,
-            recyclerView,
-            false
-        )
         coordinator1Adapter.addHeaderView(headerView)
-        coordinator1Adapter.addHeaderView(headerView2)
 
         appBar.post {
             val layoutParams = appBar.layoutParams as CoordinatorLayout.LayoutParams

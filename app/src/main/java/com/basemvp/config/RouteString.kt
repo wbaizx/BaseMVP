@@ -7,4 +7,6 @@ object RouteString {
     const val SHOW_FRAMENT = "/test/show_add+fragment"
     const val DIALOG = "/test/show_dialog"
     const val COORDINATOR1 = "/test/coordinator1"
+    const val RECYCLEVIEW_TRANSITION = "/test/recyclerView_transition"
+    const val ITEM_ANIMATION1 = "/test/item_animation1"
 }

@@ -57,6 +57,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showDialog" />
 
+    <Button
+        android:id="@+id/recyclerViewTransition"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView布局切换动画"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coordinator1" />
+
+    <Button
+        android:id="@+id/itemAnimation1"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView item动画1"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewTransition" />
 
     <Button
         android:id="@+id/exit"

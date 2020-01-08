@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sceneText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_dialog_shape"
+    android:gravity="center"
+    android:src="@mipmap/ic_launcher_round"
+    android:textColor="@color/color_white"
+    android:textSize="20sp"/>

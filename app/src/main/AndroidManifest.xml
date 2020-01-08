@@ -20,7 +20,9 @@
         </activity>
 
         <activity android:name=".main.show_dialog.ShowDialogActivity" />
+        <activity android:name=".main.item_animation1.ItemAnimation1Activity" />
         <activity android:name=".main.coordinator1.Coordinator1Activity" />
+        <activity android:name=".main.item_animation2.RecyclerViewTransitionActivity" />
         <activity
             android:name=".main.show_fragment.ControlFragmentActivity"
             android:screenOrientation="portrait" />

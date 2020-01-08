@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:gravity="center"
+        android:background="@color/color_black"
         android:textColor="@color/color_black"
         android:textSize="25sp" />
 </LinearLayout>

@@ -63,4 +63,7 @@ dependencies {
 
     //折叠布局滑动冲突解决方案
 //    implementation 'com.github.yuruiyin:AppbarLayoutBehavior:v1.0.3'
+
+    //recyclerview item动画
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 }
