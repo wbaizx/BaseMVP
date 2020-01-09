@@ -28,14 +28,20 @@ class ItemAnimation1Activity : BaseActivity() {
 //            setDuration(2000)
 //            setFirstOnly(false)}
 
+        //如果自定义item进场动画可继承 AnimationAdapter（由于构造方法泛型有问题，如果要继承目前只能用java）
+        //或者直接在自己的adapter中添加，首次加载通过变量控制
         recyclerView.adapter = TestAnimationAdapter(adapter).apply {
             setDuration(2000)
             setFirstOnly(false)
         }
 
-        //用于item操作动画，用于add,remove等操作
-        //如果需要修改change动画，可以继承BaseItemAnimator 仿照 DefaultItemAnimator 重写 animateChange 或者 animateChangeImpl
-        recyclerView.itemAnimator = ScaleInAnimator()
+        //用于item操作动画，用于add,remove,change等操作
+        //如果需要修改change动画，可以继承BaseItemAnimator 或者 DefaultItemAnimator
+        //仿照 DefaultItemAnimator 重写 animateChange 或者 animateChangeImpl
+        recyclerView.itemAnimator = ScaleInAnimator().apply {
+            addDuration = 2000
+            changeDuration = 2000
+        }
     }
 
     override fun initData() {
