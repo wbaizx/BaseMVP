@@ -2,7 +2,6 @@ package com.basemvp.main.item_animation.item_animation2
 
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
@@ -24,10 +23,7 @@ class ItemAnimation2Activity : BaseActivity() {
         recyclerView.adapter = adapter
         recyclerView.itemAnimator = DefaultItemAnimator().apply { changeDuration = 2000 }
 
-        val pagerSnapHelper = PagerSnapHelper()
-        pagerSnapHelper.attachToRecyclerView(recyclerView)
-
-        switchBtn.setOnClickListener {
+        change.setOnClickListener {
             if (isLine) {
                 adapter.setLine(false)
                 layoutManager.orientation = GridLayoutManager.VERTICAL

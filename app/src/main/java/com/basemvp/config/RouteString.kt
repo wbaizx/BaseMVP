@@ -15,4 +15,5 @@ object RouteString {
     const val ITEM_ANIMATION = "/test/item_animation"
     const val ITEM_ANIMATION1 = "/test/item_animation1"
     const val ITEM_ANIMATION2 = "/test/item_animation2"
+    const val ITEM_ANIMATION3 = "/test/item_animation3"
 }

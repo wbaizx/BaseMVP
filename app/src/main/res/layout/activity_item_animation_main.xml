@@ -26,4 +26,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemAnimation1" />
+
+    <Button
+        android:id="@+id/itemAnimation3"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView item动画3"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemAnimation2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

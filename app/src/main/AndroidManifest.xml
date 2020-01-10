@@ -27,6 +27,7 @@
         <activity android:name=".main.item_animation.ItemAnimationMainActivity" />
         <activity android:name=".main.item_animation.item_animation1.ItemAnimation1Activity" />
         <activity android:name=".main.item_animation.item_animation2.ItemAnimation2Activity" />
+        <activity android:name=".main.item_animation.item_animation3.ItemAnimation3Activity" />
 
         <activity android:name=".main.fragment_example.FragmentExampleActivity" />
         <activity

@@ -16,8 +16,13 @@ class ItemAnimationMainActivity : BaseActivity() {
         itemAnimation1.setOnClickListener {
             ARouter.getInstance().build(RouteString.ITEM_ANIMATION1).navigation()
         }
+
         itemAnimation2.setOnClickListener {
             ARouter.getInstance().build(RouteString.ITEM_ANIMATION2).navigation()
+        }
+
+        itemAnimation3.setOnClickListener {
+            ARouter.getInstance().build(RouteString.ITEM_ANIMATION3).navigation()
         }
     }
 

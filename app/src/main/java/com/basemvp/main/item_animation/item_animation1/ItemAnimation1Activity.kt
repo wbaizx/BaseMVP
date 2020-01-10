@@ -16,8 +16,8 @@ class ItemAnimation1Activity : BaseActivity() {
         val adapter = ItemAnimation1Adapter()
 
         change.setOnClickListener {
-            adapter.data.set(5, "测试")
-            adapter.notifyItemChanged(5)
+            adapter.data.add(5, "测试")
+            adapter.notifyItemInserted(5)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
