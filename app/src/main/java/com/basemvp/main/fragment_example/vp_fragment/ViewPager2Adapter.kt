@@ -1,4 +1,4 @@
-package com.basemvp.main.vp_fragment
+package com.basemvp.main.fragment_example.vp_fragment
 
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter

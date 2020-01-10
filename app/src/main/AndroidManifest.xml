@@ -20,14 +20,20 @@
         </activity>
 
         <activity android:name=".main.show_dialog.ShowDialogActivity" />
-        <activity android:name=".main.item_animation1.ItemAnimation1Activity" />
-        <activity android:name=".main.coordinator1.Coordinator1Activity" />
-        <activity android:name=".main.item_animation2.RecyclerViewTransitionActivity" />
+
+        <activity android:name=".main.coordinator.CoordinatorActivity" />
+        <activity android:name=".main.coordinator.coordinator1.Coordinator1Activity" />
+
+        <activity android:name=".main.item_animation.ItemAnimationMainActivity" />
+        <activity android:name=".main.item_animation.item_animation1.ItemAnimation1Activity" />
+        <activity android:name=".main.item_animation.item_animation2.ItemAnimation2Activity" />
+
+        <activity android:name=".main.fragment_example.FragmentExampleActivity" />
         <activity
-            android:name=".main.show_fragment.ControlFragmentActivity"
+            android:name=".main.fragment_example.show_fragment.ControlFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main.vp_fragment.VP2FragmentActivity"
+            android:name=".main.fragment_example.vp_fragment.VP2FragmentActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".main.damping_rc.DampingRCActivity" />
 

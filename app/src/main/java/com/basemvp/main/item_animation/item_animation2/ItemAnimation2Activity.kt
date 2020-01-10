@@ -1,4 +1,4 @@
-package com.basemvp.main.item_animation2
+package com.basemvp.main.item_animation.item_animation2
 
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -8,17 +8,17 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
 import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
-import kotlinx.android.synthetic.main.activity_list_transition_animation.*
+import kotlinx.android.synthetic.main.activity_item_animation2.*
 
 
-@Route(path = RouteString.RECYCLEVIEW_TRANSITION, name = "recyclerView布局切换动画")
-class RecyclerViewTransitionActivity : BaseActivity() {
-    private var flag = true
+@Route(path = RouteString.ITEM_ANIMATION2, name = "recyclerView布局切换item动画")
+class ItemAnimation2Activity : BaseActivity() {
+    private var isLine = true
 
-    override fun getContentView() = R.layout.activity_list_transition_animation
+    override fun getContentView() = R.layout.activity_item_animation2
 
     override fun initView() {
-        val adapter = SceneAdapter()
+        val adapter = ItemAnimation2Adapter()
         val layoutManager = GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
@@ -28,16 +28,16 @@ class RecyclerViewTransitionActivity : BaseActivity() {
         pagerSnapHelper.attachToRecyclerView(recyclerView)
 
         switchBtn.setOnClickListener {
-            if (flag) {
+            if (isLine) {
                 adapter.setLine(false)
-                layoutManager.orientation = RecyclerView.VERTICAL
+                layoutManager.orientation = GridLayoutManager.VERTICAL
                 layoutManager.spanCount = 2
             } else {
                 adapter.setLine(true)
-                layoutManager.orientation = RecyclerView.HORIZONTAL
+                layoutManager.orientation = GridLayoutManager.HORIZONTAL
                 layoutManager.spanCount = 1
             }
-            flag = !flag
+            isLine = !isLine
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
         }
     }

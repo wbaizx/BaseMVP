@@ -1,4 +1,4 @@
-package com.basemvp.main.coordinator1
+package com.basemvp.main.coordinator.coordinator1
 
 import android.view.LayoutInflater
 import android.view.View

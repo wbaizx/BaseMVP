@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".main.item_animation2.RecyclerViewTransitionActivity">
+    tools:context=".main.item_animation.item_animation2.ItemAnimation2Activity">
 
     <Button
         android:id="@+id/switchBtn"

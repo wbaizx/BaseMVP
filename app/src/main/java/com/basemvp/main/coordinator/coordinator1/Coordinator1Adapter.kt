@@ -1,4 +1,4 @@
-package com.basemvp.main.coordinator1
+package com.basemvp.main.coordinator.coordinator1
 
 import com.basemvp.R
 import com.chad.library.adapter.base.BaseQuickAdapter

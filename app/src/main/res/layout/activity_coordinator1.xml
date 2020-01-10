@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.coordinator1.Coordinator1Activity">
+    tools:context=".main.coordinator.coordinator1.Coordinator1Activity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior=".main.coordinator1.AppBarBehavior">
+        app:layout_behavior=".main.coordinator.coordinator1.AppBarBehavior">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"

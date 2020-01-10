@@ -1,4 +1,4 @@
-package com.basemvp.main.vp_fragment
+package com.basemvp.main.fragment_example.vp_fragment
 
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Route

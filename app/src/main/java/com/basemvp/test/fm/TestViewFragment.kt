@@ -7,7 +7,7 @@ import com.basemvp.R
 import com.basemvp.base.mvp.BasePresenterInterface
 import com.basemvp.base.mvp.BaseViewFragment
 import com.basemvp.util.LogUtil
-import kotlinx.android.synthetic.main.fragment_test_mv.*
+import kotlinx.android.synthetic.main.fragment_test_v.*
 
 /**
  * 测试Fragment用例
@@ -17,7 +17,7 @@ class TestViewFragment(private val text: String) : BaseViewFragment<BasePresente
 
     override fun initBasePresenter(): BasePresenterInterface? = null
 
-    override fun getContentView() = R.layout.fragment_test_mv
+    override fun getContentView() = R.layout.fragment_test_v
 
     override fun createView() {
         LogUtil.log(TAG, "createView  $text")

@@ -1,4 +1,4 @@
-package com.basemvp.main.item_animation1
+package com.basemvp.main.item_animation.item_animation1
 
 import com.basemvp.R
 import com.chad.library.adapter.base.BaseQuickAdapter

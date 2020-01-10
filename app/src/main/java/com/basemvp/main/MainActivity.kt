@@ -8,39 +8,35 @@ import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
 import kotlinx.android.synthetic.main.activity_main.*
 
-@Route(path = RouteString.MAIN, name = "MVP选择页")
+@Route(path = RouteString.MAIN, name = "功能选择页")
 class MainActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
-        dampingRc.setOnClickListener {
-            ARouter.getInstance().build(RouteString.DAMPING_RC).navigation()
+        fragmentExample.setOnClickListener {
+            ARouter.getInstance().build(RouteString.FRAMENT_EXAMPLE).navigation()
         }
 
-        vp2Fragment.setOnClickListener {
-            ARouter.getInstance().build(RouteString.VP_FRAMENT).navigation()
+        coordinator.setOnClickListener {
+            ARouter.getInstance().build(RouteString.COORDINATOR).navigation()
         }
 
-        showFragment.setOnClickListener {
-            ARouter.getInstance().build(RouteString.SHOW_FRAMENT).navigation()
+        recyclerViewItemAnimation.setOnClickListener {
+            ARouter.getInstance().build(RouteString.ITEM_ANIMATION).navigation()
         }
+
+
 
         showDialog.setOnClickListener {
             ARouter.getInstance().build(RouteString.DIALOG).navigation()
         }
 
-        coordinator1.setOnClickListener {
-            ARouter.getInstance().build(RouteString.COORDINATOR1).navigation()
+        dampingRc.setOnClickListener {
+            ARouter.getInstance().build(RouteString.DAMPING_RC).navigation()
         }
 
-        recyclerViewTransition.setOnClickListener {
-            ARouter.getInstance().build(RouteString.RECYCLEVIEW_TRANSITION).navigation()
-        }
 
-        itemAnimation1.setOnClickListener {
-            ARouter.getInstance().build(RouteString.ITEM_ANIMATION1).navigation()
-        }
 
         exit.setOnClickListener {
             APP.exitApp()

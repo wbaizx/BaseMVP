@@ -1,4 +1,4 @@
-package com.basemvp.main.item_animation2
+package com.basemvp.main.item_animation.item_animation2
 
 import android.view.ViewGroup
 import android.widget.TextView
@@ -7,7 +7,7 @@ import com.basemvp.util.AndroidUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
-class SceneAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.transition_layout_item) {
+class ItemAnimation2Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_anim2_layout_item) {
     private var isLine = true
 
     init {
