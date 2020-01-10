@@ -57,6 +57,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showDialog" />
 
+    <Button
+        android:id="@+id/recyclerViewGallery"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView 仿Gallery效果"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dampingRc" />
 
     <Button
         android:id="@+id/exit"

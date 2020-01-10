@@ -36,6 +36,10 @@ class MainActivity : BaseActivity() {
             ARouter.getInstance().build(RouteString.DAMPING_RC).navigation()
         }
 
+        recyclerViewGallery.setOnClickListener {
+            ARouter.getInstance().build(RouteString.GALLERY).navigation()
+        }
+
 
 
         exit.setOnClickListener {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_text"
+    android:layout_width="280dp"
+    android:layout_height="450dp"
+    android:background="@drawable/base_dialog_shape"
+    android:gravity="center"
+    android:textColor="@color/color_white"
+    android:textSize="25sp">
+
+</TextView>

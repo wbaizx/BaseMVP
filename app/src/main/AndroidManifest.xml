@@ -36,7 +36,9 @@
         <activity
             android:name=".main.fragment_example.vp_fragment.VP2FragmentActivity"
             android:screenOrientation="portrait" />
+
         <activity android:name=".main.damping_rc.DampingRCActivity" />
+        <activity android:name=".main.gallery.GalleryActivity" />
 
         <!-- 全面屏 -->
         <meta-data
