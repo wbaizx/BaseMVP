@@ -39,6 +39,7 @@
 
         <activity android:name=".main.damping_rc.DampingRCActivity" />
         <activity android:name=".main.gallery.GalleryActivity" />
+        <activity android:name=".main.scrollto_rc.ScrollToRCActivity" />
 
         <!-- 全面屏 -->
         <meta-data

@@ -74,6 +74,12 @@ class GalleryHelper(private var pageChangeListener: ((Int) -> Unit)? = null) {
         recyclerView.post { pageScrolled() }
     }
 
+    fun detachFromRecyclerView(recyclerView: RecyclerView?) {
+        recyclerView?.removeOnScrollListener(scrollListener)
+        this.recyclerView = null
+        pageChangeListener = null
+    }
+
     /**
      * 通过计算`view`中间点与[RecyclerView]的中间点的距离，算出`view`的偏移量。
      *
@@ -98,13 +104,6 @@ class GalleryHelper(private var pageChangeListener: ((Int) -> Unit)? = null) {
 
         val offset = 1f - distance / centerX.toFloat()
         return (1f - STAY_SCALE) * offset + STAY_SCALE
-    }
-
-
-    fun detachFromRecyclerView(recyclerView: RecyclerView?) {
-        recyclerView?.removeOnScrollListener(scrollListener)
-        this.recyclerView = null
-        pageChangeListener = null
     }
 
     private class ScalableCardItemDecoration : RecyclerView.ItemDecoration() {

@@ -1,6 +1,6 @@
 package com.basemvp.main.damping_rc
 
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -19,25 +19,24 @@ class DampingRCActivity : BaseActivity() {
     private var last = 0
     private var move = true
 
-    private val manager = LinearLayoutManager(this)
+    private val manager = DampingLinearLayoutManager(this)
 
     override fun getContentView() = R.layout.activity_damping_rc
 
     override fun initView() {
-        list.layoutManager = manager
-        list.adapter = DampingRCAdapter()
+        recyclerView.layoutManager = manager
+        recyclerView.adapter = DampingRCAdapter()
 
-        val pagerSnapHelper = PagerSnapHelper()
-        pagerSnapHelper.attachToRecyclerView(list)
+//        val pagerSnapHelper = PagerSnapHelper()
+//        val pagerSnapHelper2 = LinearSnapHelper()
+//        pagerSnapHelper.attachToRecyclerView(list)
+//        pagerSnapHelper2.attachToRecyclerView(list)
 
-        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 when (newState) {
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
-                        move = true
-                        first = manager.findFirstVisibleItemPosition()
-                        last = manager.findLastVisibleItemPosition()
                     }
                     RecyclerView.SCROLL_STATE_SETTLING -> {
                     }
@@ -50,24 +49,6 @@ class DampingRCActivity : BaseActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 LogUtil.log(TAG, "onScrolled $dy")
-                if (move) {
-                    if (dy < 0) {//下拉
-//                        header.translationY += -dy
-                    } else {
-                        val lastL = manager.findLastVisibleItemPosition()
-                        if (lastL != last) {
-                            if ((-footer.translationY + dy) >= footer.height) {
-                                footer.translationY = 0f
-                                move = false
-                            } else {
-                                footer.translationY -= dy
-                            }
-                        }
-
-                    }
-                }
-
-
             }
         })
     }

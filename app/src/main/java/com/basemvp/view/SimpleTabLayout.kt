@@ -88,6 +88,9 @@ class SimpleTabLayout(context: Context, attrs: AttributeSet) : HorizontalScrollV
     }
 
     fun setData(textList: ArrayList<String>) {
+        layout.removeAllViews()
+        textViewList.clear()
+
         if (currentPos == -1) {
             currentPos = 0
         }

@@ -6,7 +6,7 @@ import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
 import kotlinx.android.synthetic.main.activity_control_fragment.*
 
-@Route(path = RouteString.SHOW_FRAMENT, name = "使用add,show + Fragment + Lifecycle 测试懒加载base类的生命周期")
+@Route(path = RouteString.SHOW_FRAGMENT, name = "使用add,show + Fragment + Lifecycle 测试懒加载base类的生命周期")
 class ControlFragmentActivity : BaseActivity() {
     private lateinit var fragmentControl: FragmentControl
 

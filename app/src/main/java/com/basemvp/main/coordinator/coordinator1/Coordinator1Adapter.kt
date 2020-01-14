@@ -12,6 +12,6 @@ class Coordinator1Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.it
     }
 
     override fun convert(helper: BaseViewHolder, item: String?) {
-        helper.setText(R.id.item_text, "item  ${helper.adapterPosition - getHeaderLayoutCount()}")
+        helper.setText(R.id.item_text, "$item  ${helper.adapterPosition - getHeaderLayoutCount()}")
     }
 }

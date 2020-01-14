@@ -8,7 +8,7 @@ import com.basemvp.config.RouteString
 import com.basemvp.util.LogUtil
 import kotlinx.android.synthetic.main.activity_vpfragment.*
 
-@Route(path = RouteString.VP_FRAMENT, name = "viewPager2 + Fragment + Lifecycle 测试懒加载base类的生命周期")
+@Route(path = RouteString.VP_FRAGMENT, name = "viewPager2 + Fragment + Lifecycle 测试懒加载base类的生命周期")
 class VP2FragmentActivity : BaseActivity() {
     private val TAG = "VP2FragmentActivity"
 

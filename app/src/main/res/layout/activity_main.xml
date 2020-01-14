@@ -68,6 +68,16 @@
         app:layout_constraintTop_toBottomOf="@+id/dampingRc" />
 
     <Button
+        android:id="@+id/scrollToRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView滚动到指定位置"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewGallery" />
+
+    <Button
         android:id="@+id/exit"
         android:layout_width="0dp"
         android:layout_height="50dp"

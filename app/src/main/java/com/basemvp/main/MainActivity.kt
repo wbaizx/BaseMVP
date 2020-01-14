@@ -15,7 +15,7 @@ class MainActivity : BaseActivity() {
 
     override fun initView() {
         fragmentExample.setOnClickListener {
-            ARouter.getInstance().build(RouteString.FRAMENT_EXAMPLE).navigation()
+            ARouter.getInstance().build(RouteString.FRAGMENT_EXAMPLE).navigation()
         }
 
         coordinator.setOnClickListener {
@@ -38,6 +38,10 @@ class MainActivity : BaseActivity() {
 
         recyclerViewGallery.setOnClickListener {
             ARouter.getInstance().build(RouteString.GALLERY).navigation()
+        }
+
+        scrollToRecyclerView.setOnClickListener {
+            ARouter.getInstance().build(RouteString.SCROLL_TO_RC).navigation()
         }
 
 
