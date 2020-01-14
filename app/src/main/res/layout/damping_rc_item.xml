@@ -5,27 +5,11 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/item_text"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@color/color_white"
+        android:layout_height="860dp"
+        android:background="@drawable/base_dialog_shape"
         android:gravity="center"
-        android:text="1" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:gravity="center"
-        android:text="2" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:gravity="center"
-        android:text="3" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:gravity="center"
-        android:text="4" />
+        android:textColor="@color/color_white"
+        android:textSize="25sp" />
 </LinearLayout>

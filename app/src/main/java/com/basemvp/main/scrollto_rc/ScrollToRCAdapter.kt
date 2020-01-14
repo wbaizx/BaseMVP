@@ -9,5 +9,4 @@ class ScrollToRCAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.scor
     override fun convert(helper: BaseViewHolder, item: String?) {
         helper.setText(R.id.item_text, "$item --  ${helper.adapterPosition - getHeaderLayoutCount()}")
     }
-
 }

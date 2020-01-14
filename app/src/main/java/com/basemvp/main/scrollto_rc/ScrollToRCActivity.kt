@@ -79,7 +79,6 @@ class ScrollToRCActivity : BaseActivity() {
 
         simpleTabLayout.setListener { pos ->
             needOverseeScroll = false
-            recyclerView.stopScroll()
 
             val first = manager.findFirstVisibleItemPosition()
             val last = manager.findLastVisibleItemPosition()

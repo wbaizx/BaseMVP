@@ -10,5 +10,6 @@ class DampingRCAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.dampi
     }
 
     override fun convert(helper: BaseViewHolder, item: String?) {
+        helper.setText(R.id.item_text, "${helper.adapterPosition - getHeaderLayoutCount()}")
     }
 }
