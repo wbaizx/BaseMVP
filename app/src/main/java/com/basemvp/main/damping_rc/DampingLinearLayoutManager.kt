@@ -112,13 +112,13 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     }
 
     private fun toTopAlignedScroll(pos: Int) {
-        LogUtil.log(TAG, "TopAligned")
+        LogUtil.log(TAG, "TopAligned $pos")
         val top = findViewByPosition(pos)!!.top
         parentView.smoothScrollBy(0, top)
     }
 
     private fun toDownAlignedScroll(pos: Int) {
-        LogUtil.log(TAG, "DownAligned")
+        LogUtil.log(TAG, "DownAligned $pos")
         val bottom = findViewByPosition(pos)!!.bottom - parentView.height
         parentView.smoothScrollBy(0, bottom)
     }
@@ -140,18 +140,20 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                 val bottomOffset = bottomView!!.bottom - parentView.height
                 LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
                 if (bottomOffset - dy <= 0) {
-                    if (bottomOffset <= 0) {
-                        //已经超出
-                        finallyDy = calculationOffset(dy, bottomOffset)
-                        //累加向上的偏移量
-                        upOffset += finallyDy
-                        LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
-                    } else {
-                        //滑动后将超出
-                        finallyDy = calculationOffset(dy, dy - bottomOffset) + bottomOffset
-                        //累加向上的偏移量
-                        upOffset += finallyDy - bottomOffset
-                        LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                    if (findFirstVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
+                        if (bottomOffset <= 0) {
+                            //已经超出
+                            finallyDy = calculationOffset(dy, bottomOffset)
+                            //累加向上的偏移量
+                            upOffset += finallyDy
+                            LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
+                        } else {
+                            //滑动后将超出
+                            finallyDy = calculationOffset(dy, dy - bottomOffset) + bottomOffset
+                            //累加向上的偏移量
+                            upOffset += finallyDy - bottomOffset
+                            LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                        }
                     }
                 }
 
@@ -162,16 +164,18 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                 LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
                 //注意dy为负值
                 if (topOffset - dy >= 0) {
-                    if (topOffset >= 0) {
-                        finallyDy = -calculationOffset(dy, topOffset)
-                        //注意 finallyDy 为负值
-                        downOffset -= finallyDy
-                        LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
-                    } else {
-                        finallyDy = -calculationOffset(dy, dy - topOffset) + topOffset
-                        //累加向上的偏移量
-                        downOffset -= finallyDy - topOffset
-                        LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                    if (findLastVisibleItemPosition() != 0) {
+                        if (topOffset >= 0) {
+                            finallyDy = -calculationOffset(dy, topOffset)
+                            //注意 finallyDy 为负值
+                            downOffset -= finallyDy
+                            LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
+                        } else {
+                            finallyDy = -calculationOffset(dy, dy - topOffset) + topOffset
+                            //累加向上的偏移量
+                            downOffset -= finallyDy - topOffset
+                            LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                        }
                     }
                 }
 

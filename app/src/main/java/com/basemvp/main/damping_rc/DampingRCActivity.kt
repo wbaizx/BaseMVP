@@ -10,7 +10,7 @@ import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_damping_rc.*
 
 
-@Route(path = RouteString.DAMPING_RC, name = "带阻尼和标题栏，类似竖直viewpager的RecyclerView")
+@Route(path = RouteString.DAMPING_RC, name = "带阻尼和标题栏，类似竖直viewpager的RecyclerView item必须至少占全屏")
 class DampingRCActivity : BaseActivity() {
     private val TAG = "DampingRCActivity"
 
