@@ -1,10 +1,10 @@
 package com.basemvp.main.damping_rc
 
-import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
 import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
+import com.basemvp.util.AndroidUtil
 import com.basemvp.util.LogUtil
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_damping_rc.*
@@ -29,13 +29,19 @@ class DampingRCActivity : BaseActivity() {
         recyclerView.layoutManager = manager
         recyclerView.adapter = DampingRCAdapter()
 
-//        val pagerSnapHelper = PagerSnapHelper()
-//        val pagerSnapHelper2 = LinearSnapHelper()
-//        pagerSnapHelper.attachToRecyclerView(list)
-//        pagerSnapHelper2.attachToRecyclerView(list)
+        manager.barHeight = AndroidUtil.dp2px(80f)
+
+        manager.setOffsetListener { upOffset, downOffset ->
+            //upOffset 控制脚部偏移
+            //downOffset 控制头部偏移
+            LogUtil.log(TAG, "$upOffset --- $downOffset")
+            footer.translationY = -upOffset
+            header.translationY = downOffset
+        }
     }
 
     override fun initData() {
+
     }
 
 }

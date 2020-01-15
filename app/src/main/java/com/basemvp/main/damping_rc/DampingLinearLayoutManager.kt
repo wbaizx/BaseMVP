@@ -18,16 +18,22 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     private var topView: View? = null
     private var bottomView: View? = null
 
-    private val barHeight = AndroidUtil.dp2px(80f)
+    var barHeight = AndroidUtil.dp2px(80f)
+
+    //最终滚动标志，在最终滚动中，不记录偏移量
     private var isFinalScroll = false
-    private var upOffset = 0
-    private var downOffset = 0
+    private var upOffset = 0f
+    private var downOffset = 0f
+
+    private var listener: ((Float, Float) -> Unit)? = null
 
 
     private val flingListener = object : RecyclerView.OnFlingListener() {
         override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-            LogUtil.log(TAG, "onFling $velocityY  5000")
-            return true
+            LogUtil.log(TAG, "onFling $velocityY  --  ${parentView.minFlingVelocity}")
+            //允许惯性滚动
+            //scrollVerticallyBy方法中计算出来的阻尼滚动距离如果与目标距离不一致，惯性滚动就会停止
+            return false
         }
     }
 
@@ -38,10 +44,15 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                 RecyclerView.SCROLL_STATE_DRAGGING -> {
                     topView = findViewByPosition(findFirstVisibleItemPosition())
                     bottomView = findViewByPosition(findLastVisibleItemPosition())
+                    LogUtil.log(TAG, "newState ${findFirstVisibleItemPosition()}--${findLastVisibleItemPosition()}")
+
+                    //手指触发一次新的滑动，需要重置最终滚动标准
+                    isFinalScroll = false
                 }
                 RecyclerView.SCROLL_STATE_SETTLING -> {
                 }
                 RecyclerView.SCROLL_STATE_IDLE -> {
+                    LogUtil.log(TAG, "newState $isFinalScroll")
                     if (isFinalScroll) {
                         isFinalScroll = false
                     } else {
@@ -49,7 +60,6 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                     }
                 }
             }
-            LogUtil.log(TAG, "onScrollStateChanged $newState")
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -72,26 +82,37 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
             LogUtil.log(TAG, "getChildAdapterPosition  down $childPos")
             toTopAlignedScroll(childPos - 1)
         } else {
-            if (upOffset > 0) {
-                val childPos = parentView.getChildAdapterPosition(topView!!)
-                toDownAlignedScroll(childPos)
-            } else if (downOffset > 0) {
-                val childPos = parentView.getChildAdapterPosition(bottomView!!)
-                toTopAlignedScroll(childPos)
+            LogUtil.log(TAG, "Align")
+            val nowTopViewPos = findFirstVisibleItemPosition()
+            val nowBottomViewPos = findLastVisibleItemPosition()
+            if (nowTopViewPos != nowBottomViewPos) {
+                val nowBottomView = findViewByPosition(nowBottomViewPos)
+
+                //根据两个item交点位置，做最后滚动
+                if (nowBottomView!!.top < parentView.height / 2) {
+                    toTopAlignedScroll(nowBottomViewPos)
+                } else {
+                    toDownAlignedScroll(nowTopViewPos)
+                }
             }
         }
 
-        upOffset = 0
-        downOffset = 0
+        upOffset = 0f
+        downOffset = 0f
+
+        //回调偏移量
+        listener?.invoke(upOffset, downOffset)
     }
 
     private fun toTopAlignedScroll(pos: Int) {
+        LogUtil.log(TAG, "TopAligned")
         isFinalScroll = true
         val top = findViewByPosition(pos)!!.top
         parentView.smoothScrollBy(0, top)
     }
 
     private fun toDownAlignedScroll(pos: Int) {
+        LogUtil.log(TAG, "DownAligned")
         isFinalScroll = true
         val bottom = findViewByPosition(pos)!!.bottom - parentView.height
         parentView.smoothScrollBy(0, bottom)
@@ -108,35 +129,50 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
 
     override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
         var finallyDy = dy
+        LogUtil.log(TAG, "scrollVerticallyBy start $finallyDy")
         if (!isFinalScroll) {
             if (dy > 0) {  //向上滑动
-                LogUtil.log(TAG, "scrollVerticallyBy up")
-                val bv = bottomView!!
-                val bottomOffset = bv.bottom - parentView.height
-                LogUtil.log(TAG, "----------    $upOffset  ** $bottomOffset")
-                if (bottomOffset < 0) {
-                    finallyDy = calculationOffset(dy, bottomOffset)
-                    //累加向上的偏移量
-                    upOffset += finallyDy
-                    LogUtil.log(TAG, "scrollVerticallyBy up  $upOffset")
+                val bottomOffset = bottomView!!.bottom - parentView.height
+                LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
+                if (bottomOffset - dy <= 0) {
+                    if (bottomOffset <= 0) {
+                        //已经超出
+                        finallyDy = calculationOffset(dy, bottomOffset)
+                        //累加向上的偏移量
+                        upOffset += finallyDy
+                        LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
+                    } else {
+                        //滑动后将超出
+                        finallyDy = calculationOffset(dy, dy - bottomOffset) + bottomOffset
+                        //累加向上的偏移量
+                        upOffset += finallyDy - bottomOffset
+                        LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                    }
                 }
 
                 //消除向下的偏移量
-                downOffset = max(downOffset - finallyDy, 0)
+                downOffset = max(downOffset - finallyDy, 0f)
             } else { //向下滑动
-                LogUtil.log(TAG, "scrollVerticallyBy down")
-                val tv = topView!!
-                val topOffset = tv.top
-                if (topOffset > 0) {
-                    finallyDy = -calculationOffset(dy, topOffset)
-                    //注意 finallyDy 为负值
-                    downOffset -= finallyDy
-                    LogUtil.log(TAG, "scrollVerticallyBy down  $downOffset")
+                val topOffset = topView!!.top
+                LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
+                //注意dy为负值
+                if (topOffset - dy >= 0) {
+                    if (topOffset >= 0) {
+                        finallyDy = -calculationOffset(dy, topOffset)
+                        //注意 finallyDy 为负值
+                        downOffset -= finallyDy
+                    } else {
+                        finallyDy = -calculationOffset(dy, dy-topOffset) + topOffset
+                        //累加向上的偏移量
+                        downOffset -= finallyDy - topOffset
+                    }
                 }
 
                 //消除向上的偏移量
-                upOffset = max(upOffset + finallyDy, 0)
+                upOffset = max(upOffset + finallyDy, 0f)
             }
+            //回调偏移量
+            listener?.invoke(upOffset, downOffset)
         }
         return super.scrollVerticallyBy(finallyDy, recycler, state)
     }
@@ -147,6 +183,11 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     private fun calculationOffset(dy: Int, bottomOffset: Int): Int {
         val heightScale = min(abs(bottomOffset / barHeight), 1f)
         val finallyDy = abs(dy * (1f - heightScale))
+        LogUtil.log(TAG, "calculationOffset  $finallyDy")
         return finallyDy.toInt()
+    }
+
+    fun setOffsetListener(listener: (Float, Float) -> Unit) {
+        this.listener = listener
     }
 }
