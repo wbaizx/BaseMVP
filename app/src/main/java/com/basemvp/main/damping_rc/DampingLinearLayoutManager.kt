@@ -48,6 +48,11 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
 
                     //手指触发一次新的滑动，需要重置最终滚动标准
                     isFinalScroll = false
+
+                    //重置偏移量
+                    upOffset = 0f
+                    downOffset = 0f
+                    listener?.invoke(upOffset, downOffset)
                 }
                 RecyclerView.SCROLL_STATE_SETTLING -> {
                 }
@@ -71,13 +76,17 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
         LogUtil.log(TAG, "finalScroll")
         if (upOffset > barHeight / 5 * 3) {
             //需要滚动到下一条数据
-            if (bottomView != null) {
-                val childPos = parentView.getChildAdapterPosition(bottomView!!)
-                LogUtil.log(TAG, "getChildAdapterPosition  up $childPos")
-                toTopAlignedScroll(childPos + 1)
-            }
+            upOffset = 0f
+            downOffset = 0f
+            isFinalScroll = true
+            val childPos = parentView.getChildAdapterPosition(bottomView!!)
+            LogUtil.log(TAG, "getChildAdapterPosition  up $childPos")
+            toTopAlignedScroll(childPos + 1)
         } else if (downOffset > barHeight / 5 * 3) {
             //需要滚动到上一条数据
+            upOffset = 0f
+            downOffset = 0f
+            isFinalScroll = true
             val childPos = parentView.getChildAdapterPosition(topView!!)
             LogUtil.log(TAG, "getChildAdapterPosition  down $childPos")
             toTopAlignedScroll(childPos - 1)
@@ -86,6 +95,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
             val nowTopViewPos = findFirstVisibleItemPosition()
             val nowBottomViewPos = findLastVisibleItemPosition()
             if (nowTopViewPos != nowBottomViewPos) {
+                LogUtil.log(TAG, "no equal Pos")
                 val nowBottomView = findViewByPosition(nowBottomViewPos)
 
                 //根据两个item交点位置，做最后滚动
@@ -97,23 +107,18 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
             }
         }
 
-        upOffset = 0f
-        downOffset = 0f
-
         //回调偏移量
         listener?.invoke(upOffset, downOffset)
     }
 
     private fun toTopAlignedScroll(pos: Int) {
         LogUtil.log(TAG, "TopAligned")
-        isFinalScroll = true
         val top = findViewByPosition(pos)!!.top
         parentView.smoothScrollBy(0, top)
     }
 
     private fun toDownAlignedScroll(pos: Int) {
         LogUtil.log(TAG, "DownAligned")
-        isFinalScroll = true
         val bottom = findViewByPosition(pos)!!.bottom - parentView.height
         parentView.smoothScrollBy(0, bottom)
     }
@@ -161,10 +166,12 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                         finallyDy = -calculationOffset(dy, topOffset)
                         //注意 finallyDy 为负值
                         downOffset -= finallyDy
+                        LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
                     } else {
-                        finallyDy = -calculationOffset(dy, dy-topOffset) + topOffset
+                        finallyDy = -calculationOffset(dy, dy - topOffset) + topOffset
                         //累加向上的偏移量
                         downOffset -= finallyDy - topOffset
+                        LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
                     }
                 }
 
