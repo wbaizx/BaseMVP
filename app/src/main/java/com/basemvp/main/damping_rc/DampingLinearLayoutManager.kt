@@ -46,7 +46,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                     bottomView = findViewByPosition(findLastVisibleItemPosition())
                     LogUtil.log(TAG, "newState ${findFirstVisibleItemPosition()}--${findLastVisibleItemPosition()}")
 
-                    //手指触发一次新的滑动，需要重置最终滚动标准
+                    //手指触发一次新的滑动，需要重置最终滚动标志
                     isFinalScroll = false
 
                     //重置偏移量
