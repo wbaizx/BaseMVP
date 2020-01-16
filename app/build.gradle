@@ -58,10 +58,10 @@ dependencies {
 
     //状态栏
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-    // fragment快速实现（可选）
+    // fragment状态栏快速实现（可选）
 //    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
-    //折叠布局滑动冲突解决方案
+    //折叠布局滑动抖动解决方案
 //    implementation 'com.github.yuruiyin:AppbarLayoutBehavior:v1.0.3'
 
     //recyclerview item动画
