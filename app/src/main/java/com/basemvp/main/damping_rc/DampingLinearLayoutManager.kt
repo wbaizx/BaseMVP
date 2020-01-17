@@ -10,10 +10,13 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * item必须至少占全屏!!!!
+ */
 class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(context) {
     private val TAG = "DampingLinearLayoutManager"
 
-    private lateinit var parentView: RecyclerView
+    private lateinit var parentView: DampingRecyclerView
 
     private var topView: View? = null
     private var bottomView: View? = null
@@ -25,8 +28,8 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     private var upOffset = 0f
     private var downOffset = 0f
 
-    private var listener: ((Float, Float) -> Unit)? = null
-
+    private var offsetListener: ((Float, Float) -> Unit)? = null
+    private var pageListener: ((Int) -> Unit)? = null
 
     private val flingListener = object : RecyclerView.OnFlingListener() {
         override fun onFling(velocityX: Int, velocityY: Int): Boolean {
@@ -40,11 +43,12 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
+            LogUtil.log(TAG, "scrollChanged newState $newState")
             when (newState) {
                 RecyclerView.SCROLL_STATE_DRAGGING -> {
                     topView = findViewByPosition(findFirstVisibleItemPosition())
                     bottomView = findViewByPosition(findLastVisibleItemPosition())
-                    LogUtil.log(TAG, "newState ${findFirstVisibleItemPosition()}--${findLastVisibleItemPosition()}")
+                    LogUtil.log(TAG, "scrollChanged pos ${findFirstVisibleItemPosition()}--${findLastVisibleItemPosition()}")
 
                     //手指触发一次新的滑动，需要重置最终滚动标志
                     isFinalScroll = false
@@ -52,16 +56,29 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                     //重置偏移量
                     upOffset = 0f
                     downOffset = 0f
-                    listener?.invoke(upOffset, downOffset)
+                    offsetListener?.invoke(upOffset, downOffset)
                 }
                 RecyclerView.SCROLL_STATE_SETTLING -> {
+                    //只有屏幕中同时存在大于1个item时才需要屏手指拖动事件
+                    if (findFirstVisibleItemPosition() != findLastVisibleItemPosition()) {
+                        parentView.setBlockClicks(true)
+                    }
                 }
                 RecyclerView.SCROLL_STATE_IDLE -> {
-                    LogUtil.log(TAG, "newState $isFinalScroll")
+                    LogUtil.log(TAG, "scrollChanged end $isFinalScroll")
                     if (isFinalScroll) {
                         isFinalScroll = false
                     } else {
                         finalScroll()
+                    }
+
+                    //当前页码监听回调
+                    val nowTopViewPos = findFirstVisibleItemPosition()
+                    val nowBottomViewPos = findLastVisibleItemPosition()
+                    if (nowTopViewPos == nowBottomViewPos) {
+                        //某个item已经完全占据屏幕
+                        pageListener?.invoke(nowTopViewPos)
+                        parentView.setBlockClicks(false)
                     }
                 }
             }
@@ -108,7 +125,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
         }
 
         //回调偏移量
-        listener?.invoke(upOffset, downOffset)
+        offsetListener?.invoke(upOffset, downOffset)
     }
 
     private fun toTopAlignedScroll(pos: Int) {
@@ -129,7 +146,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
         view.onFlingListener = flingListener
         view.addOnScrollListener(scrollListener)
 
-        parentView = view
+        parentView = view as DampingRecyclerView
     }
 
     override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
@@ -200,7 +217,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                 upOffset = max(upOffset + finallyDy, 0f)
             }
             //回调偏移量
-            listener?.invoke(upOffset, downOffset)
+            offsetListener?.invoke(upOffset, downOffset)
         }
         return super.scrollVerticallyBy(finallyDy, recycler, state)
     }
@@ -218,6 +235,10 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     }
 
     fun setOffsetListener(listener: (Float, Float) -> Unit) {
-        this.listener = listener
+        this.offsetListener = listener
+    }
+
+    fun setPageListener(listener: (Int) -> Unit) {
+        this.pageListener = listener
     }
 }

@@ -34,9 +34,15 @@ class DampingRCActivity : BaseActivity() {
         manager.setOffsetListener { upOffset, downOffset ->
             //upOffset 控制脚部偏移
             //downOffset 控制头部偏移
-            LogUtil.log(TAG, "$upOffset --- $downOffset")
+            LogUtil.log(TAG, "Offset  $upOffset --- $downOffset")
             footer.translationY = -upOffset
             header.translationY = downOffset
+        }
+
+        manager.setPageListener { page ->
+            footer.text = "$page footer"
+            header.text = "$page header"
+            LogUtil.log(TAG, "Page  $page")
         }
     }
 
