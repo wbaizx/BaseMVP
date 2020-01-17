@@ -139,20 +139,27 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
             if (dy > 0) {  //向上滑动
                 val bottomOffset = bottomView!!.bottom - parentView.height
                 LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
-                if (bottomOffset - dy <= 0) {
+                if (bottomOffset - dy < 0) {
+                    //判断屏幕中是否已经只剩下最后一项，如果是则不需要再计算距离和偏移量
                     if (findFirstVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
                         if (bottomOffset <= 0) {
                             //已经超出
-                            finallyDy = calculationOffset(dy, bottomOffset)
+                            finallyDy = calculationOffset(dy, bottomOffset, upOffset)
                             //累加向上的偏移量
                             upOffset += finallyDy
                             LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
                         } else {
                             //滑动后将超出
-                            finallyDy = calculationOffset(dy, dy - bottomOffset) + bottomOffset
-                            //累加向上的偏移量
-                            upOffset += finallyDy - bottomOffset
-                            LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                            if (findLastVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
+                                finallyDy = calculationOffset(dy, dy - bottomOffset, upOffset) + bottomOffset
+                                //累加向上的偏移量
+                                upOffset += finallyDy - bottomOffset
+                                LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                            } else {
+                                //屏幕最后一项已经是底部，此时不允许超出
+                                finallyDy = dy - bottomOffset
+                                LogUtil.log(TAG, "scrollVerticallyBy will stop $upOffset")
+                            }
                         }
                     }
                 }
@@ -163,18 +170,28 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                 val topOffset = topView!!.top
                 LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
                 //注意dy为负值
-                if (topOffset - dy >= 0) {
+                if (topOffset - dy > 0) {
+                    //判断屏幕中是否已经只剩下第一项，如果是则不需要再计算距离和偏移量
                     if (findLastVisibleItemPosition() != 0) {
                         if (topOffset >= 0) {
-                            finallyDy = -calculationOffset(dy, topOffset)
+                            //已经超出
+                            finallyDy = -calculationOffset(dy, topOffset, downOffset)
                             //注意 finallyDy 为负值
                             downOffset -= finallyDy
                             LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
                         } else {
-                            finallyDy = -calculationOffset(dy, dy - topOffset) + topOffset
-                            //累加向上的偏移量
-                            downOffset -= finallyDy - topOffset
-                            LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                            //滑动后将超出
+                            //此时topOffset为负值
+                            if (findFirstVisibleItemPosition() != 0) {
+                                finallyDy = -calculationOffset(dy, dy - topOffset, downOffset) + topOffset
+                                //累加向下的偏移量
+                                downOffset -= finallyDy - topOffset
+                                LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                            } else {
+                                //屏幕第一项已经是顶部，此时不允许超出
+                                finallyDy = dy - topOffset
+                                LogUtil.log(TAG, "scrollVerticallyBy will stop $downOffset")
+                            }
                         }
                     }
                 }
@@ -191,9 +208,11 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     /**
      * 根据偏移量计算偏移距离
      */
-    private fun calculationOffset(dy: Int, bottomOffset: Int): Int {
+    private fun calculationOffset(dy: Int, bottomOffset: Int, offset: Float): Int {
         val heightScale = min(abs(bottomOffset / barHeight), 1f)
-        val finallyDy = abs(dy * (1f - heightScale))
+        val distance = abs(dy * (1f - heightScale))
+        //根据已有偏移量做最大值限制
+        val finallyDy = min(distance, barHeight - offset)
         LogUtil.log(TAG, "calculationOffset  $finallyDy")
         return finallyDy.toInt()
     }

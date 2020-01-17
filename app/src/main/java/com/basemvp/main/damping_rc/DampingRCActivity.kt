@@ -20,7 +20,7 @@ class DampingRCActivity : BaseActivity() {
 
     override fun setImmersionBar() {
         ImmersionBar.with(this)
-            .statusBarColor(R.color.color_D1D)
+            .statusBarColor(R.color.color_black)
             .fitsSystemWindows(true)
             .init()
     }
