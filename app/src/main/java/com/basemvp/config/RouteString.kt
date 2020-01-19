@@ -20,4 +20,8 @@ object RouteString {
     const val DAMPING_RC = "/test/damping_rc"
     const val SCROLL_TO_RC = "/test/scrollTo_rc"
     const val GALLERY = "/test/recyclerViewGallery"
+
+
+    const val isNeedLogin = 6
+    const val isNeedLoginTag = "6"
 }

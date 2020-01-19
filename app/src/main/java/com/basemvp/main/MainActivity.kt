@@ -8,6 +8,7 @@ import com.basemvp.APP
 import com.basemvp.R
 import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
+import com.basemvp.config.loginNavigation
 import com.basemvp.util.LogUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -38,9 +39,8 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
         }
 
         showDialog.setOnClickListener {
-            ARouter.getInstance().build(RouteString.DIALOG).navigation()
+            ARouter.getInstance().build(RouteString.DIALOG).loginNavigation()
         }
-
 
 
         exit.setOnClickListener {

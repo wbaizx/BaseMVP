@@ -23,9 +23,7 @@ class APP : Application() {
 
         fun exitApp() {
             allActivities.forEach {
-                if (!it.isFinishing) {
-                    it.finish()
-                }
+                it.finish()
             }
             allActivities.clear()
             LogUtil.log(TAG, allActivities.size.toString())

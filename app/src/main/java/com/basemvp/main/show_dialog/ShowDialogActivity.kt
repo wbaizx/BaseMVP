@@ -8,7 +8,7 @@ import com.basemvp.config.RouteString
 import com.basemvp.util.LogUtil
 import kotlinx.android.synthetic.main.activity_show_dialog.*
 
-@Route(path = RouteString.DIALOG, name = "展示FragmentDialog")
+@Route(path = RouteString.DIALOG, name = "展示FragmentDialog", extras = RouteString.isNeedLogin)
 class ShowDialogActivity : BaseActivity() {
     private val TAG = "ShowDialogActivity"
 
