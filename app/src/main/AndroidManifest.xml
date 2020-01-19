@@ -55,9 +55,10 @@
             android:name=".main.fragment_example.vp_fragment.VP2FragmentActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".main.damping_rc.DampingRCActivity" />
-        <activity android:name=".main.gallery.GalleryActivity" />
-        <activity android:name=".main.scrollto_rc.ScrollToRCActivity" />
+        <activity android:name=".main.special_rc.SpecialRCActivity" />
+        <activity android:name=".main.special_rc.damping_rc.DampingRCActivity" />
+        <activity android:name=".main.special_rc.gallery.GalleryActivity" />
+        <activity android:name=".main.special_rc.scrollto_rc.ScrollToRCActivity" />
 
         <!-- 全面屏 -->
         <meta-data

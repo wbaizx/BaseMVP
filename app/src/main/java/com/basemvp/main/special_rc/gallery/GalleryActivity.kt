@@ -1,4 +1,4 @@
-package com.basemvp.main.gallery
+package com.basemvp.main.special_rc.gallery
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route

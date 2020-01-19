@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".main.special_rc.SpecialRCActivity">
+
+    <Button
+        android:id="@+id/dampingRc"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="仿viewpager带阻尼，标题栏的RC ing"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/recyclerViewGallery"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView 仿Gallery效果"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dampingRc" />
+
+    <Button
+        android:id="@+id/scrollToRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="recyclerView滚动到指定位置"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewGallery" />
+</androidx.constraintlayout.widget.ConstraintLayout>

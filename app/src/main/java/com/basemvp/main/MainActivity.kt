@@ -33,22 +33,12 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
             ARouter.getInstance().build(RouteString.ITEM_ANIMATION).navigation()
         }
 
-
+        specialRc.setOnClickListener {
+            ARouter.getInstance().build(RouteString.SPECIAL_RC).navigation()
+        }
 
         showDialog.setOnClickListener {
             ARouter.getInstance().build(RouteString.DIALOG).navigation()
-        }
-
-        dampingRc.setOnClickListener {
-            ARouter.getInstance().build(RouteString.DAMPING_RC).navigation()
-        }
-
-        recyclerViewGallery.setOnClickListener {
-            ARouter.getInstance().build(RouteString.GALLERY).navigation()
-        }
-
-        scrollToRecyclerView.setOnClickListener {
-            ARouter.getInstance().build(RouteString.SCROLL_TO_RC).navigation()
         }
 
 

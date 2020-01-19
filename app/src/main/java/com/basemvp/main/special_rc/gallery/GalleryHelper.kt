@@ -1,4 +1,4 @@
-package com.basemvp.main.gallery
+package com.basemvp.main.special_rc.gallery
 
 import android.graphics.Rect
 import android.view.View

@@ -2,9 +2,6 @@ package com.basemvp.config
 
 object RouteString {
     const val MAIN = "/test/main"
-    const val DAMPING_RC = "/test/damping_rc"
-    const val SCROLL_TO_RC = "/test/scrollTo_rc"
-    const val GALLERY = "/test/recyclerViewGallery"
     const val DIALOG = "/test/show_dialog"
 
     const val COORDINATOR = "/test/coordinator"
@@ -18,4 +15,9 @@ object RouteString {
     const val ITEM_ANIMATION1 = "/test/item_animation1"
     const val ITEM_ANIMATION2 = "/test/item_animation2"
     const val ITEM_ANIMATION3 = "/test/item_animation3"
+
+    const val SPECIAL_RC = "/test/special_rc"
+    const val DAMPING_RC = "/test/damping_rc"
+    const val SCROLL_TO_RC = "/test/scrollTo_rc"
+    const val GALLERY = "/test/recyclerViewGallery"
 }

@@ -1,4 +1,4 @@
-package com.basemvp.main.scrollto_rc
+package com.basemvp.main.special_rc.scrollto_rc
 
 import android.graphics.Canvas
 import android.graphics.Color

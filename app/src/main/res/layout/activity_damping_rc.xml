@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.damping_rc.DampingRCActivity">
+    tools:context=".main.special_rc.damping_rc.DampingRCActivity">
 
-    <com.basemvp.main.damping_rc.DampingRecyclerView
+    <com.basemvp.main.special_rc.damping_rc.DampingRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"

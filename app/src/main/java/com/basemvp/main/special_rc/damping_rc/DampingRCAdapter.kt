@@ -1,4 +1,4 @@
-package com.basemvp.main.damping_rc
+package com.basemvp.main.special_rc.damping_rc
 
 import com.basemvp.R
 import com.basemvp.util.AndroidUtil
