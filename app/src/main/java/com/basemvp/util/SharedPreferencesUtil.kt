@@ -8,10 +8,7 @@ class SharedPreferencesUtil {
     class KeyValue<T : Comparable<T>>(val key: String)
 
     companion object {
-        val B = KeyValue<Boolean>("aaa")
-        val S = KeyValue<String>("bbb")
-        val F = KeyValue<Float>("ccc")
-        val I = KeyValue<Int>("ddd")
+        val LOGIN = KeyValue<Boolean>("is_login")
 
         private val sharedPreferences: SharedPreferences by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             APP.appContext.getSharedPreferences("BASE", Context.MODE_PRIVATE)
@@ -30,15 +27,12 @@ class SharedPreferencesUtil {
             edit.apply()
         }
 
-        fun <T : Comparable<T>> getData(key: KeyValue<T>, defData: T): Comparable<*>? {
-            return when (defData) {
-                is String -> sharedPreferences.getString(key.key, defData)
-                is Int -> sharedPreferences.getInt(key.key, defData)
-                is Boolean -> sharedPreferences.getBoolean(key.key, defData)
-                is Float -> sharedPreferences.getFloat(key.key, defData)
-                is Long -> sharedPreferences.getLong(key.key, defData)
-                else -> null
-            }
-        }
+        fun getBoolean(key: KeyValue<Boolean>, defData: Boolean) = sharedPreferences.getBoolean(key.key, defData)
+
+        fun getString(key: KeyValue<String>, defData: String) = sharedPreferences.getString(key.key, defData)
+
+        fun getInt(key: KeyValue<Int>, defData: Int) = sharedPreferences.getInt(key.key, defData)
+
+        fun getFloat(key: KeyValue<Float>, defData: Float) = sharedPreferences.getFloat(key.key, defData)
     }
 }

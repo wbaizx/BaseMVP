@@ -10,6 +10,7 @@ import com.basemvp.base.BaseActivity
 import com.basemvp.config.RouteString
 import com.basemvp.config.loginNavigation
 import com.basemvp.util.LogUtil
+import com.basemvp.util.SharedPreferencesUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -38,6 +39,9 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
             ARouter.getInstance().build(RouteString.SPECIAL_RC).navigation()
         }
 
+
+
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.LOGIN, true)
         showDialog.setOnClickListener {
             ARouter.getInstance().build(RouteString.DIALOG).loginNavigation()
         }
@@ -83,6 +87,8 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
                 .setTitle("跳转到手动打开")
                 .setRationale("跳转到手动打开")
                 .build().show()
+        } else {
+            finish()
         }
     }
 
@@ -97,7 +103,9 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            LogUtil.log(TAG, "manual dialog close")
+            if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                finish()
+            }
         }
     }
 }

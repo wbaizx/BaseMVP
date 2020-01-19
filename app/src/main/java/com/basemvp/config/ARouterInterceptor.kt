@@ -6,6 +6,7 @@ import com.alibaba.android.arouter.facade.annotation.Interceptor
 import com.alibaba.android.arouter.facade.callback.InterceptorCallback
 import com.alibaba.android.arouter.facade.template.IInterceptor
 import com.basemvp.util.LogUtil
+import com.basemvp.util.SharedPreferencesUtil
 
 /**
  * 我们经常需要在目标页面中配置一些属性，比方说"是否需要登陆"之类的
@@ -26,7 +27,7 @@ object ARouterInterceptor {
 
             //这个 extra 标志是对应 acitvity 配置的 extras 属性，是否需要登录
             //同时判断相应的条件，是否登录，已经测试通过，这里默认已经登录了
-            val isLogin = true
+            val isLogin = SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.LOGIN, false)
             if (postcard?.extra == RouteString.isNeedLogin && !isLogin) {
                 callback?.onInterrupt(RuntimeException(RouteString.isNeedLoginTag))
                 LogUtil.log(TAG, "ARouterInterceptor --- ${postcard.tag}")
