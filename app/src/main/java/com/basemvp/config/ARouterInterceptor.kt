@@ -8,12 +8,6 @@ import com.alibaba.android.arouter.facade.template.IInterceptor
 import com.basemvp.util.LogUtil
 import com.basemvp.util.SharedPreferencesUtil
 
-/**
- * 我们经常需要在目标页面中配置一些属性，比方说"是否需要登陆"之类的
- * 在要跳转到的acitvity可以通过 Route 注解中的 extras 属性，这个属性是一个 int值32位，可以配置32个开关
- * 通过字节操作可以标识32个开关，通过开关标记目标页面的一些属性，在拦截器中可以拿到这个标记进行业务逻辑判断
- * 例如 @Route(path = "/test/activity", extras = 1)
- */
 object ARouterInterceptor {
     private val TAG = "ARouterInterceptor"
 

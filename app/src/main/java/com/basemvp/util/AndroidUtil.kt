@@ -103,13 +103,19 @@ object AndroidUtil {
      */
     fun getDiskFilePath(name: String): String {
         val path: String
+
         if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() && !Environment.isExternalStorageRemovable()) {
-            //外部文件存储，能看
-            path = APP.appContext.getExternalFilesDir(name)!!.absolutePath
-        } else {
-            //内部文件存储，不能看
-            path = APP.appContext.filesDir.absolutePath + File.separator + name
+            val externalFilesDir = APP.appContext.getExternalFilesDir(name)
+            if (externalFilesDir != null) {
+                //外部文件存储，能看
+                path = externalFilesDir.absolutePath
+                LogUtil.log(TAG, "getDiskFilePath - $path")
+                return path
+            }
         }
+
+        //内部文件存储，不能看
+        path = APP.appContext.filesDir.absolutePath + File.separator + name
         LogUtil.log(TAG, "getDiskFilePath - $path")
         return path
     }

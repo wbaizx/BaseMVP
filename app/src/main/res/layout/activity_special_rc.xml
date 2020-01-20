@@ -36,4 +36,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerViewGallery" />
+
+    <Button
+        android:id="@+id/qqAlbum"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="仿QQ空间相册样式"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollToRecyclerView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

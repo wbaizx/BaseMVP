@@ -19,6 +19,7 @@ object RouteString {
     const val SPECIAL_RC = "/test/special_rc"
     const val DAMPING_RC = "/test/damping_rc"
     const val SCROLL_TO_RC = "/test/scrollTo_rc"
+    const val QQ_ALBUM = "/test/qq_album"
     const val GALLERY = "/test/recyclerViewGallery"
 
 
