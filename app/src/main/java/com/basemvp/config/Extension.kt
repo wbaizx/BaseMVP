@@ -1,10 +1,14 @@
 package com.basemvp.config
 
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
 import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.callback.NavCallback
 import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.APP
+import com.basemvp.R
 import com.basemvp.util.LogUtil
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 
 /**
@@ -33,4 +37,12 @@ fun Postcard.loginNavigation() {
  */
 fun Postcard.normalNavigation() {
     greenChannel().navigation()
+}
+
+fun GlideRequest<Drawable>.normalInto(mainImg: ImageView) {
+    thumbnail(0.2f)
+        .placeholder(R.mipmap.test_icon)
+        .error(R.mipmap.test_icon)
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(mainImg)
 }

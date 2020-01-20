@@ -7,8 +7,10 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.APP
 import com.basemvp.R
 import com.basemvp.base.BaseActivity
+import com.basemvp.config.GlideApp
 import com.basemvp.config.RouteString
 import com.basemvp.config.loginNavigation
+import com.basemvp.config.normalInto
 import com.basemvp.util.LogUtil
 import com.basemvp.util.SharedPreferencesUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,6 +25,9 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
+        GlideApp.with(this).load("http://img1.imgtn.bdimg.com/it/u=1004510913,4114177496&fm=26&gp=0.jpg")
+            .normalInto(mainImg)
+
         fragmentExample.setOnClickListener {
             ARouter.getInstance().build(RouteString.FRAGMENT_EXAMPLE).navigation()
         }

@@ -9,6 +9,11 @@
     <!--  测试权限，实际这里用不上  -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!--   android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
+    解决办法:
+    1. 将http请求改为https请求
+    2. 添加usesCleartextTraffic属性
+    -->
     <application
         android:name=".APP"
         android:allowBackup="true"
@@ -16,7 +21,8 @@
         android:label="MVP总结工具集合"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
 
         <provider
             android:name="androidx.core.content.FileProvider"
