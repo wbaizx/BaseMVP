@@ -3,6 +3,7 @@ package com.basemvp.config
 object RouteString {
     const val MAIN = "/test/main"
     const val DIALOG = "/test/show_dialog"
+    const val MVP_ROOM = "/test/mvp_room"
 
     const val COORDINATOR = "/test/coordinator"
     const val COORDINATOR1 = "/test/coordinator1"

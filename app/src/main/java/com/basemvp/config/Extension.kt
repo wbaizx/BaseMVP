@@ -39,6 +39,7 @@ fun Postcard.normalNavigation() {
     greenChannel().navigation()
 }
 
+const val imgUrl = "http://img1.imgtn.bdimg.com/it/u=1004510913,4114177496&fm=26&gp=0.jpg"
 fun GlideRequest<Drawable>.normalInto(mainImg: ImageView) {
     thumbnail(0.2f)
         .placeholder(R.mipmap.test_icon)

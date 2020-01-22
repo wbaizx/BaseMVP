@@ -74,6 +74,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/specialRc" />
 
+    <Button
+        android:id="@+id/mvpRoom"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="展示mvp + room"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showDialog" />
+
 
     <Button
         android:id="@+id/exit"

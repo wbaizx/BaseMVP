@@ -4,7 +4,6 @@ package com.basemvp.test.fm
 import android.os.Bundle
 import android.view.View
 import com.basemvp.R
-import com.basemvp.base.mvp.BasePresenterInterface
 import com.basemvp.base.mvp.BaseViewFragment
 import com.basemvp.util.LogUtil
 import kotlinx.android.synthetic.main.fragment_test_v.*
@@ -12,10 +11,10 @@ import kotlinx.android.synthetic.main.fragment_test_v.*
 /**
  * 测试Fragment用例
  */
-class TestViewFragment(private val text: String) : BaseViewFragment<BasePresenterInterface>() {
+class TestViewFragment(private val text: String) : BaseViewFragment<Any>() {
     private val TAG = "TestViewFragment"
 
-    override fun initBasePresenter(): BasePresenterInterface? = null
+    override fun initBasePresenter(): Any? = null
 
     override fun getContentView() = R.layout.fragment_test_v
 
