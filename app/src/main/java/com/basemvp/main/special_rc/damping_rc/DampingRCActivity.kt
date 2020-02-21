@@ -9,7 +9,9 @@ import com.basemvp.util.LogUtil
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_damping_rc.*
 
-
+/**
+ * 需要注意全面屏和刘海屏适配
+ */
 @Route(path = RouteString.DAMPING_RC, name = "带阻尼和标题栏，类似竖直viewpager的RecyclerView item必须至少占全屏")
 class DampingRCActivity : BaseActivity() {
     private val TAG = "DampingRCActivity"
@@ -20,14 +22,14 @@ class DampingRCActivity : BaseActivity() {
 
     override fun setImmersionBar() {
         ImmersionBar.with(this)
-            .statusBarColor(R.color.color_black)
-            .fitsSystemWindows(true)
+//            .statusBarColor(R.color.color_black)
+//            .fitsSystemWindows(true)
             .init()
     }
 
     override fun initView() {
         recyclerView.layoutManager = manager
-        recyclerView.adapter = DampingRCAdapter()
+        recyclerView.adapter = DampingRCAdapter(this)
 
         manager.barHeight = AndroidUtil.dp2px(80f)
 

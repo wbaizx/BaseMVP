@@ -12,6 +12,7 @@ import kotlin.math.min
 
 /**
  * item必须至少占全屏!!!!
+ * 注意全面屏和刘海屏适配!!!
  */
 class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(context) {
     private val TAG = "DampingLinearLayoutManager"
