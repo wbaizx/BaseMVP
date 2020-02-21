@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.gyf.immersionbar.ImmersionBar
 
 /**
+ * 这里直接设置的高度，也可以通过minimumHeight设置最小高度实现全屏
  * 注意全面屏和刘海屏适配
  */
 class DampingRCAdapter(private val dampingRCActivity: DampingRCActivity) :
