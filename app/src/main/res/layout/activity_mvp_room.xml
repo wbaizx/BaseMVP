@@ -13,4 +13,11 @@
         android:layout_height="50dp"
         android:text="存"
         android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/query"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="查"
+        android:textAllCaps="false" />
 </LinearLayout>

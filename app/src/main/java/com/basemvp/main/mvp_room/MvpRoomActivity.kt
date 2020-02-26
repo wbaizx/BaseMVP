@@ -17,6 +17,10 @@ class MvpRoomActivity : BaseViewActivity<MvpRoomPresenterInterface>(), MvpRoomVi
         save.setOnClickListener {
             presenter?.saveData()
         }
+
+        query.setOnClickListener {
+            presenter?.queryData()
+        }
     }
 
     override fun initData() {

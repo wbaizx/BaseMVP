@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_qqalbum.*
  * 也可以使用嵌套布局方式
  * 或者分割线方式
  */
-@Route(path = RouteString.QQ_ALBUM, name = "仿QQ空间相册样式", extras = RouteString.isNeedLogin)
+@Route(path = RouteString.QQ_ALBUM, name = "仿QQ空间相册样式")
 class QQAlbumActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_qqalbum

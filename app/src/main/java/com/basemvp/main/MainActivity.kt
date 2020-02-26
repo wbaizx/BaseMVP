@@ -16,7 +16,7 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 @Route(path = RouteString.MAIN, name = "功能选择页")
-class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
+class MainActivity : BaseActivity() {
     private val TAG = "MainActivity"
 
     override fun getContentView() = R.layout.activity_main
@@ -62,12 +62,9 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    //添加AfterPermissionGranted 注解，在所有权限申请成功后会再次调用此方法，手动打开除外
+    /**
+     * 添加 AfterPermissionGranted 注解，在所有权限申请成功后会再次调用此方法，手动打开除外
+     */
     @AfterPermissionGranted(666)
     private fun getPermissions() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -80,10 +77,9 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
         }
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsGranted")
-    }
-
+    /**
+     * 权限拒绝后回调
+     */
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         LogUtil.log(TAG, "onPermissionsDenied")
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
@@ -97,14 +93,9 @@ class MainActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPe
         }
     }
 
-    override fun onRationaleDenied(requestCode: Int) {
-        LogUtil.log(TAG, "onRationaleDenied")
-    }
-
-    override fun onRationaleAccepted(requestCode: Int) {
-        LogUtil.log(TAG, "onRationaleAccepted")
-    }
-
+    /**
+     * 跳转手动打开权限后回调，不论是否打开权限都会回调，所以这里要再次检查权限
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {

@@ -1,0 +1,63 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "3e2866027fb17530629d55932af6fec6",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `num` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "num",
+            "columnName": "num",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_User_name",
+            "unique": true,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_User_name` ON `${TABLE_NAME}` (`name`)"
+          },
+          {
+            "name": "index_User_num",
+            "unique": true,
+            "columnNames": [
+              "num"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_User_num` ON `${TABLE_NAME}` (`num`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e2866027fb17530629d55932af6fec6')"
+    ]
+  }
+}

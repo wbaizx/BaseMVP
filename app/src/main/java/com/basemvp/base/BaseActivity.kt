@@ -8,12 +8,17 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.basemvp.APP
 import com.basemvp.R
+import com.basemvp.util.LogUtil
 import com.gyf.immersionbar.ImmersionBar
+import pub.devrel.easypermissions.EasyPermissions
 
 /**
  *  Activity基类
  */
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
+    private val TAG = "BaseActivity"
+    private val loadDialog by lazy { LoadDialog(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,5 +74,52 @@ abstract class BaseActivity : AppCompatActivity() {
         ed.requestFocus()
         val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(ed, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun showLoadDialog() {
+        if (!loadDialog.isShow) {
+            LogUtil.log(TAG, "showLoadDialog")
+            loadDialog.showDialog("loading")
+        }
+    }
+
+    fun hideLoadDialog() {
+        if (loadDialog.isShow) {
+            LogUtil.log(TAG, "hideLoadDialog")
+            loadDialog.dismiss()
+        }
+    }
+
+    /**
+     * 权限允许后回调
+     */
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        LogUtil.log(TAG, "onPermissionsGranted")
+    }
+
+    /**
+     * 权限拒绝后回调
+     */
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        LogUtil.log(TAG, "onPermissionsDenied")
+    }
+
+    /**
+     * 权限拒绝过一次后的提示框被拒绝
+     */
+    override fun onRationaleDenied(requestCode: Int) {
+        LogUtil.log(TAG, "onRationaleDenied")
+    }
+
+    /**
+     * 权限拒绝过一次后的提示框被允许
+     */
+    override fun onRationaleAccepted(requestCode: Int) {
+        LogUtil.log(TAG, "onRationaleAccepted")
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 }
