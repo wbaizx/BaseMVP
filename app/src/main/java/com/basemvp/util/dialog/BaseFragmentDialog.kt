@@ -25,6 +25,17 @@ abstract class BaseFragmentDialog : DialogFragment() {
     var isShow = false
 
     /**
+     * 是否调用了onSaveInstanceState保存状态
+     * 如果调用了onSaveInstanceState之后不能再show和dimiss，会报错
+     */
+    private var isSaveInstanceState = false
+
+    /**
+     * 是否应该关闭，主要用于onSaveInstanceState状态
+     */
+    private var shouldDimiss = false
+
+    /**
      * 点击返回键是否关闭
      */
     private var backCancel = true
@@ -37,6 +48,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
         if (savedInstanceState != null) {
             isShow = savedInstanceState.getBoolean("show", false)
         }
+
         setStyle(STYLE_NO_FRAME, getStyle())
     }
 
@@ -73,6 +85,17 @@ abstract class BaseFragmentDialog : DialogFragment() {
             win.setWindowAnimations(getStyleAnimations())
         }
         super.onStart()
+    }
+
+    override fun onResume() {
+        LogUtil.log(TAG, "onResume")
+        super.onResume()
+        //onSaveInstanceState调用后做了dimiss操作，在下次可见时执行操作
+        isSaveInstanceState = false
+        if (shouldDimiss) {
+            shouldDimiss = false
+            dismiss()
+        }
     }
 
     /**
@@ -121,14 +144,17 @@ abstract class BaseFragmentDialog : DialogFragment() {
      * 调用showDialog展示dialog，注意已经show了再调容易出错，可以用isShow标志控制
      */
     fun showDialog(tag: String) {
-        val ft = mActivity.supportFragmentManager.beginTransaction()
-        val prev = mActivity.supportFragmentManager.findFragmentByTag(tag)
-        if (prev != null) {
-            //这句话实际效果不行
-            ft.remove(prev)
+        //onSaveInstanceState调用后，最好不要调showDialog
+        if (!isSaveInstanceState) {
+            val ft = mActivity.supportFragmentManager.beginTransaction()
+            val prev = mActivity.supportFragmentManager.findFragmentByTag(tag)
+            if (prev != null) {
+                //这句话实际效果不行
+                ft.remove(prev)
+            }
+            show(ft, tag)
+            isShow = true
         }
-        show(ft, tag)
-        isShow = true
     }
 
     /**
@@ -146,6 +172,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
         LogUtil.log(TAG, "onSaveInstanceState")
         outState.putBoolean("show", isShow)
         super.onSaveInstanceState(outState)
+        isSaveInstanceState = true
     }
 
     /**
@@ -161,10 +188,15 @@ abstract class BaseFragmentDialog : DialogFragment() {
      * 主动调用dismiss才会回调该方法
      */
     override fun dismiss() {
-        if (isShow) {
-            isShow = false
-            super.dismiss()
-            onDismissListener?.invoke()
+        //onSaveInstanceState调用后，不能再调dismiss
+        if (isSaveInstanceState) {
+            shouldDimiss = true
+        } else {
+            if (isShow) {
+                isShow = false
+                super.dismiss()
+                onDismissListener?.invoke()
+            }
         }
     }
 
