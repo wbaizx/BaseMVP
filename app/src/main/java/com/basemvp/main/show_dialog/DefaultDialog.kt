@@ -4,7 +4,7 @@ import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.basemvp.R
 import com.basemvp.util.dialog.BaseFragmentDialog
-import kotlinx.android.synthetic.main.error_dialog_view.*
+import kotlinx.android.synthetic.main.test_dialog_view.*
 
 class DefaultDialog : BaseFragmentDialog {
 
@@ -19,7 +19,7 @@ class DefaultDialog : BaseFragmentDialog {
         setCanceledOnBack(true)
     }
 
-    override fun getLayout() = R.layout.error_dialog_view
+    override fun getLayout() = R.layout.test_dialog_view
 
     override fun initView(view: View) {
         text.text = "默认"
