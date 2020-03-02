@@ -22,24 +22,24 @@ object DialogFactory {
     ) {
         val dialog = NormalDialog()
         dialog.setContext(activity)
-        dialog.setTitle(title)
-        dialog.setContent(content)
-        dialog.setYesName(yesName)
-        dialog.setYesClick(yesClick)
-        dialog.setNoName(noName)
-        dialog.setNoClick(noClick)
+        dialog.title = title
+        dialog.content = content
+        dialog.yesName = yesName
+        dialog.yesClick = yesClick
+        dialog.noName = noName
+        dialog.noClick = noClick
         dialog.showDialog("normal")
     }
 }
 
 
 class NormalDialog : BaseFragmentDialog() {
-    private var title: String = "标题"
-    private var content: String = "内容"
-    private var yesName: String = "确定"
-    private var noName: String = "取消"
-    private var yesClick: (() -> Unit)? = null
-    private var noClick: (() -> Unit)? = null
+    var title: String = "标题"
+    var content: String = "内容"
+    var yesName: String = "确定"
+    var noName: String = "取消"
+    var yesClick: (() -> Unit)? = null
+    var noClick: (() -> Unit)? = null
 
     override fun setDialogConfigure() {
         setCanceledOnTouchOutside(false)
@@ -74,29 +74,5 @@ class NormalDialog : BaseFragmentDialog() {
             dismiss()
             noClick?.invoke()
         }
-    }
-
-    fun setTitle(title: String) {
-        this.title = title
-    }
-
-    fun setContent(content: String) {
-        this.content = content
-    }
-
-    fun setYesName(yesName: String) {
-        this.yesName = yesName
-    }
-
-    fun setYesClick(yesClick: () -> Unit) {
-        this.yesClick = yesClick
-    }
-
-    fun setNoName(noName: String) {
-        this.noName = noName
-    }
-
-    fun setNoClick(noClick: (() -> Unit)?) {
-        this.noClick = noClick
     }
 }
