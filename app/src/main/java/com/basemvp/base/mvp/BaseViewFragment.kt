@@ -12,12 +12,8 @@ abstract class BaseViewFragment<P> : BaseFragment() {
     abstract fun initBasePresenter(): P?
 
     override fun onDestroy() {
-        if (presenter is BasePresenterImpl<*, *>) {
-            val presenterImpl = presenter as BasePresenterImpl<*, *>
-            presenterImpl.detachView()
-        }
+        (presenter as? BasePresenterImpl<*, *>)?.detachView()
         presenter = null
-
         super.onDestroy()
     }
 }

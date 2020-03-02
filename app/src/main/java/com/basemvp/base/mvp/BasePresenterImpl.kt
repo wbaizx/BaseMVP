@@ -1,6 +1,7 @@
 package com.basemvp.base.mvp
 
 import com.basemvp.base.BaseActivity
+import com.basemvp.base.BaseFragment
 import com.basemvp.util.LogUtil
 import kotlinx.coroutines.*
 
@@ -34,7 +35,12 @@ abstract class BasePresenterImpl<V, M>(protected var view: V?, protected var mod
         crossinline bgAction: suspend () -> V,
         noinline uiAction: ((V) -> Unit)? = null
     ): Job {
-        val activity = view as? BaseActivity
+        val activity = if (view is BaseFragment) {
+            (view as BaseFragment).activity as? BaseActivity
+        } else {
+            view as? BaseActivity
+        }
+
         val job = launch {
             try {
                 activity?.showLoadDialog()
