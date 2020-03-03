@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".main.special_rc.scrollto_rc.ScrollToRCActivity">
 
-    <com.basemvp.view.SimpleTabLayout
+    <com.base.common.view.SimpleTabLayout
         android:id="@+id/simpleTabLayout"
         android:layout_width="0dp"
         android:layout_height="50dp"

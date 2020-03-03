@@ -1,7 +1,7 @@
 package com.basemvp.main.special_rc.damping_rc
 
 import com.basemvp.R
-import com.basemvp.util.AndroidUtil
+import com.base.common.util.AndroidUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.gyf.immersionbar.ImmersionBar

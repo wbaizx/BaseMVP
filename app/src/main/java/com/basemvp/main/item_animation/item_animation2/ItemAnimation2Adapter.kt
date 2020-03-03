@@ -3,7 +3,7 @@ package com.basemvp.main.item_animation.item_animation2
 import android.view.ViewGroup
 import android.widget.TextView
 import com.basemvp.R
-import com.basemvp.util.AndroidUtil
+import com.base.common.util.AndroidUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 

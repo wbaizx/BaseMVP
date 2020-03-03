@@ -1,7 +1,7 @@
 package com.basemvp.main.mvp_room
 
-import com.basemvp.base.mvp.BasePresenterImpl
-import com.basemvp.util.LogUtil
+import com.base.common.base.mvp.BasePresenterImpl
+import com.base.common.util.LogUtil
 import com.basemvp.util.room.User
 
 class MvpRoomPresenter(view: MvpRoomViewInterface?) :

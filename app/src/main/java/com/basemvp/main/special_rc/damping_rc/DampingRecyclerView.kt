@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView
-import com.basemvp.util.LogUtil
+import com.base.common.util.LogUtil
 
 class DampingRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(context, attrs) {
     private val TAG = "DampingRecyclerView"

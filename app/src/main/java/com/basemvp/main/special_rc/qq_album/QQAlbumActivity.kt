@@ -3,8 +3,8 @@ package com.basemvp.main.special_rc.qq_album
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
 import kotlinx.android.synthetic.main.activity_qqalbum.*
 
 /**

@@ -3,8 +3,8 @@ package com.basemvp.main.fragment_example
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
 import kotlinx.android.synthetic.main.activity_fragment_example.*
 
 @Route(path = RouteString.FRAGMENT_EXAMPLE, name = "Fragment展示汇总")

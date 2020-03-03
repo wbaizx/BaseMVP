@@ -3,8 +3,8 @@ package com.basemvp.main.item_animation.item_animation1
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
 import jp.wasabeef.recyclerview.animators.ScaleInAnimator
 import kotlinx.android.synthetic.main.activity_item_animation1.*
 

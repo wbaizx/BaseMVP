@@ -2,8 +2,8 @@ package com.basemvp.main.mvp_room
 
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
-import com.basemvp.base.mvp.BaseViewActivity
-import com.basemvp.config.RouteString
+import com.base.common.base.mvp.BaseViewActivity
+import com.base.common.config.RouteString
 import kotlinx.android.synthetic.main.activity_mvp_room.*
 
 @Route(path = RouteString.MVP_ROOM, name = "展示mvp + room用法", extras = RouteString.isNeedLogin)

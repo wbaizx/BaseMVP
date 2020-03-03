@@ -4,9 +4,9 @@ import android.graphics.*
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.basemvp.APP
+import com.base.common.APP
 import com.basemvp.R
-import com.basemvp.util.AndroidUtil
+import com.base.common.util.AndroidUtil
 
 class Coordinator1Decoration(private val adapter: Coordinator1Adapter) : RecyclerView.ItemDecoration() {
     /**

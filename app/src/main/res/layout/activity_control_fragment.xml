@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:text="重置" />
 
-    <com.basemvp.view.SimpleTabLayout
+    <com.base.common.view.SimpleTabLayout
         android:id="@+id/simpleTabLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp" />

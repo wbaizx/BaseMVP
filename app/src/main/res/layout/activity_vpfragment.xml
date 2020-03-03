@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".main.fragment_example.vp_fragment.VP2FragmentActivity">
 
-    <com.basemvp.view.SimpleTabLayout
+    <com.base.common.view.SimpleTabLayout
         android:id="@+id/simpleTabLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp" />

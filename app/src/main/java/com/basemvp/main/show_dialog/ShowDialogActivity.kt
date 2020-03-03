@@ -3,9 +3,9 @@ package com.basemvp.main.show_dialog
 import android.os.Bundle
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
-import com.basemvp.util.LogUtil
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
+import com.base.common.util.LogUtil
 import kotlinx.android.synthetic.main.activity_show_dialog.*
 
 @Route(path = RouteString.DIALOG, name = "展示FragmentDialog", extras = RouteString.isNeedLogin)

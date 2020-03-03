@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.basemvp.util.LogUtil
+import com.base.common.util.LogUtil
 import com.google.android.material.appbar.AppBarLayout
 
 class AppBarBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayout.Behavior(context, attrs) {

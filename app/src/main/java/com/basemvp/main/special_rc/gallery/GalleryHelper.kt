@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.basemvp.util.LogUtil
+import com.base.common.util.LogUtil
 import kotlin.math.abs
 
 class GalleryHelper(private var pageChangeListener: ((Int) -> Unit)? = null) {

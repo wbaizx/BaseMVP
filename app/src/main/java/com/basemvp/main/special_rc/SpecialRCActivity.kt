@@ -3,8 +3,8 @@ package com.basemvp.main.special_rc
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
 import kotlinx.android.synthetic.main.activity_special_rc.*
 
 @Route(path = RouteString.SPECIAL_RC, name = "各种特殊效果的recycleView效果展示汇总")

@@ -3,7 +3,7 @@ package com.basemvp.main.show_dialog
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.basemvp.R
-import com.basemvp.util.dialog.BaseFragmentDialog
+import com.base.common.util.dialog.BaseFragmentDialog
 import kotlinx.android.synthetic.main.test_dialog_view.*
 
 class DefaultDialog : BaseFragmentDialog {

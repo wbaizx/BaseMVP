@@ -6,7 +6,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import com.basemvp.R
-import com.basemvp.util.dialog.BaseFragmentDialog
+import com.base.common.util.dialog.BaseFragmentDialog
 import kotlinx.android.synthetic.main.test_dialog_view.*
 
 class BottomDialog : BaseFragmentDialog {

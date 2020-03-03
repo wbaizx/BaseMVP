@@ -6,9 +6,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
-import com.basemvp.util.LogUtil
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
+import com.base.common.util.LogUtil
 import com.google.android.material.appbar.AppBarLayout
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_coordinator1.*

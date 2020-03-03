@@ -3,8 +3,8 @@ package com.basemvp.main.item_animation
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.RouteString
+import com.base.common.base.BaseActivity
+import com.base.common.config.RouteString
 import kotlinx.android.synthetic.main.activity_item_animation_main.*
 
 @Route(path = RouteString.ITEM_ANIMATION, name = "item动画展示汇总")

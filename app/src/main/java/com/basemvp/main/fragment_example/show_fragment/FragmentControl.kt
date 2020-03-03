@@ -2,9 +2,9 @@ package com.basemvp.main.fragment_example.show_fragment
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import com.basemvp.test.fm.TestFragment
-import com.basemvp.test.fm.TestViewFragment
-import com.basemvp.util.LogUtil
+import com.base.common.test.fm.TestFragment
+import com.base.common.test.fm.TestViewFragment
+import com.base.common.util.LogUtil
 
 /**
  * 通过配合 setMaxLifecycle 控制生命周期

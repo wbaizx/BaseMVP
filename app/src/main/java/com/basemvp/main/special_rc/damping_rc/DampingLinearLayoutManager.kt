@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.basemvp.util.AndroidUtil
-import com.basemvp.util.LogUtil
+import com.base.common.util.AndroidUtil
+import com.base.common.util.LogUtil
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min

@@ -2,8 +2,8 @@ package com.basemvp.main.fragment_example.vp_fragment
 
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.basemvp.test.fm.TestFragment
-import com.basemvp.test.fm.TestViewFragment
+import com.base.common.test.fm.TestFragment
+import com.base.common.test.fm.TestViewFragment
 
 /**
  * FragmentStateAdapter内部本身就使用了 setMaxLifecycle 控制

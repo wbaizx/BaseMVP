@@ -7,7 +7,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.basemvp.util.AndroidUtil
+import com.base.common.util.AndroidUtil
 
 class ScrollToRCDecoration(private val adapter: ScrollToRCAdapter) : RecyclerView.ItemDecoration() {
     /**

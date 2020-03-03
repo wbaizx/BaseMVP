@@ -4,12 +4,12 @@ import android.Manifest
 import android.content.Intent
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.basemvp.APP
+import com.base.common.APP
+import com.base.common.base.BaseActivity
+import com.base.common.config.*
+import com.base.common.util.LogUtil
+import com.base.common.util.SharedPreferencesUtil
 import com.basemvp.R
-import com.basemvp.base.BaseActivity
-import com.basemvp.config.*
-import com.basemvp.util.LogUtil
-import com.basemvp.util.SharedPreferencesUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
