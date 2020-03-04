@@ -2,8 +2,8 @@ package com.basemvp.main.fragment_example.show_fragment
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import com.base.common.test.fm.TestFragment
-import com.base.common.test.fm.TestViewFragment
+import com.basemvp.main.fragment_example.fm.TestFragment
+import com.basemvp.main.fragment_example.fm.TestViewFragment
 import com.base.common.util.LogUtil
 
 /**

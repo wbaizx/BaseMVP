@@ -1,20 +1,22 @@
-package com.base.common.test.fm
+package com.basemvp.main.fragment_example.fm
 
 
 import android.os.Bundle
 import android.view.View
-import com.base.common.R
-import com.base.common.base.BaseFragment
+import com.base.common.base.mvp.BaseViewFragment
 import com.base.common.util.LogUtil
-import kotlinx.android.synthetic.main.fragment_test.*
+import com.basemvp.R
+import kotlinx.android.synthetic.main.fragment_test_v.*
 
 /**
  * 测试Fragment用例
  */
-class TestFragment(private val text: String) : BaseFragment() {
-    private val TAG = "TestFragment"
+class TestViewFragment(private val text: String) : BaseViewFragment<Any>() {
+    private val TAG = "TestViewFragment"
 
-    override fun getContentView() = R.layout.fragment_test
+    override fun initBasePresenter(): Any? = null
+
+    override fun getContentView() = R.layout.fragment_test_v
 
     override fun createView() {
         LogUtil.log(TAG, "createView  $text")

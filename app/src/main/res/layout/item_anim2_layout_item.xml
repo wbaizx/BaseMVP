@@ -3,7 +3,7 @@
     android:id="@+id/sceneText"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/base_dialog_shape"
+    android:background="@drawable/rounded_corners_shape"
     android:gravity="center"
     android:layout_margin="10dp"
     android:src="@mipmap/ic_launcher_round"

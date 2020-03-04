@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.base.common.test.fm.TestViewFragment">
+    tools:context=".main.fragment_example.fm.TestFragment">
 
     <TextView
         android:id="@+id/testText"
@@ -13,6 +13,5 @@
         android:text="1"
         android:textColor="@color/color_black"
         android:textSize="40sp" />
-
 
 </FrameLayout>

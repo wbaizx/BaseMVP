@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="130dp"
     android:layout_margin="10dp"
-    android:background="@drawable/base_dialog_shape"
+    android:background="@drawable/rounded_corners_shape"
     android:gravity="center"
     android:textColor="@color/color_white"
     android:textSize="23sp">
