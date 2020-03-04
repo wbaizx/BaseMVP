@@ -18,6 +18,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
+
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
     }
 
     buildTypes {
@@ -70,6 +76,8 @@ dependencies {
 
     //路由跳转(公共Module只中添加基础依赖)
     api 'com.alibaba:arouter-api:1.5.0'
+    //路由跳转(每个需要的Module中需分别添加处理器)
+    kapt 'com.alibaba:arouter-compiler:1.2.2'
 
     //room(公共Module中只添加基础依赖)
     api "androidx.room:room-runtime:2.2.4"

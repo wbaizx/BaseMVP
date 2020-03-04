@@ -8,7 +8,6 @@ import com.base.common.APP
 import com.base.common.base.BaseActivity
 import com.base.common.config.*
 import com.base.common.util.LogUtil
-import com.base.common.util.SharedPreferencesUtil
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -24,24 +23,25 @@ class MainActivity : BaseActivity() {
     override fun initView() {
         GlideApp.with(this).load(imgUrl).normalInto(mainImg)
 
+        login.setOnClickListener {
+            ARouter.getInstance().build(RouteString.LOGIN).normalNavigation()
+        }
+
         fragmentExample.setOnClickListener {
-            ARouter.getInstance().build(RouteString.FRAGMENT_EXAMPLE).navigation()
+            ARouter.getInstance().build(RouteString.FRAGMENT_EXAMPLE).normalNavigation()
         }
 
         coordinator.setOnClickListener {
-            ARouter.getInstance().build(RouteString.COORDINATOR).navigation()
+            ARouter.getInstance().build(RouteString.COORDINATOR).normalNavigation()
         }
 
         recyclerViewItemAnimation.setOnClickListener {
-            ARouter.getInstance().build(RouteString.ITEM_ANIMATION).navigation()
+            ARouter.getInstance().build(RouteString.ITEM_ANIMATION).normalNavigation()
         }
 
         specialRc.setOnClickListener {
-            ARouter.getInstance().build(RouteString.SPECIAL_RC).navigation()
+            ARouter.getInstance().build(RouteString.SPECIAL_RC).normalNavigation()
         }
-
-
-        SharedPreferencesUtil.putData(SharedPreferencesUtil.LOGIN, true)
 
         showDialog.setOnClickListener {
             ARouter.getInstance().build(RouteString.DIALOG).loginNavigation()

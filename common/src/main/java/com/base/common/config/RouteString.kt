@@ -24,6 +24,9 @@ object RouteString {
     const val GALLERY = "/app/recyclerViewGallery"
 
 
+    const val LOGIN = "/login/loginMain"
+
+
     const val isNeedLogin = 1
     const val isNeedLoginTag = "1"
 }
