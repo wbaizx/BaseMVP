@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.Environment
 import android.util.TypedValue
 import androidx.core.content.FileProvider
-import com.base.common.APP
+import com.base.common.BaseAPP
 import java.io.File
 
 object AndroidUtil {
@@ -20,25 +20,25 @@ object AndroidUtil {
      * 获取屏幕宽度
      */
     fun getScreenWidth(): Int {
-        return APP.appContext.resources.displayMetrics.widthPixels
+        return BaseAPP.baseAppContext.resources.displayMetrics.widthPixels
     }
 
     /**
      * 获取屏幕高度
      */
     fun getScreenHeight(): Int {
-        return APP.appContext.resources.displayMetrics.heightPixels
+        return BaseAPP.baseAppContext.resources.displayMetrics.heightPixels
     }
 
-    fun sp2px(f: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, f, APP.appContext.resources.displayMetrics)
+    fun sp2px(f: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, f, BaseAPP.baseAppContext.resources.displayMetrics)
 
-    fun dp2px(f: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, f, APP.appContext.resources.displayMetrics)
+    fun dp2px(f: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, f, BaseAPP.baseAppContext.resources.displayMetrics)
 
     /**
      * 获取手机网络连接状况
      */
     fun isNetworkAvailable(): Boolean {
-        val connectivityManager = APP.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+        val connectivityManager = BaseAPP.baseAppContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
         if (connectivityManager != null) {
             val activeNetwork = connectivityManager.activeNetwork
             if (activeNetwork != null) {
@@ -62,8 +62,8 @@ object AndroidUtil {
      * 获取当前版本号
      */
     fun getVersionCode(): Int {
-        val manager = APP.appContext.packageManager
-        val info = manager.getPackageInfo(APP.appContext.packageName, 0)
+        val manager = BaseAPP.baseAppContext.packageManager
+        val info = manager.getPackageInfo(BaseAPP.baseAppContext.packageName, 0)
         return info.versionCode
     }
 
@@ -71,7 +71,7 @@ object AndroidUtil {
      * 获取apk的版本号
      */
     fun getVersionCodeFromApk(filePath: String): Int {
-        val pm = APP.appContext.packageManager
+        val pm = BaseAPP.baseAppContext.packageManager
         val packInfo = pm.getPackageArchiveInfo(filePath, PackageManager.GET_ACTIVITIES)
         return packInfo!!.versionCode
     }
@@ -88,13 +88,13 @@ object AndroidUtil {
         val type = "application/vnd.android.package-archive"
         val uri: Uri
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            uri = FileProvider.getUriForFile(APP.appContext, APP.appContext.packageName + ".fileProvider", file)
+            uri = FileProvider.getUriForFile(BaseAPP.baseAppContext, BaseAPP.baseAppContext.packageName + ".fileProvider", file)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         } else {
             uri = Uri.fromFile(file)
         }
         intent.setDataAndType(uri, type)
-        APP.appContext.startActivity(intent)
+        BaseAPP.baseAppContext.startActivity(intent)
     }
 
     /**
@@ -105,7 +105,7 @@ object AndroidUtil {
         val path: String
 
         if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() && !Environment.isExternalStorageRemovable()) {
-            val externalFilesDir = APP.appContext.getExternalFilesDir(name)
+            val externalFilesDir = BaseAPP.baseAppContext.getExternalFilesDir(name)
             if (externalFilesDir != null) {
                 //外部文件存储，能看
                 path = externalFilesDir.absolutePath
@@ -115,7 +115,7 @@ object AndroidUtil {
         }
 
         //内部文件存储，不能看
-        path = APP.appContext.filesDir.absolutePath + File.separator + name
+        path = BaseAPP.baseAppContext.filesDir.absolutePath + File.separator + name
         LogUtil.log(TAG, "getDiskFilePath - $path")
         return path
     }

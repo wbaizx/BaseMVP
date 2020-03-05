@@ -6,11 +6,11 @@ import android.content.pm.ApplicationInfo
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.util.LogUtil
 
-class APP : Application() {
+open class BaseAPP : Application() {
     companion object {
-        private val TAG = "APP-Application"
+        private val TAG = "BaseAPP-Application"
 
-        lateinit var appContext: APP
+        lateinit var baseAppContext: BaseAPP
         private val allActivities = arrayListOf<Activity>()
 
         fun registerActivity(activity: Activity) {
@@ -32,15 +32,15 @@ class APP : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appContext = this
+        baseAppContext = this
         if (isDebug()) {
             LogUtil.log(TAG, "isDebug")
             ARouter.openLog()
             ARouter.openDebug()
         }
-        ARouter.init(appContext)
+        ARouter.init(baseAppContext)
     }
 
     fun isDebug() =
-        appContext.applicationInfo != null && appContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+        baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
 }

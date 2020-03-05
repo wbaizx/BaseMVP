@@ -53,5 +53,10 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.4"
 
     implementation project(path: ':common')
-    implementation project(path: ':login')
+
+    //配置某个组件是否可以独立运行
+    if (!isLoginRunAlone.toBoolean()){
+        implementation project(path: ':login')
+    }
+
 }

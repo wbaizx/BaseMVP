@@ -4,7 +4,7 @@ import android.graphics.*
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.base.common.APP
+import com.base.common.BaseAPP
 import com.basemvp.R
 import com.base.common.util.AndroidUtil
 
@@ -113,7 +113,7 @@ class Coordinator1Decoration(private val adapter: Coordinator1Adapter) : Recycle
 
     private val textLabelColor = Color.parseColor("#5CC1FF")
     private val icon =
-        BitmapFactory.decodeResource(APP.appContext.resources, R.mipmap.bill_details_main_item_line_icon)
+        BitmapFactory.decodeResource(BaseAPP.baseAppContext.resources, R.mipmap.bill_details_main_item_line_icon)
     //粗体文字
     private val BOLD = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     //普通文字

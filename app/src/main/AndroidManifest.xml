@@ -8,7 +8,7 @@
     2. 添加usesCleartextTraffic属性
     -->
     <application
-        android:name="com.base.common.APP"
+        android:name="com.base.common.BaseAPP"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="MVP总结工具集合"

@@ -4,7 +4,7 @@ import android.Manifest
 import android.content.Intent
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.base.common.APP
+import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
 import com.base.common.config.*
 import com.base.common.util.LogUtil
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity() {
 
 
         exit.setOnClickListener {
-            APP.exitApp()
+            BaseAPP.exitApp()
         }
     }
 

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.base.common.APP
+import com.base.common.BaseAPP
 import com.base.common.R
 import com.base.common.util.LogUtil
 import com.gyf.immersionbar.ImmersionBar
@@ -22,7 +22,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        APP.registerActivity(this)
+        BaseAPP.registerActivity(this)
 
         configure()
 
@@ -56,7 +56,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     override fun onDestroy() {
         super.onDestroy()
-        APP.unregisterActivity(this)
+        BaseAPP.unregisterActivity(this)
     }
 
     /**

@@ -1,4 +1,9 @@
-apply plugin: 'com.android.library'
+//配置某个组件是否可以独立运行
+if (isLoginRunAlone.toBoolean()){
+    apply plugin: 'com.android.application'
+}else{
+    apply plugin: 'com.android.library'
+}
 
 apply plugin: 'kotlin-android'
 
@@ -12,6 +17,10 @@ android {
 
 
     defaultConfig {
+        //配置某个组件是否可以独立运行
+        if (isLoginRunAlone.toBoolean()){
+            applicationId "com.login"
+        }
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
@@ -27,11 +36,27 @@ android {
         }
     }
 
+    //配置某个组件是否可以独立运行
+    sourceSets{
+        main{
+            if (isLoginRunAlone.toBoolean()){
+                manifest.srcFile 'src/main/alone/AndroidManifest.xml'
+            }else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
