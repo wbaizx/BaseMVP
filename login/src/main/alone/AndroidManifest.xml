@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.login">
 
+    <!--   配置某个组件是否可以独立运行
+    android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
+    解决办法:
+    1. 将http请求改为https请求
+    2. 添加usesCleartextTraffic属性
+    -->
     <application
         android:name=".debug.LoginAPP"
         android:allowBackup="true"
@@ -12,7 +18,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".LoginActivity">
+        <activity android:name=".home.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

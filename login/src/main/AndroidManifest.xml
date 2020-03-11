@@ -3,7 +3,7 @@
     package="com.login">
 
     <application>
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".home.LoginActivity"></activity>
     </application>
 
 </manifest>

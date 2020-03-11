@@ -3,12 +3,17 @@ package com.base.common.util
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.TypedValue
+import android.view.View
+import android.widget.ImageView
 import androidx.core.content.FileProvider
 import com.base.common.BaseAPP
 import java.io.File
@@ -30,9 +35,11 @@ object AndroidUtil {
         return BaseAPP.baseAppContext.resources.displayMetrics.heightPixels
     }
 
-    fun sp2px(f: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, f, BaseAPP.baseAppContext.resources.displayMetrics)
+    fun sp2px(f: Float) =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, f, BaseAPP.baseAppContext.resources.displayMetrics)
 
-    fun dp2px(f: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, f, BaseAPP.baseAppContext.resources.displayMetrics)
+    fun dp2px(f: Float) =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, f, BaseAPP.baseAppContext.resources.displayMetrics)
 
     /**
      * 获取手机网络连接状况
@@ -128,4 +135,25 @@ object AndroidUtil {
 //    fun getSDcardFilePath(name: String): String {
 //        return Environment.getExternalStorageDirectory().absolutePath + File.separator + name
 //    }
+
+    /**
+     * 将view转换成bitmap
+     */
+    fun createBitmapFromView(view: View): Bitmap {
+        //是ImageView直接获取
+        if (view is ImageView) {
+            val drawable = view.drawable
+            if (drawable is BitmapDrawable) {
+                return drawable.bitmap
+            }
+        }
+        view.clearFocus()
+        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        if (bitmap != null) {
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+            canvas.setBitmap(null)
+        }
+        return bitmap
+    }
 }
