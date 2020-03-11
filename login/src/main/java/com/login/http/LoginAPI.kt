@@ -15,7 +15,9 @@ interface LoginAPI {
 //    @Query
 //    @Url
 //    @Path
-//    @Streaming
+//    @Streaming  //如果okhttp使用了拦截器，则下载不会实时回调
+//    @Header
+
 //    ResponseBody
 
     @GET("mock/5e6208aeb261f976d93ed585/example/aaaa")

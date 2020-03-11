@@ -74,6 +74,7 @@ object BaseHttp {
     })
 
 
+    //如果okhttp使用了拦截器，则下载不会实时回调
     private val client by lazy {
         LogUtil.log("BaseHttp", "client")
         val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "BaseHttpCache")
