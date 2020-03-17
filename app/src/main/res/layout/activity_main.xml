@@ -25,6 +25,17 @@
     </androidx.cardview.widget.CardView>
 
     <Button
+        android:id="@+id/saveImg"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="存图"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintEnd_toStartOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cardView" />
+
+    <Button
         android:id="@+id/login"
         android:layout_width="100dp"
         android:layout_height="50dp"

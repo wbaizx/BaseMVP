@@ -1,4 +1,4 @@
-//配置某个组件是否可以独立运行
+//配置Login组件是否可以独立运行
 if (isLoginRunAlone.toBoolean()){
     apply plugin: 'com.android.application'
 }else{
@@ -17,7 +17,7 @@ android {
 
 
     defaultConfig {
-        //配置某个组件是否可以独立运行
+        //配置Login组件是否可以独立运行
         if (isLoginRunAlone.toBoolean()){
             applicationId "com.login"
         }
@@ -36,7 +36,7 @@ android {
         }
     }
 
-    //配置某个组件是否可以独立运行
+    //配置Login组件是否可以独立运行
     sourceSets{
         main{
             if (isLoginRunAlone.toBoolean()){

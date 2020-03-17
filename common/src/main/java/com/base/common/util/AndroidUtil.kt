@@ -3,17 +3,13 @@ package com.base.common.util
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.util.TypedValue
-import android.view.View
-import android.widget.ImageView
+import android.view.Gravity
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.base.common.BaseAPP
 import java.io.File
@@ -104,56 +100,9 @@ object AndroidUtil {
         BaseAPP.baseAppContext.startActivity(intent)
     }
 
-    /**
-     * 跟随app的文件存储
-     * 不需要动态权限
-     */
-    fun getDiskFilePath(name: String): String {
-        val path: String
-
-        if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() && !Environment.isExternalStorageRemovable()) {
-            val externalFilesDir = BaseAPP.baseAppContext.getExternalFilesDir(name)
-            if (externalFilesDir != null) {
-                //外部文件存储，能看
-                path = externalFilesDir.absolutePath
-                LogUtil.log(TAG, "getDiskFilePath - $path")
-                return path
-            }
-        }
-
-        //内部文件存储，不能看
-        path = BaseAPP.baseAppContext.filesDir.absolutePath + File.separator + name
-        LogUtil.log(TAG, "getDiskFilePath - $path")
-        return path
-    }
-
-    /**
-     * 文件存储
-     * 卸载不会删除，能看(过时了)
-     * 需要动态权限
-     */
-//    fun getSDcardFilePath(name: String): String {
-//        return Environment.getExternalStorageDirectory().absolutePath + File.separator + name
-//    }
-
-    /**
-     * 将view转换成bitmap
-     */
-    fun createBitmapFromView(view: View): Bitmap {
-        //是ImageView直接获取
-        if (view is ImageView) {
-            val drawable = view.drawable
-            if (drawable is BitmapDrawable) {
-                return drawable.bitmap
-            }
-        }
-        view.clearFocus()
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        if (bitmap != null) {
-            val canvas = Canvas(bitmap)
-            view.draw(canvas)
-            canvas.setBitmap(null)
-        }
-        return bitmap
+    fun showToast(msg: String) {
+        val toast = Toast.makeText(BaseAPP.baseAppContext, msg, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER, 0, 0)
+        toast.show()
     }
 }

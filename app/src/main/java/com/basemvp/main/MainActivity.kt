@@ -7,9 +7,15 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
 import com.base.common.config.*
+import com.base.common.util.AndroidUtil
+import com.base.common.util.ImageUtil
 import com.base.common.util.LogUtil
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -22,6 +28,18 @@ class MainActivity : BaseActivity() {
 
     override fun initView() {
         GlideApp.with(this).load(imgUrl).normalInto(mainImg)
+
+        saveImg.setOnClickListener {
+            GlobalScope.launch(Dispatchers.IO) {
+                val bitmap = ImageUtil.createBitmapFromView(mainImg)
+                val file = ImageUtil.savePicture(bitmap)
+                if (ImageUtil.updateGallery(file)) {
+                    withContext(Dispatchers.Main) {
+                        AndroidUtil.showToast("保存成功")
+                    }
+                }
+            }
+        }
 
         login.setOnClickListener {
             ARouter.getInstance().build(RouteString.LOGIN).normalNavigation()
@@ -71,7 +89,7 @@ class MainActivity : BaseActivity() {
             LogUtil.log(TAG, "hasPermissions")
         } else {
             EasyPermissions.requestPermissions(
-                this, "为什么拒绝",
+                this, "为了正常使用，需要获取以下权限",
                 666, Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         }

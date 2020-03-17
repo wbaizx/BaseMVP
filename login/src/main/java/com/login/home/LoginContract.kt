@@ -2,16 +2,20 @@ package com.login.home
 
 import com.login.home.bean.LoginBean
 import kotlinx.coroutines.Job
+import okhttp3.ResponseBody
 
 
 interface LoginViewInterface {
-    fun loginSuccess(bean: LoginBean?)
+    fun loginSuccessBean(bean: LoginBean)
+    fun loginSuccessResponseBody(responseBody: ResponseBody)
 }
 
 interface LoginPresenterInterface {
-    fun login(): Job
+    fun loginBean(): Job
+    fun loginResponseBody(): Job
 }
 
 interface LoginModelInterface {
-    suspend fun login(): LoginBean
+    suspend fun loginBean(): LoginBean
+    suspend fun loginResponseBody(): ResponseBody
 }

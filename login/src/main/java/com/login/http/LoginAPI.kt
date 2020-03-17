@@ -1,7 +1,8 @@
 package com.login.http
 
 import com.login.home.bean.LoginBean
-import retrofit2.http.*
+import okhttp3.ResponseBody
+import retrofit2.http.GET
 
 interface LoginAPI {
 //    如果同时携带String或json类型数据（Date也是String型），需要使用RequestBody包装，例如
@@ -21,5 +22,8 @@ interface LoginAPI {
 //    ResponseBody
 
     @GET("mock/5e6208aeb261f976d93ed585/example/aaaa")
-    suspend fun login(): LoginBean
+    suspend fun loginBean(): LoginBean
+
+    @GET("http://www.baidu.com/")
+    suspend fun loginResponseBody(): ResponseBody
 }

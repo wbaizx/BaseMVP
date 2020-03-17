@@ -8,6 +8,7 @@ import com.base.common.util.LogUtil
 import com.login.R
 import com.login.home.bean.LoginBean
 import kotlinx.android.synthetic.main.fragment_login.*
+import okhttp3.ResponseBody
 
 class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInterface {
     private val TAG = "LoginFragment"
@@ -24,7 +25,8 @@ class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInte
         LogUtil.log(TAG, "onFristVisible")
         GlideApp.with(this).load(imgUrl).normalInto(loginImg)
         loginBtn.setOnClickListener {
-            presenter?.login()
+            //            presenter?.loginBean()
+            presenter?.loginResponseBody()
         }
     }
 
@@ -36,8 +38,13 @@ class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInte
         LogUtil.log(TAG, "onHide")
     }
 
-    override fun loginSuccess(bean: LoginBean?) {
-        LogUtil.log(TAG, "loginSuccess -- ${bean?.data?.id}")
+    override fun loginSuccessBean(bean: LoginBean) {
+        LogUtil.log(TAG, "loginSuccessBean -- ${bean.data.id}")
+        (activity as? LoginActivity)?.loginSuccess()
+    }
+
+    override fun loginSuccessResponseBody(responseBody: ResponseBody) {
+        LogUtil.log(TAG, "loginSuccessResponseBody -- ${responseBody.string()}")
         (activity as? LoginActivity)?.loginSuccess()
     }
 }

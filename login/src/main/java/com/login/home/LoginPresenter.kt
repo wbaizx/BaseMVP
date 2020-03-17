@@ -7,6 +7,13 @@ class LoginPresenter(view: LoginViewInterface?) :
     LoginPresenterInterface {
     private val TAG = "LoginPresenter"
 
-    override fun login() = launchTaskDialog({ model?.login() }, { view?.loginSuccess(it) })
+    override fun loginBean() = launchTaskDialog({ model.loginBean() }, { view?.loginSuccessBean(it) })
+
+    override fun loginResponseBody() = launchTaskDialog({
+        //        val async = async {
+        model.loginResponseBody()
+//        }
+//        async.await()
+    }, { view?.loginSuccessResponseBody(it) })
 
 }
