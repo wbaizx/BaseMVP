@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.R
 import com.base.common.util.LogUtil
@@ -92,10 +90,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             LogUtil.log(TAG, "hideLoadDialog")
             loadDialog.dismiss()
         }
-    }
-
-    fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     /**

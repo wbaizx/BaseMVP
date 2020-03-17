@@ -4,6 +4,6 @@ import android.util.Log
 
 object LogUtil {
     fun log(tag: String, any: Any?) {
-        Log.e(tag, "name=${Thread.currentThread().name} ---- ${any.toString()}")
+        Log.e(tag, "name=${Thread.currentThread().name} -> ${any.toString()}")
     }
 }

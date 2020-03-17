@@ -25,7 +25,7 @@ class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInte
         LogUtil.log(TAG, "onFristVisible")
         GlideApp.with(this).load(imgUrl).normalInto(loginImg)
         loginBtn.setOnClickListener {
-            //            presenter?.loginBean()
+//            presenter?.loginBean()
             presenter?.loginResponseBody()
         }
     }
