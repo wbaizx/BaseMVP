@@ -13,7 +13,7 @@ class LoginPresenter(view: LoginViewInterface?) :
 
     override fun loginResponseBody() = runTaskDialog({
         val async1 = async(Dispatchers.IO) {
-            model.loginBean()
+            model.loginResponseBody()
         }
         val async2 = async(Dispatchers.IO) {
             model.loginResponseBody()

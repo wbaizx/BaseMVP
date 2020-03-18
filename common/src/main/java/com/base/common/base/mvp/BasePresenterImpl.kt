@@ -4,6 +4,7 @@ import com.base.common.base.BaseActivity
 import com.base.common.base.BaseFragment
 import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
+import com.base.common.util.http.NoNetworkException
 import com.google.gson.stream.MalformedJsonException
 import kotlinx.coroutines.*
 import java.net.SocketTimeoutException
@@ -21,9 +22,9 @@ import java.net.UnknownHostException
  */
 abstract class BasePresenterImpl<V, M>(protected var view: V?, protected var model: M) : CoroutineScope by MainScope() {
 
-    protected inline fun <V> runTask(
-        crossinline bgAction: suspend () -> V,
-        noinline uiAction: ((V) -> Unit)? = null
+    protected inline fun <T> runTask(
+        crossinline bgAction: suspend () -> T,
+        noinline uiAction: ((T) -> Unit)? = null
     ): Job {
         val job = launch {
             try {
@@ -37,9 +38,9 @@ abstract class BasePresenterImpl<V, M>(protected var view: V?, protected var mod
         return job
     }
 
-    protected inline fun <V> runTaskDialog(
-        crossinline bgAction: suspend () -> V,
-        noinline uiAction: ((V) -> Unit)? = null
+    protected inline fun <T> runTaskDialog(
+        crossinline bgAction: suspend () -> T,
+        noinline uiAction: ((T) -> Unit)? = null
     ): Job {
         val job = launch {
             val activity = getBaseActivity()
@@ -76,6 +77,7 @@ abstract class BasePresenterImpl<V, M>(protected var view: V?, protected var mod
         when (e) {
             is SocketTimeoutException -> AndroidUtil.showToast("连接超时")
             is UnknownHostException -> AndroidUtil.showToast("网络错误")
+            is NoNetworkException -> AndroidUtil.showToast("无网络")
             is MalformedJsonException -> AndroidUtil.showToast("json解析错误")
             is CancellationException -> LogUtil.log("BasePresenterImpl", "errorMessage 协程被取消")
             else -> AndroidUtil.showToast("未知错误")
