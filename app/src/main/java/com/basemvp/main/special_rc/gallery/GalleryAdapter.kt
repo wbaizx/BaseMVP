@@ -11,8 +11,8 @@ class GalleryAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_ga
         }
     }
 
-    override fun convert(helper: BaseViewHolder, item: String?) {
-        helper.setText(R.id.item_text, "$item --  ${helper.adapterPosition - getHeaderLayoutCount()}")
+    override fun convert(helper: BaseViewHolder, item: String) {
+        helper.setText(R.id.item_text, "$item --  ${helper.adapterPosition - headerLayoutCount}")
     }
 
 }

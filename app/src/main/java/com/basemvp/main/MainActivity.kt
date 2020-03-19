@@ -69,6 +69,10 @@ class MainActivity : BaseActivity() {
             ARouter.getInstance().build(RouteString.MVP_ROOM).loginNavigation()
         }
 
+        camera.setOnClickListener {
+            ARouter.getInstance().build(RouteString.CAMERA_HOME).loginNavigation()
+        }
+
 
         exit.setOnClickListener {
             BaseAPP.exitApp()

@@ -1,7 +1,7 @@
-//配置Login组件是否可以独立运行
-if (isLoginRunAlone.toBoolean()){
+//配置Camera组件是否可以独立运行
+if (isCameraRunAlone.toBoolean()) {
     apply plugin: 'com.android.application'
-}else{
+} else {
     apply plugin: 'com.android.library'
 }
 
@@ -17,9 +17,9 @@ android {
 
 
     defaultConfig {
-        //配置Login组件是否可以独立运行
-        if (isLoginRunAlone.toBoolean()){
-            applicationId "com.login"
+        //配置Camera组件是否可以独立运行
+        if (isCameraRunAlone.toBoolean()) {
+            applicationId "com.camear"
         }
         minSdkVersion 23
         targetSdkVersion 29
@@ -36,12 +36,12 @@ android {
         }
     }
 
-    //配置Login组件是否可以独立运行
-    sourceSets{
-        main{
-            if (isLoginRunAlone.toBoolean()){
+    //配置Camera组件是否可以独立运行
+    sourceSets {
+        main {
+            if (isCameraRunAlone.toBoolean()) {
                 manifest.srcFile 'src/main/alone/AndroidManifest.xml'
-            }else {
+            } else {
                 manifest.srcFile 'src/main/AndroidManifest.xml'
             }
         }

@@ -38,6 +38,6 @@ class QQAlbumAdapter : BaseDelegateMultiAdapter<String, BaseViewHolder>() {
         }
     }
 
-    override fun convert(helper: BaseViewHolder, item: String?) {
+    override fun convert(helper: BaseViewHolder, item: String) {
     }
 }

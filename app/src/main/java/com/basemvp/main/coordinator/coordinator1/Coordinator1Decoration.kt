@@ -39,7 +39,7 @@ class Coordinator1Decoration(private val adapter: Coordinator1Adapter) : Recycle
         super.getItemOffsets(outRect, view, parent, state)
         val position = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
         //判断是否是列表数据，需要考虑头尾部
-        if (position > (-1 + adapter.getHeaderLayoutCount()) && position < adapter.data.size + adapter.getHeaderLayoutCount()) {
+        if (position > (-1 + adapter.headerLayoutCount) && position < adapter.data.size + adapter.headerLayoutCount) {
             outRect.set(0, titleHeight, 0, 0)
         }
     }
@@ -56,8 +56,8 @@ class Coordinator1Decoration(private val adapter: Coordinator1Adapter) : Recycle
             val top = child.top.toFloat() - params.topMargin - titleHeight
             val bottom = top + titleHeight
             //判断是否是列表数据，需要考虑头尾部
-            if (position > (-1 + adapter.getHeaderLayoutCount()) && position < adapter.data.size + adapter.getHeaderLayoutCount()) {
-                drawTitleArea(c, left, right, top, bottom, position - adapter.getHeaderLayoutCount(), bgColor)
+            if (position > (-1 + adapter.headerLayoutCount) && position < adapter.data.size + adapter.headerLayoutCount) {
+                drawTitleArea(c, left, right, top, bottom, position - adapter.headerLayoutCount, bgColor)
             }
         }
     }
@@ -66,7 +66,7 @@ class Coordinator1Decoration(private val adapter: Coordinator1Adapter) : Recycle
         super.onDrawOver(c, parent, state)
         val position = (parent.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         //判断是否是列表数据，需要考虑头尾部
-        if (position > (-1 + adapter.getHeaderLayoutCount()) && position < adapter.data.size + adapter.getHeaderLayoutCount()) {
+        if (position > (-1 + adapter.headerLayoutCount) && position < adapter.data.size + adapter.headerLayoutCount) {
             //child = parent.getChildAt(i) 有时候child为空
             val child = parent.findViewHolderForLayoutPosition(position)?.itemView
             if (child != null) {
@@ -92,7 +92,7 @@ class Coordinator1Decoration(private val adapter: Coordinator1Adapter) : Recycle
                 val right = parent.width - parent.paddingRight.toFloat()
                 val top = parent.paddingTop.toFloat()
                 val bottom = top + titleHeight
-                drawTitleArea(c, left, right, top, bottom, position - adapter.getHeaderLayoutCount(), bgColor2)
+                drawTitleArea(c, left, right, top, bottom, position - adapter.headerLayoutCount, bgColor2)
 
                 if (flag) {
                     c.restore()//恢复画布到之前保存的状态

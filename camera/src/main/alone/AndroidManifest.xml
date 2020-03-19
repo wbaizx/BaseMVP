@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.login">
+    package="com.camera">
 
-    <!--   配置Login组件是否可以独立运行
+    <!--   配置Camera组件是否可以独立运行
     android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
     解决办法:
     1. 将http请求改为https请求
     2. 添加usesCleartextTraffic属性
     -->
     <application
-        android:name=".debug.LoginAPP"
+        android:name=".debug.CameraAPP"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
-        android:label="MVP登录模块"
+        android:label="MVPCamera模块"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".home.LoginActivity">
+        <activity android:name=".home.CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 

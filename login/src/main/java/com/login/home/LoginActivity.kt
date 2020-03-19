@@ -9,6 +9,7 @@ import com.base.common.config.GOTO_MAIN
 import com.base.common.config.RouteString
 import com.base.common.config.normalNavigation
 import com.base.common.util.LogUtil
+import com.base.common.util.SharedPreferencesUtil
 import com.login.R
 
 @Route(path = RouteString.LOGIN, name = "组件化登录模块首页", extras = -1)
@@ -23,7 +24,7 @@ class LoginActivity : BaseActivity() {
 
     override fun initView() {
         ARouter.getInstance().inject(this)
-//        isGotoMain = intent.getBooleanExtra(GOTO_MAIN, false)
+        isGotoMain = intent.getBooleanExtra(GOTO_MAIN, false)
         LogUtil.log(TAG, "isGotoMain $isGotoMain")
 
         val loginFragment = LoginFragment()
@@ -37,6 +38,7 @@ class LoginActivity : BaseActivity() {
     }
 
     fun loginSuccess() {
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.LOGIN, true)
         if (isGotoMain) {
             ARouter.getInstance().build(RouteString.MAIN).normalNavigation { finish() }
         } else {

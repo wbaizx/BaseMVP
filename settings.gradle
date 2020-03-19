@@ -1,2 +1,2 @@
-include ':app', ':common', ':login'
+include ':app', ':common', ':login', ':camera'
 rootProject.name='BaseMVP'

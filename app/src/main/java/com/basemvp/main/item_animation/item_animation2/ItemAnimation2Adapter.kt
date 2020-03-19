@@ -16,7 +16,7 @@ class ItemAnimation2Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.
         }
     }
 
-    override fun convert(helper: BaseViewHolder, item: String?) {
+    override fun convert(helper: BaseViewHolder, item: String) {
         val view = helper.getView<TextView>(R.id.sceneText)
         view.text = item
         if (isLine) {

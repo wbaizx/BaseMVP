@@ -59,4 +59,9 @@ dependencies {
         implementation project(path: ':login')
     }
 
+    //配置Camera组件是否可以独立运行
+    if (!isCameraRunAlone.toBoolean()){
+        implementation project(path: ':camera')
+    }
+
 }

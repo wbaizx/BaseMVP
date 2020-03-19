@@ -52,8 +52,8 @@ dependencies {
     //design 不稳定版本
     api 'com.google.android.material:material:1.2.0-alpha03'
 
-    //adapter 不稳定版本
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta6'
+    //adapter
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.1'
 
     //权限
     api 'pub.devrel:easypermissions:3.0.0'
