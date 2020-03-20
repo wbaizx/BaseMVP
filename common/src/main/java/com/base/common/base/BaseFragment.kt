@@ -39,7 +39,7 @@ abstract class BaseFragment : Fragment() {
         super.onResume()
         if (!isLoad) {
             isLoad = true
-            onFristVisible()
+            onFirstVisible()
         } else {
             onVisible()
         }
@@ -67,7 +67,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * Fragment第一次可见时调用，如果不是必须的初始化操作可以放在这里，避免多个fragment同时加载资源
      */
-    protected abstract fun onFristVisible()
+    protected abstract fun onFirstVisible()
 
     /**
      * Fragment每次可见时调用（第一次不调用）

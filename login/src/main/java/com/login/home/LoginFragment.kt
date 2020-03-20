@@ -21,8 +21,8 @@ class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInte
         LogUtil.log(TAG, "createView")
     }
 
-    override fun onFristVisible() {
-        LogUtil.log(TAG, "onFristVisible")
+    override fun onFirstVisible() {
+        LogUtil.log(TAG, "onFirstVisible")
         GlideApp.with(this).load(imgUrl).normalInto(loginImg)
         loginBtn.setOnClickListener {
 //            presenter?.loginBean()

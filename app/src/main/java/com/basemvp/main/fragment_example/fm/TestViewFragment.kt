@@ -23,8 +23,8 @@ class TestViewFragment(private val text: String) : BaseViewFragment<Any>() {
         testText.text = text
     }
 
-    override fun onFristVisible() {
-        LogUtil.log(TAG, "onFristVisible  $text")
+    override fun onFirstVisible() {
+        LogUtil.log(TAG, "onFirstVisible  $text")
     }
 
     override fun onVisible() {

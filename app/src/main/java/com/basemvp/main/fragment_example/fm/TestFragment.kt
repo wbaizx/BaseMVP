@@ -21,8 +21,8 @@ class TestFragment(private val text: String) : BaseFragment() {
         testText.text = text
     }
 
-    override fun onFristVisible() {
-        LogUtil.log(TAG, "onFristVisible  $text")
+    override fun onFirstVisible() {
+        LogUtil.log(TAG, "onFirstVisible  $text")
     }
 
     override fun onVisible() {

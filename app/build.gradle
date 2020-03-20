@@ -50,7 +50,7 @@ dependencies {
     kapt 'com.alibaba:arouter-compiler:1.2.2'
 
     //room(每个需要的Module中需分别添加处理器)
-    kapt "androidx.room:room-compiler:2.2.4"
+    kapt "androidx.room:room-compiler:2.2.5"
 
     implementation project(path: ':common')
 

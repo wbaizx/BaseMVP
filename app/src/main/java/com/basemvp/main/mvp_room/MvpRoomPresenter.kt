@@ -9,7 +9,7 @@ class MvpRoomPresenter(view: MvpRoomViewInterface?) :
     private val TAG = "MvpRoomPresenter"
 
     override fun saveData() {
-        runTaskDialog({ model.insertUsers(User(1, "p", 2)) }, {
+        runTaskDialog({ model.insertUsers(User(2, "o", 3)) }, {
             LogUtil.log(TAG, it)
         })
     }
