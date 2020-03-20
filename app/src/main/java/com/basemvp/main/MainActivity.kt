@@ -20,6 +20,8 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
+private const val STORAGE_PERMISSION_CODE = 666
+
 @Route(path = RouteString.MAIN, name = "功能选择页")
 class MainActivity : BaseActivity() {
     private val TAG = "MainActivity"
@@ -87,14 +89,14 @@ class MainActivity : BaseActivity() {
     /**
      * 添加 AfterPermissionGranted 注解，在所有权限申请成功后会再次调用此方法，手动打开除外
      */
-    @AfterPermissionGranted(666)
+    @AfterPermissionGranted(STORAGE_PERMISSION_CODE)
     private fun getPermissions() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             LogUtil.log(TAG, "hasPermissions")
         } else {
             EasyPermissions.requestPermissions(
                 this, "为了正常使用，需要获取以下权限",
-                666, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                STORAGE_PERMISSION_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         }
     }

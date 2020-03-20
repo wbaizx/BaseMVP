@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.camera_opengl">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application>
         <activity android:name=".home.CameraActivity"></activity>
     </application>

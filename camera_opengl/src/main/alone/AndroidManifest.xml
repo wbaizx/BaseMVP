@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.camera_opengl">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <!--   配置Camera组件是否可以独立运行
     android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
     解决办法:
