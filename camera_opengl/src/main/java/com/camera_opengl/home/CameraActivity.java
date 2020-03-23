@@ -2,6 +2,10 @@ package com.camera_opengl.home;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.SurfaceTexture;
+import android.view.TextureView;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
@@ -10,6 +14,8 @@ import com.base.common.base.BaseActivity;
 import com.base.common.config.RouteString;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,14 +30,37 @@ public class CameraActivity extends BaseActivity {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;
 
+    private boolean hasPermissions = false;
+    private AutoFitTextureView autoFitTextureView;
+    private CameraControl cameraControl;
+
+    private Button switchCamera;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_camera;
     }
 
     @Override
+    protected void setImmersionBar() {
+        ImmersionBar.with(this).hideBar(BarHide.FLAG_HIDE_BAR).init();
+    }
+
+    @Override
     protected void initView() {
+        switchCamera = findViewById(R.id.switchCamera);
+
+        autoFitTextureView = findViewById(R.id.autoFitTextureView);
+        autoFitTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+        cameraControl = new CameraControl(this, autoFitTextureView);
         getPermissions();
+
+        switchCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraControl.switchCamera();
+            }
+        });
     }
 
     /**
@@ -41,6 +70,7 @@ public class CameraActivity extends BaseActivity {
     private void getPermissions() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
             LogUtil.INSTANCE.log(TAG, "hasPermissions");
+            begin();
         } else {
             EasyPermissions.requestPermissions(
                     this, "为了正常使用，需要获取以下权限",
@@ -68,12 +98,77 @@ public class CameraActivity extends BaseActivity {
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
                 finish();
+            } else {
+                begin();
+            }
+        }
+    }
+
+    private TextureView.SurfaceTextureListener mSurfaceTextureListener
+            = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+            LogUtil.INSTANCE.log(TAG, "onSurfaceTextureAvailable");
+            if (hasPermissions) {
+                cameraControl.setPreviewSize(width, height);
+                cameraControl.openCamera();
+            }
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+            LogUtil.INSTANCE.log(TAG, "onSurfaceTextureSizeChanged");
+            cameraControl.configureTransform(width, height);
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            LogUtil.INSTANCE.log(TAG, "onSurfaceTextureDestroyed");
+            return true;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+        }
+    };
+
+    private void begin() {
+        hasPermissions = true;
+        LogUtil.INSTANCE.log(TAG, "begin");
+    }
+
+    @Override
+    protected void initData() {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogUtil.INSTANCE.log(TAG, "onResume");
+        if (hasPermissions) {
+            cameraControl.startBackgroundThread();
+            if (autoFitTextureView.isAvailable()) {
+                cameraControl.setPreviewSize(autoFitTextureView.getWidth(), autoFitTextureView.getHeight());
+                cameraControl.openCamera();
             }
         }
     }
 
     @Override
-    protected void initData() {
+    protected void onPause() {
+        super.onPause();
+        LogUtil.INSTANCE.log(TAG, "onPause");
+        if (hasPermissions) {
+            cameraControl.closeCamera();
+            cameraControl.stopBackgroundThread();
+        }
+    }
 
+    @Override
+    protected void onDestroy() {
+        LogUtil.INSTANCE.log(TAG, "onDestroy");
+        cameraControl.destroy();
+        super.onDestroy();
     }
 }

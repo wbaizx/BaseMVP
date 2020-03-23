@@ -5,7 +5,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
-        <activity android:name=".home.CameraActivity"></activity>
+        <activity
+            android:name=".home.CameraActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
