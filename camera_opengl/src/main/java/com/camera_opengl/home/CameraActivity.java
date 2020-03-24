@@ -1,11 +1,10 @@
 package com.camera_opengl.home;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
-import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
@@ -14,6 +13,8 @@ import com.base.common.base.BaseActivity;
 import com.base.common.config.RouteString;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
+import com.camera_opengl.home.gl.CameraGLSurfaceView;
+import com.camera_opengl.home.gl.SurfaceTextureListener;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -31,11 +32,10 @@ public class CameraActivity extends BaseActivity {
     private final int CAMERA_PERMISSION_CODE = 666;
 
     private boolean hasPermissions = false;
-    private AutoFitTextureView autoFitTextureView;
+    private boolean isResume = false;
+    private boolean isSurfaceCreated = false;
+    private CameraGLSurfaceView glSurfaceView;
     private CameraControl cameraControl;
-
-    private Button switchCamera;
-    private Button takePicture;
 
     @Override
     protected int getContentView() {
@@ -49,27 +49,55 @@ public class CameraActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        switchCamera = findViewById(R.id.switchCamera);
-        takePicture = findViewById(R.id.takePicture);
+        glSurfaceView = findViewById(R.id.glSurfaceView);
 
-        autoFitTextureView = findViewById(R.id.autoFitTextureView);
-        autoFitTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
-        cameraControl = new CameraControl(this, autoFitTextureView);
+        glSurfaceView.setSurfaceTextureListener(new SurfaceTextureListener() {
+            @Override
+            public void onSurfaceCreated(SurfaceTexture surfaceTexture) {
+                LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
+                cameraControl.setSurfaceTexture(surfaceTexture);
+                isSurfaceCreated = true;
+                openCamera();
+            }
+
+            @Override
+            public void onSurfaceChanged(int width, int height) {
+
+            }
+        });
+
+        cameraControl = new CameraControl(this);
+
         getPermissions();
 
-        switchCamera.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cameraControl.switchCamera();
             }
         });
 
-        takePicture.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.takePicture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cameraControl.takePicture();
             }
         });
+    }
+
+    private void openCamera() {
+        synchronized (this) {
+            if (hasPermissions && isResume && isSurfaceCreated) {
+                cameraControl.startCameraThread();
+                cameraControl.getSurfaceTexture().setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+                    @Override
+                    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                        glSurfaceView.requestRender();
+                    }
+                });
+                cameraControl.openCamera();
+            }
+        }
     }
 
     /**
@@ -113,38 +141,16 @@ public class CameraActivity extends BaseActivity {
         }
     }
 
-    private TextureView.SurfaceTextureListener mSurfaceTextureListener
-            = new TextureView.SurfaceTextureListener() {
-        @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-            LogUtil.INSTANCE.log(TAG, "onSurfaceTextureAvailable");
-            if (hasPermissions) {
-                cameraControl.setPreviewSize(width, height);
-                cameraControl.openCamera();
-            }
-        }
-
-        @Override
-        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-            LogUtil.INSTANCE.log(TAG, "onSurfaceTextureSizeChanged");
-            cameraControl.configureTransform(width, height);
-        }
-
-        @Override
-        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-            LogUtil.INSTANCE.log(TAG, "onSurfaceTextureDestroyed");
-            return true;
-        }
-
-        @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
-        }
-    };
-
     private void begin() {
-        hasPermissions = true;
-        LogUtil.INSTANCE.log(TAG, "begin");
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+
+        if (am != null && am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x30000) {
+            hasPermissions = true;
+            LogUtil.INSTANCE.log(TAG, "begin");
+            openCamera();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -154,19 +160,16 @@ public class CameraActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isResume = true;
         LogUtil.INSTANCE.log(TAG, "onResume");
-        if (hasPermissions) {
-            cameraControl.startCameraThread();
-            if (autoFitTextureView.isAvailable()) {
-                cameraControl.setPreviewSize(autoFitTextureView.getWidth(), autoFitTextureView.getHeight());
-                cameraControl.openCamera();
-            }
-        }
+        openCamera();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        isResume = false;
+        isSurfaceCreated = false;
         LogUtil.INSTANCE.log(TAG, "onPause");
         if (hasPermissions) {
             cameraControl.closeCamera();

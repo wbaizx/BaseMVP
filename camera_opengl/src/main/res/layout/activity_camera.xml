@@ -7,8 +7,8 @@
     android:background="@color/color_black"
     tools:context=".home.CameraActivity">
 
-    <com.camera_opengl.home.AutoFitTextureView
-        android:id="@+id/autoFitTextureView"
+    <com.camera_opengl.home.gl.CameraGLSurfaceView
+        android:id="@+id/glSurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
