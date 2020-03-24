@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
         saveImg.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 val bitmap = ImageUtil.createBitmapFromView(mainImg)
-                val file = ImageUtil.savePicture(bitmap)
+                val file = ImageUtil.savePicture(bitmap, "test.jpg")
                 if (ImageUtil.updateGallery(file)) {
                     withContext(Dispatchers.Main) {
                         AndroidUtil.showToast("保存成功")

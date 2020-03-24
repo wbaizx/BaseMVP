@@ -35,6 +35,7 @@ public class CameraActivity extends BaseActivity {
     private CameraControl cameraControl;
 
     private Button switchCamera;
+    private Button takePicture;
 
     @Override
     protected int getContentView() {
@@ -49,6 +50,7 @@ public class CameraActivity extends BaseActivity {
     @Override
     protected void initView() {
         switchCamera = findViewById(R.id.switchCamera);
+        takePicture = findViewById(R.id.takePicture);
 
         autoFitTextureView = findViewById(R.id.autoFitTextureView);
         autoFitTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
@@ -59,6 +61,13 @@ public class CameraActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 cameraControl.switchCamera();
+            }
+        });
+
+        takePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraControl.takePicture();
             }
         });
     }
@@ -147,7 +156,7 @@ public class CameraActivity extends BaseActivity {
         super.onResume();
         LogUtil.INSTANCE.log(TAG, "onResume");
         if (hasPermissions) {
-            cameraControl.startBackgroundThread();
+            cameraControl.startCameraThread();
             if (autoFitTextureView.isAvailable()) {
                 cameraControl.setPreviewSize(autoFitTextureView.getWidth(), autoFitTextureView.getHeight());
                 cameraControl.openCamera();
@@ -161,7 +170,7 @@ public class CameraActivity extends BaseActivity {
         LogUtil.INSTANCE.log(TAG, "onPause");
         if (hasPermissions) {
             cameraControl.closeCamera();
-            cameraControl.stopBackgroundThread();
+            cameraControl.stopCameraThread();
         }
     }
 

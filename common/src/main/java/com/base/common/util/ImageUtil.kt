@@ -45,10 +45,19 @@ object ImageUtil {
         return bitmap
     }
 
-    fun savePicture(bitmap: Bitmap): File {
-        val file = File(FileUtil.getDiskFilePath("IMG") + File.separator + "test.jpg")
+    fun savePicture(bitmap: Bitmap, name: String): File {
+        val file = File(FileUtil.getDiskFilePath("IMG") + File.separator + name)
         FileOutputStream(file).use {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            it.flush()
+        }
+        return file
+    }
+
+    fun savePicture(bytes: ByteArray, name: String): File {
+        val file = File(FileUtil.getDiskFilePath("IMG") + File.separator + name)
+        FileOutputStream(file).use {
+            it.write(bytes)
             it.flush()
         }
         return file
