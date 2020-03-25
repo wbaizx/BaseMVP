@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
-import com.base.common.config.RouteString;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.gl.CameraGLSurfaceView;
@@ -27,7 +26,9 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-@Route(path = RouteString.CAMERA_HOME, name = "组件化camera首页", extras = RouteString.isNeedLogin)
+//RouteString.CAMERA_HOME
+//RouteString.isNeedLogin
+@Route(path = "/camera/camera_home", name = "组件化camera首页", extras = 1)
 public class CameraActivity extends BaseActivity {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;
