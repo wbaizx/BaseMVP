@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.util.Size;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 //RouteString.CAMERA_HOME
 //RouteString.isNeedLogin
 @Route(path = "/camera/camera_home", name = "组件化camera首页", extras = 1)
-public class CameraActivity extends BaseActivity {
+public class CameraActivity extends BaseActivity implements CameraListener, SurfaceTextureListener {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;
 
@@ -55,28 +56,10 @@ public class CameraActivity extends BaseActivity {
     protected void initView() {
         getPermissions();
 
-        cameraControl = new CameraControl(this);
+        cameraControl = new CameraControl(this, this);
+
         glSurfaceView = findViewById(R.id.glSurfaceView);
-
-        glSurfaceView.setSurfaceTextureListener(new SurfaceTextureListener() {
-            @Override
-            public void onSurfaceCreated(SurfaceTexture surfaceTexture) {
-                cameraControl.setSurfaceTexture(surfaceTexture);
-
-                look.lock();
-
-                LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
-                isSurfaceCreated = true;
-                openCamera();
-
-                look.unlock();
-            }
-
-            @Override
-            public void onSurfaceChanged(int width, int height) {
-
-            }
-        });
+        glSurfaceView.setSurfaceTextureListener(this);
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +151,24 @@ public class CameraActivity extends BaseActivity {
         look.unlock();
     }
 
+    @Override
+    public void onSurfaceCreated(SurfaceTexture surfaceTexture) {
+        cameraControl.setSurfaceTexture(surfaceTexture);
+
+        look.lock();
+
+        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
+        isSurfaceCreated = true;
+        openCamera();
+
+        look.unlock();
+    }
+
+    @Override
+    public void onSurfaceChanged(int width, int height) {
+
+    }
+
     private void openCamera() {
         LogUtil.INSTANCE.log(TAG, "try openCamera");
         if (hasPermissions && isResume && isSurfaceCreated) {
@@ -181,6 +182,11 @@ public class CameraActivity extends BaseActivity {
             });
             cameraControl.openCamera();
         }
+    }
+
+    @Override
+    public void confirmSize(Size previewSize, Size videoSize) {
+        glSurfaceView.confirmSize(previewSize, videoSize);
     }
 
     @Override
@@ -203,6 +209,7 @@ public class CameraActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         LogUtil.INSTANCE.log(TAG, "onDestroy");
+        glSurfaceView.destroy();
         cameraControl.destroy();
         super.onDestroy();
     }

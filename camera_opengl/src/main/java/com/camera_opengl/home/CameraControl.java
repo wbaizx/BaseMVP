@@ -42,6 +42,7 @@ public class CameraControl {
     private static final String TAG = "CameraControl";
 
     private Activity activity;
+    private CameraListener cameraListener;
 
     private CameraManager manager;
     private Integer mSensorOrientation;
@@ -65,6 +66,7 @@ public class CameraControl {
     private CaptureRequest.Builder mPreviewBuilder;
     private CameraCaptureSession mPreviewSession;
     private Surface previewSurface;
+    private Surface captureSurface;
 
     private SurfaceTexture surfaceTexture;
 
@@ -98,24 +100,12 @@ public class CameraControl {
     private static final int TAKEPICTURE = 2;
     private int mState = PREVIEW;
 
-    public CameraControl(Activity activity) {
+    public CameraControl(Activity activity, CameraListener cameraListener) {
         this.activity = activity;
+        this.cameraListener = cameraListener;
         manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
 
         mSaveThread = new SavePictureThread();
-        mSaveThread.setSaveListener(new SavePictureThread.SaveListener() {
-            @Override
-            public void saveSuccess() {
-                if (CameraControl.this.activity != null) {
-                    CameraControl.this.activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            AndroidUtil.INSTANCE.showToast("拍照成功");
-                        }
-                    });
-                }
-            }
-        });
         mSaveThread.start();
     }
 
@@ -270,8 +260,11 @@ public class CameraControl {
 
                             //期望宽高 previewWidth previewHeight
                             mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                                    3264, 2448, mVideoSize);
+                                    AndroidUtil.INSTANCE.getScreenHeight(), AndroidUtil.INSTANCE.getScreenWidth(), mVideoSize);
                             LogUtil.INSTANCE.log(TAG, "choosePreviewSize " + mPreviewSize.getWidth() + " -- " + mPreviewSize.getHeight());
+
+                            //确定size后回传出去
+                            cameraListener.confirmSize(mPreviewSize, mVideoSize);
 
                             mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
 
@@ -297,9 +290,11 @@ public class CameraControl {
     private void createSurface() {
         surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
         previewSurface = new Surface(surfaceTexture);
+
         mImageReader = ImageReader.newInstance(mPreviewSize.getWidth(), mPreviewSize.getHeight(),
                 ImageFormat.JPEG, 1);
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mCameraHandler);
+        captureSurface = mImageReader.getSurface();
     }
 
 
@@ -372,7 +367,7 @@ public class CameraControl {
             mPreviewBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewBuilder.addTarget(previewSurface);
 
-            mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, mImageReader.getSurface()),
+            mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, captureSurface),
                     new CameraCaptureSession.StateCallback() {
 
                         @Override
@@ -447,7 +442,7 @@ public class CameraControl {
 
             // 这是用来拍摄照片的CaptureRequest.Builder。
             final CaptureRequest.Builder captureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureBuilder.addTarget(mImageReader.getSurface());
+            captureBuilder.addTarget(captureSurface);
             captureBuilder.addTarget(previewSurface);
 
             //自动聚焦
@@ -528,6 +523,7 @@ public class CameraControl {
 
     public void destroy() {
         activity = null;
+        cameraListener = null;
         mSaveThread.interrupt();
         LogUtil.INSTANCE.log(TAG, "destroy X");
     }

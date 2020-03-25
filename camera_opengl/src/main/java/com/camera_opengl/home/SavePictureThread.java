@@ -1,5 +1,9 @@
 package com.camera_opengl.home;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import com.base.common.util.AndroidUtil;
 import com.base.common.util.ImageUtil;
 import com.base.common.util.LogUtil;
 
@@ -16,16 +20,6 @@ public class SavePictureThread extends Thread {
 
     private ArrayBlockingQueue<byte[]> queue = new ArrayBlockingQueue<>(5);
 
-    private SaveListener listener;
-
-    interface SaveListener {
-        void saveSuccess();
-    }
-
-    public void setSaveListener(SaveListener listener) {
-        this.listener = listener;
-    }
-
     public void signal() {
         look.lock();
         condition.signal();
@@ -40,6 +34,8 @@ public class SavePictureThread extends Thread {
     public void run() {
         super.run();
 
+        Handler mCameraHandler = new Handler(Looper.getMainLooper());
+
         while (!Thread.currentThread().isInterrupted()) {
             LogUtil.INSTANCE.log(TAG, "run save");
             try {
@@ -52,7 +48,12 @@ public class SavePictureThread extends Thread {
                         File file = ImageUtil.INSTANCE.savePicture(poll, "IMG" + System.currentTimeMillis() + ".jpg");
                         if (ImageUtil.INSTANCE.updateGallery(file)) {
                             LogUtil.INSTANCE.log(TAG, "run saveSuccess");
-                            listener.saveSuccess();
+                            mCameraHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AndroidUtil.INSTANCE.showToast("拍照成功");
+                                }
+                            });
                         }
                     }
                 } else {

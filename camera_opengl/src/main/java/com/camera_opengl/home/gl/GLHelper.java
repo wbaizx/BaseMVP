@@ -13,8 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
-
 public class GLHelper {
     private static final String TAG = "GLHelper";
     private static final int BYTES_PER_FLOAT = 4;
@@ -117,14 +115,10 @@ public class GLHelper {
             throw new RuntimeException("创建外部纹理失败");
         } else {
             GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
-            GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                    GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-            GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                    GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-            GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                    GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-            GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                    GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+            GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+            GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+            GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+            GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
             GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
         }
         LogUtil.INSTANCE.log(TAG, "创建外部纹理成功 " + texture[0]);
