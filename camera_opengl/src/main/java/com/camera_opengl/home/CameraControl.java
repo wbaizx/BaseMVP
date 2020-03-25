@@ -155,7 +155,7 @@ public class CameraControl {
 
         @Override
         public void onOpened(@NonNull CameraDevice cameraDevice) {
-            LogUtil.INSTANCE.log(TAG, "onOpened");
+            LogUtil.INSTANCE.log(TAG, "camera onOpened");
             mCameraDevice = cameraDevice;
             startPreview();
         }
@@ -282,7 +282,7 @@ public class CameraControl {
 
                             createSurface();
 
-                            LogUtil.INSTANCE.log(TAG, "begin openCamera");
+                            LogUtil.INSTANCE.log(TAG, "real openCamera");
                             manager.openCamera(cameraId, mStateCallback, mCameraHandler);
                             break;
                         }

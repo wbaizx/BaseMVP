@@ -15,6 +15,17 @@ public class CameraGLSurfaceView extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
+    @Override
+    public void onPause() {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                renderer.onSurfaceDestroy();
+            }
+        });
+        super.onPause();
+    }
+
     public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
         renderer.setSurfaceTextureListener(surfaceTextureListener);
     }

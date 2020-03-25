@@ -21,6 +21,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -37,6 +38,8 @@ public class CameraActivity extends BaseActivity {
     private CameraGLSurfaceView glSurfaceView;
     private CameraControl cameraControl;
 
+    private ReentrantLock look = new ReentrantLock();
+
     @Override
     protected int getContentView() {
         return R.layout.activity_camera;
@@ -49,15 +52,23 @@ public class CameraActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        getPermissions();
+
+        cameraControl = new CameraControl(this);
         glSurfaceView = findViewById(R.id.glSurfaceView);
 
         glSurfaceView.setSurfaceTextureListener(new SurfaceTextureListener() {
             @Override
             public void onSurfaceCreated(SurfaceTexture surfaceTexture) {
-                LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
                 cameraControl.setSurfaceTexture(surfaceTexture);
+
+                look.lock();
+
+                LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
                 isSurfaceCreated = true;
                 openCamera();
+
+                look.unlock();
             }
 
             @Override
@@ -65,10 +76,6 @@ public class CameraActivity extends BaseActivity {
 
             }
         });
-
-        cameraControl = new CameraControl(this);
-
-        getPermissions();
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,21 +90,6 @@ public class CameraActivity extends BaseActivity {
                 cameraControl.takePicture();
             }
         });
-    }
-
-    private void openCamera() {
-        synchronized (this) {
-            if (hasPermissions && isResume && isSurfaceCreated) {
-                cameraControl.startCameraThread();
-                cameraControl.getSurfaceTexture().setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-                    @Override
-                    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                        glSurfaceView.requestRender();
-                    }
-                });
-                cameraControl.openCamera();
-            }
-        }
     }
 
     /**
@@ -145,9 +137,13 @@ public class CameraActivity extends BaseActivity {
         ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 
         if (am != null && am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x30000) {
-            hasPermissions = true;
+            look.lock();
+
             LogUtil.INSTANCE.log(TAG, "begin");
+            hasPermissions = true;
             openCamera();
+
+            look.unlock();
         } else {
             finish();
         }
@@ -160,21 +156,47 @@ public class CameraActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        isResume = true;
+        glSurfaceView.onResume();
+
+        look.lock();
+
         LogUtil.INSTANCE.log(TAG, "onResume");
+        isResume = true;
         openCamera();
+
+        look.unlock();
+    }
+
+    private void openCamera() {
+        LogUtil.INSTANCE.log(TAG, "try openCamera");
+        if (hasPermissions && isResume && isSurfaceCreated) {
+            LogUtil.INSTANCE.log(TAG, "openCamera");
+            cameraControl.startCameraThread();
+            cameraControl.getSurfaceTexture().setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+                @Override
+                public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                    glSurfaceView.requestRender();
+                }
+            });
+            cameraControl.openCamera();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        isResume = false;
-        isSurfaceCreated = false;
+        glSurfaceView.onPause();
+
+        look.lock();
         LogUtil.INSTANCE.log(TAG, "onPause");
-        if (hasPermissions) {
+        if (hasPermissions && isResume && isSurfaceCreated) {
             cameraControl.closeCamera();
             cameraControl.stopCameraThread();
         }
+
+        isResume = false;
+        isSurfaceCreated = false;
+        look.unlock();
     }
 
     @Override
