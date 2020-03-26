@@ -94,8 +94,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         surfaceTexture.getTransformMatrix(texMatrix);
         GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, texMatrix, 0);
 
-        calculationVertexMatrix();
-        Matrix.setIdentityM(posMatrixc, 0);
+        calculationVertexMatrix(posMatrixc);
         GLES30.glUniformMatrix4fv(POS_MATRIX_LOCAL, 1, false, posMatrixc, 0);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
@@ -108,33 +107,24 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
     }
 
-    private void calculationVertexMatrix() {
-//        float[] orthoMatrix = new float[16];
-//        Matrix.setIdentityM(orthoMatrix, 0);
-//
-//        float viewScale = (float) viewWidth / (float) viewHeight;
-//        LogUtil.INSTANCE.log(TAG, "calculationMatrix viewScale " + viewScale);
-//        float previewScale = (float) previewWidth / (float) previewHeight;
-//        LogUtil.INSTANCE.log(TAG, "calculationMatrix previewScale " + previewScale);
-//
-//        final float aspectRatio = viewScale > previewScale ?
-//                previewScale / viewScale :
-//                viewScale / previewScale;
-//
-//        LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
-//        if (viewScale > previewScale) {
-//            Matrix.orthoM(orthoMatrix, 0, -1f, 1f, -0.5f, 0.5f, -1f, 1f);
-//        } else {
-//            Matrix.orthoM(orthoMatrix, 0, -0.5f, 0.5f, -1f, 1f, -1f, 1f);
-//            LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio -------");
-//        }
+    private void calculationVertexMatrix(float[] posMatrixc) {
+        Matrix.setIdentityM(posMatrixc, 0);
 
-//        surfaceTexture.getTransformMatrix(matrix);
-//        Matrix.setIdentityM(matrix, 0);
-//        Matrix.multiplyMM(matrix, 0, orthoMatrix, 0, matrix, 0);
-//        Matrix.multiplyMM(orthoMatrix, 0,aa , 0, matrix, 0);
-//        Matrix.rotateM(matrix,0,90f,0f,0f,1f);
-//        Matrix.rotateM(matrix,0,90f,0f,0f,1f);
+        float viewScale = (float) viewWidth / (float) viewHeight;
+        float previewScale = (float) previewWidth / (float) previewHeight;
+
+        final float aspectRatio = viewScale > previewScale ?
+                viewScale / previewScale :
+                previewScale / viewScale;
+
+        LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
+        if (viewScale > previewScale) {
+            //视图的宽高比更大，同高下视图更宽，映射出来应该缩放宽度
+            Matrix.orthoM(posMatrixc, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+        } else {
+            //纹理的宽高比更大，同高下纹理更宽，映射出来应该缩放高度
+            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+        }
     }
 
     public void confirmSize(Size previewSize, Size videoSize) {
@@ -157,7 +147,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     }
 
     public void destroy() {
-        LogUtil.INSTANCE.log(TAG, "destroy");
+        vertexBuffer.clear();
+        textureCoordBuffer.clear();
         surfaceTextureListener = null;
+        LogUtil.INSTANCE.log(TAG, "destroy X");
     }
 }
