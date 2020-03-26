@@ -84,18 +84,16 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         GLES30.glUseProgram(program);
         surfaceTexture.updateTexImage();
 
-        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
-        GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
-
-        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, vertexBuffer);
-        GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, textureCoordBuffer);
-
-
         surfaceTexture.getTransformMatrix(texMatrix);
         GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, texMatrix, 0);
 
         calculationVertexMatrix(posMatrixc);
         GLES30.glUniformMatrix4fv(POS_MATRIX_LOCAL, 1, false, posMatrixc, 0);
+
+        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
+        GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
+        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, vertexBuffer);
+        GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, textureCoordBuffer);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
@@ -120,10 +118,23 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
         if (viewScale > previewScale) {
             //视图的宽高比更大，同高下视图更宽，映射出来应该缩放宽度
+            //高度已经全屏，只能使用正交投影
             Matrix.orthoM(posMatrixc, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
         } else {
             //纹理的宽高比更大，同高下纹理更宽，映射出来应该缩放高度
-            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+            //方法一，使用正交矩阵，视图按比例居中
+//            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+
+            //方法二，按比例修改顶点，视图可控制居上
+//            float v = 2 - 2 / aspectRatio;
+//            //-1.0f, -1.0f, //左下
+//            vertexBuffer.put(3, -1f + v);
+//            // 1.0f, -1.0f,  //右下
+//            vertexBuffer.put(7, -1f + v);
+
+            //方法三，按比例裁剪视图渲染区域，视图可控制居上
+            float portHeight = viewHeight / aspectRatio;
+            GLES30.glViewport(0, (int) (viewHeight - portHeight), viewWidth, (int) portHeight);
         }
     }
 
