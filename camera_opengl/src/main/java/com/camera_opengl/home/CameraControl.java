@@ -260,7 +260,7 @@ public class CameraControl {
 
                             //期望宽高 previewWidth previewHeight
                             mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                                    AndroidUtil.INSTANCE.getScreenHeight(), AndroidUtil.INSTANCE.getScreenWidth(), mVideoSize);
+                                    AndroidUtil.INSTANCE.getScreenWidth(), AndroidUtil.INSTANCE.getScreenHeight(), mVideoSize);
                             LogUtil.INSTANCE.log(TAG, "choosePreviewSize " + mPreviewSize.getWidth() + " -- " + mPreviewSize.getHeight());
 
                             //确定size后回传出去

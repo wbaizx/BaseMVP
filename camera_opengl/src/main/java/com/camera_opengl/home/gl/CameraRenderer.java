@@ -125,16 +125,16 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
             //方法一，使用正交矩阵，视图按比例居中
 //            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
 
-            //方法二，按比例修改顶点，视图可控制居上
-//            float v = 2 - 2 / aspectRatio;
-//            //-1.0f, -1.0f, //左下
-//            vertexBuffer.put(3, -1f + v);
-//            // 1.0f, -1.0f,  //右下
-//            vertexBuffer.put(7, -1f + v);
+            //方法二，按比例修改顶点(需注意使用VAO VBO的情况)，视图可控制居上
+            float v = 2 - 2 / aspectRatio;
+            //-1.0f, -1.0f, //左下
+            vertexBuffer.put(3, -1f + v);
+            // 1.0f, -1.0f,  //右下
+            vertexBuffer.put(7, -1f + v);
 
-            //方法三，按比例裁剪视图渲染区域，视图可控制居上
-            float portHeight = viewHeight / aspectRatio;
-            GLES30.glViewport(0, (int) (viewHeight - portHeight), viewWidth, (int) portHeight);
+            //方法三，按比例裁剪视图渲染区域(反向)，视图可控制居上
+//            float portHeight = viewHeight / aspectRatio;
+//            GLES30.glViewport(0, (int) (viewHeight - portHeight), viewWidth, (int) portHeight);
         }
     }
 

@@ -46,40 +46,25 @@ public class GLHelper {
         return "null";
     }
 
-    public static int compileAndLink(String fileNameV, String fileNameF) {
-        //编译顶点着色器
-        String vCode = loadAssetsGlsl(fileNameV);
-        int shaderV = GLES30.glCreateShader(GLES30.GL_VERTEX_SHADER);
-        if (shaderV == 0) {
+    private static int shaderLoad(String fileName, int type) {
+        String code = loadAssetsGlsl(fileName);
+        int shader = GLES30.glCreateShader(type);
+        if (shader == 0) {
             throw new RuntimeException("编译顶点失败");
         }
-        GLES30.glShaderSource(shaderV, vCode);
-        GLES30.glCompileShader(shaderV);
+        GLES30.glShaderSource(shader, code);
+        GLES30.glCompileShader(shader);
 
-        int[] compileStatusV = new int[1];
-        GLES30.glGetShaderiv(shaderV, GLES30.GL_COMPILE_STATUS, compileStatusV, 0);
-        if (compileStatusV[0] == 0) {
-            GLES30.glDeleteShader(shaderV);
-            throw new RuntimeException("编译顶点失败 " + GLES30.glGetShaderInfoLog(shaderV));
+        int[] compileStatus = new int[1];
+        GLES30.glGetShaderiv(shader, GLES30.GL_COMPILE_STATUS, compileStatus, 0);
+        if (compileStatus[0] == 0) {
+            GLES30.glDeleteShader(shader);
+            throw new RuntimeException("编译顶点失败 " + GLES30.glGetShaderInfoLog(shader));
         }
+        return shader;
+    }
 
-        //编译片段着色器
-        String fCode = loadAssetsGlsl(fileNameF);
-        int shaderF = GLES30.glCreateShader(GLES30.GL_FRAGMENT_SHADER);
-        if (shaderF == 0) {
-            throw new RuntimeException("编译片段失败");
-        }
-        GLES30.glShaderSource(shaderF, fCode);
-        GLES30.glCompileShader(shaderF);
-
-        int[] compileStatusF = new int[1];
-        GLES30.glGetShaderiv(shaderF, GLES30.GL_COMPILE_STATUS, compileStatusF, 0);
-        if (compileStatusF[0] == 0) {
-            GLES30.glDeleteShader(shaderF);
-            throw new RuntimeException("编译片段失败 " + GLES30.glGetShaderInfoLog(shaderF));
-        }
-
-        //链接
+    private static int linkLoad(int shaderV, int shaderF) {
         int program = GLES30.glCreateProgram();
         if (program == 0) {
             throw new RuntimeException("链接失败");
@@ -96,6 +81,17 @@ public class GLHelper {
         }
 
         LogUtil.INSTANCE.log(TAG, "编译链接成功");
+        return program;
+    }
+
+    public static int compileAndLink(String fileNameV, String fileNameF) {
+        //编译顶点着色器
+        int shaderV = shaderLoad(fileNameV, GLES30.GL_VERTEX_SHADER);
+        //编译片段着色器
+        int shaderF = shaderLoad(fileNameF, GLES30.GL_FRAGMENT_SHADER);
+
+        //链接
+        int program = linkLoad(shaderV, shaderF);
         return program;
     }
 
