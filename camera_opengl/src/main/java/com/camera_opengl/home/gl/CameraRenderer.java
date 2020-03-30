@@ -49,6 +49,11 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private SurfaceTexture surfaceTexture;
     private SurfaceTextureListener surfaceTextureListener;
 
+    //VBO
+    private int[] vboArray = new int[2];
+    //VAO
+    private int[] vaoArray = new int[1];
+
     private int viewWidth;
     private int viewHeight;
     private int previewWidth;
@@ -61,10 +66,41 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         GLHelper.createExternalSurface(texture);
         surfaceTexture = new SurfaceTexture(texture[0]);
+        //回传surfaceTexture
+        surfaceTextureListener.onSurfaceCreated(surfaceTexture);
 
         program = GLHelper.compileAndLink("vshader/camera_v_shader.glsl", "fshader/camera_f_shader.glsl");
+        GLES30.glUseProgram(program);
 
-        surfaceTextureListener.onSurfaceCreated(surfaceTexture);
+        createVAO();
+    }
+
+    private void createVAO() {
+        //创建VBO
+        GLES30.glGenBuffers(2, vboArray, 0);
+        //创建VAO
+        GLES30.glGenVertexArrays(1, vaoArray, 0);
+        //绑定VAO
+        GLES30.glBindVertexArray(vaoArray[0]);
+
+        //绑定VBO顶点数组
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[0]);
+        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexBuffer.capacity() * GLHelper.BYTES_PER_FLOAT,
+                vertexBuffer, GLES30.GL_STATIC_DRAW);
+        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
+        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
+
+        //绑定VBO纹理数组
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[1]);
+        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, textureCoordBuffer.capacity() * GLHelper.BYTES_PER_FLOAT,
+                textureCoordBuffer, GLES30.GL_STATIC_DRAW);
+        GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
+        GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
+
+        //解绑VBO
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
+        //解绑VAO
+        GLES30.glBindVertexArray(0);
     }
 
 
@@ -81,7 +117,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
-        GLES30.glUseProgram(program);
         surfaceTexture.updateTexImage();
 
         surfaceTexture.getTransformMatrix(texMatrix);
@@ -90,18 +125,17 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         calculationVertexMatrix(posMatrixc);
         GLES30.glUniformMatrix4fv(POS_MATRIX_LOCAL, 1, false, posMatrixc, 0);
 
-        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
-        GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
-        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, vertexBuffer);
-        GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, textureCoordBuffer);
-
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
 
+        GLES30.glBindVertexArray(vaoArray[0]);
+
         GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4);
 
+        GLES30.glBindVertexArray(0);
         GLES30.glDisableVertexAttribArray(POSITION_LOCAL);
         GLES30.glDisableVertexAttribArray(TEXCOORD_LOCAL);
+
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
     }
 
@@ -156,6 +190,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         if (surfaceTexture != null) {
             surfaceTexture.release();
         }
+        GLES30.glDeleteBuffers(2, vboArray, 0);
+        GLES30.glDeleteVertexArrays(1, vaoArray, 0);
         LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
     }
 

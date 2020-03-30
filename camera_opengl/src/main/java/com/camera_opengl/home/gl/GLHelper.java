@@ -15,7 +15,7 @@ import java.nio.FloatBuffer;
 
 public class GLHelper {
     private static final String TAG = "GLHelper";
-    private static final int BYTES_PER_FLOAT = 4;
+    public static final int BYTES_PER_FLOAT = 4;
 
     private static String loadAssetsGlsl(String fileName) {
         BufferedReader bufReader = null;

@@ -49,6 +49,7 @@ public class CameraControl {
     //闪光灯是否支持
     private Boolean supportFlash;
 
+    public static final float RATIO_1_1 = 1f;
     public static final float RATIO_4_3 = 4f / 3;
     public static final float RATIO_16_9 = 16f / 9;
     private float aspectRatio = RATIO_16_9;
