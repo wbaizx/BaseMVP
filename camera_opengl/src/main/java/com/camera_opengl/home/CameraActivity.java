@@ -13,6 +13,8 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
+import com.camera_opengl.home.camera.CameraControl;
+import com.camera_opengl.home.camera.CameraListener;
 import com.camera_opengl.home.gl.CameraGLSurfaceView;
 import com.camera_opengl.home.gl.SurfaceTextureListener;
 import com.gyf.immersionbar.BarHide;

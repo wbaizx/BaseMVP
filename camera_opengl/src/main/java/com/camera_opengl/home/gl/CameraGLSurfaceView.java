@@ -36,6 +36,11 @@ public class CameraGLSurfaceView extends GLSurfaceView {
     }
 
     public void destroy() {
-        renderer.destroy();
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                renderer.destroy();
+            }
+        });
     }
 }

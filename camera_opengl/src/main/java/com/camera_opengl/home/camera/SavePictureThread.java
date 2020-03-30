@@ -1,4 +1,4 @@
-package com.camera_opengl.home;
+package com.camera_opengl.home.camera;
 
 import android.os.Handler;
 import android.os.Looper;
