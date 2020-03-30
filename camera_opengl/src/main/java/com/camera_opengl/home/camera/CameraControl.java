@@ -35,7 +35,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class CameraControl {
@@ -46,16 +45,19 @@ public class CameraControl {
 
     private CameraManager manager;
     private Integer mSensorOrientation;
-    //最终确定的视频尺寸
-    private Size mVideoSize;
-    //最终确定的预览尺寸
-    private Size mPreviewSize;
+
     //闪光灯是否支持
     private Boolean supportFlash;
-    //期望预览宽
-    private int previewWidth;
-    //期望预览高
-    private int previewHeight;
+
+    public static final float RATIO_4_3 = 4f / 3;
+    public static final float RATIO_16_9 = 16f / 9;
+    private float aspectRatio = RATIO_16_9;
+    //期望预览宽，宽高需要对调
+    private int expectWidth = AndroidUtil.INSTANCE.getScreenHeight();
+    //期望预览高，宽高需要对调
+    private int expectHeight = AndroidUtil.INSTANCE.getScreenWidth();
+    //最终确定的尺寸
+    private Size mfinalSize;
 
     private SavePictureThread mSaveThread;
 
@@ -95,9 +97,9 @@ public class CameraControl {
         INVERSE_ORIENTATIONS.append(Surface.ROTATION_270, 0);
     }
 
-    private static final int PREVIEW = 0;
-    private static final int AFLOCK = 1;
-    private static final int TAKEPICTURE = 2;
+    private final int PREVIEW = 0;
+    private final int AFLOCK = 1;
+    private final int TAKE_PICTURE = 2;
     private int mState = PREVIEW;
 
     public CameraControl(Activity activity, CameraListener cameraListener) {
@@ -231,8 +233,17 @@ public class CameraControl {
      */
     public void setExpectPreviewSize(int width, int height) {
         LogUtil.INSTANCE.log(TAG, "设置期望预览大小 setPreviewSize " + width + "-" + height);
-        previewWidth = width;
-        previewHeight = height;
+        expectWidth = width;
+        expectHeight = height;
+    }
+
+    /**
+     * 设置宽高比
+     *
+     * @param aspectRatio
+     */
+    public void setAspectRatio(float aspectRatio) {
+        this.aspectRatio = aspectRatio;
     }
 
     public void openCamera() {
@@ -255,23 +266,13 @@ public class CameraControl {
                                 throw new RuntimeException("Cannot get available preview/video sizes");
                             }
 
-                            mVideoSize = chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
-                            LogUtil.INSTANCE.log(TAG, "chooseVideoSize " + mVideoSize.getWidth() + " -- " + mVideoSize.getHeight());
-
-                            //期望宽高 previewWidth previewHeight
-                            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                                    AndroidUtil.INSTANCE.getScreenWidth(), AndroidUtil.INSTANCE.getScreenHeight(), mVideoSize);
-                            LogUtil.INSTANCE.log(TAG, "choosePreviewSize " + mPreviewSize.getWidth() + " -- " + mPreviewSize.getHeight());
-
-                            //确定size后回传出去
-                            cameraListener.confirmSize(mPreviewSize, mVideoSize);
+                            chooseSize(map);
 
                             mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
 
                             //检查闪光灯是否支持
                             Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
                             supportFlash = available == null ? false : available;
-
 
                             createSurface();
 
@@ -287,56 +288,42 @@ public class CameraControl {
         });
     }
 
+    private void chooseSize(StreamConfigurationMap map) {
+        LogUtil.INSTANCE.log(TAG, "expectPreviewSize " + expectWidth + " -- " + expectHeight + " -- " +
+                ((float) expectWidth / expectHeight));
+
+        Size[] outputSizes = map.getOutputSizes(MediaRecorder.class);
+        List<Size> sizeList = new ArrayList<>();
+        for (Size size : outputSizes) {
+            if (size.getWidth() == size.getHeight() * aspectRatio) {
+                sizeList.add(size);
+                LogUtil.INSTANCE.log(TAG, "outputSizes " + size.getWidth() + " -- " + size.getHeight() + " -- " +
+                        ((float) size.getWidth() / size.getHeight()));
+            }
+        }
+
+        if (sizeList.isEmpty()) {
+            throw new RuntimeException("Did not find the right size");
+        }
+
+        mfinalSize = Collections.min(sizeList, new CompareSize(expectWidth, expectHeight));
+
+        LogUtil.INSTANCE.log(TAG, "finalSize " +
+                mfinalSize.getWidth() + " -- " + mfinalSize.getHeight() + " -- " +
+                ((float) mfinalSize.getWidth() / mfinalSize.getHeight()));
+
+        //确定size后回传出去
+        cameraListener.confirmSize(mfinalSize);
+    }
+
     private void createSurface() {
-        surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
+        surfaceTexture.setDefaultBufferSize(mfinalSize.getWidth(), mfinalSize.getHeight());
         previewSurface = new Surface(surfaceTexture);
 
-        mImageReader = ImageReader.newInstance(mPreviewSize.getWidth(), mPreviewSize.getHeight(),
+        mImageReader = ImageReader.newInstance(mfinalSize.getWidth(), mfinalSize.getHeight(),
                 ImageFormat.JPEG, 1);
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mCameraHandler);
         captureSurface = mImageReader.getSurface();
-    }
-
-
-    private static Size chooseVideoSize(Size[] choices) {
-        for (Size size : choices) {
-            if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1080) {
-                return size;
-            }
-        }
-        LogUtil.INSTANCE.log(TAG, "Couldn't find any suitable video size");
-        return choices[choices.length - 1];
-    }
-
-    private static Size chooseOptimalSize(Size[] choices, int width, int height, Size aspectRatio) {
-        // Collect the supported resolutions that are at least as big as the preview Surface
-        List<Size> bigEnough = new ArrayList<>();
-        int w = aspectRatio.getWidth();
-        int h = aspectRatio.getHeight();
-        for (Size option : choices) {
-            if (option.getHeight() == option.getWidth() * h / w &&
-                    option.getWidth() >= width && option.getHeight() >= height) {
-                bigEnough.add(option);
-            }
-        }
-
-        // Pick the smallest of those, assuming we found any
-        if (bigEnough.size() > 0) {
-            return Collections.min(bigEnough, new CompareSizesByArea());
-        } else {
-            LogUtil.INSTANCE.log(TAG, "Couldn't find any suitable preview size");
-            return choices[0];
-        }
-    }
-
-    static class CompareSizesByArea implements Comparator<Size> {
-
-        @Override
-        public int compare(Size lhs, Size rhs) {
-            // We cast here to ensure the multiplications won't overflow
-            return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
-                    (long) rhs.getWidth() * rhs.getHeight());
-        }
     }
 
     /**
@@ -357,7 +344,7 @@ public class CameraControl {
 
     private void startPreview() {
         LogUtil.INSTANCE.log(TAG, "startPreview");
-        if (null == mCameraDevice || null == mPreviewSize) {
+        if (null == mCameraDevice || null == mfinalSize) {
             return;
         }
 
@@ -437,7 +424,7 @@ public class CameraControl {
             //停止连续取景
             mPreviewSession.stopRepeating();
 
-            mState = TAKEPICTURE;
+            mState = TAKE_PICTURE;
             LogUtil.INSTANCE.log(TAG, "mState " + mState + "-> TAKEPICTURE");
 
             // 这是用来拍摄照片的CaptureRequest.Builder。

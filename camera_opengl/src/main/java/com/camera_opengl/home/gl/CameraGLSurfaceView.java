@@ -20,8 +20,8 @@ public class CameraGLSurfaceView extends GLSurfaceView {
         renderer.setSurfaceTextureListener(surfaceTextureListener);
     }
 
-    public void confirmSize(Size previewSize, Size videoSize) {
-        renderer.confirmSize(previewSize, videoSize);
+    public void confirmSize(Size cameraSize) {
+        renderer.confirmSize(cameraSize);
     }
 
     @Override

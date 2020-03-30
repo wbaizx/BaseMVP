@@ -187,8 +187,8 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     }
 
     @Override
-    public void confirmSize(Size previewSize, Size videoSize) {
-        glSurfaceView.confirmSize(previewSize, videoSize);
+    public void confirmSize(Size cameraSize) {
+        glSurfaceView.confirmSize(cameraSize);
     }
 
     @Override

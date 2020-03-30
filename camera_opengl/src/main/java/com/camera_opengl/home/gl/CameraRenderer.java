@@ -138,11 +138,11 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void confirmSize(Size previewSize, Size videoSize) {
-        LogUtil.INSTANCE.log(TAG, "confirmSize  previewSize " + previewSize.getHeight() + "--" + previewSize.getWidth());
+    public void confirmSize(Size cameraSize) {
+        LogUtil.INSTANCE.log(TAG, "cameraSize " + cameraSize.getHeight() + "--" + cameraSize.getWidth());
         //宽高需要对调
-        this.previewWidth = previewSize.getHeight();
-        this.previewHeight = previewSize.getWidth();
+        this.previewWidth = cameraSize.getHeight();
+        this.previewHeight = cameraSize.getWidth();
     }
 
     public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
