@@ -26,7 +26,6 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     private static final int POSITION_LOCAL = 0;
     private static final int TEXCOORD_LOCAL = 1;
     private static final int TEX_MATRIXC_LOCAL = 2;
-    private static final int POS_MATRIX_LOCAL = 3;
 
     private float[] vertex = {
             -1.0f, 1.0f, //左上
@@ -43,7 +42,6 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     };
 
     private float[] texMatrix = new float[16];
-    private float[] posMatrixc = new float[16];
 
     private FloatBuffer vertexBuffer = GLHelper.getFloatBuffer(vertex);
     private FloatBuffer textureCoordBuffer = GLHelper.getFloatBuffer(textureCoord);
@@ -63,8 +61,6 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     //VAO
     private int[] vaoArray = new int[1];
 
-    private int viewWidth;
-    private int viewHeight;
     private int previewWidth;
     private int previewHeight;
 
@@ -152,8 +148,6 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + width + "--" + height);
-        this.viewWidth = width;
-        this.viewHeight = height;
         surfaceTextureListener.onSurfaceChanged(width, height);
         screenRenderer.onSurfaceChanged(gl, width, height);
     }
@@ -169,10 +163,6 @@ public class FBORenderer implements GLSurfaceView.Renderer {
 
         surfaceTexture.getTransformMatrix(texMatrix);
         GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, texMatrix, 0);
-
-        calculationVertexMatrix(posMatrixc);
-        Matrix.setIdentityM(posMatrixc, 0);
-        GLES30.glUniformMatrix4fv(POS_MATRIX_LOCAL, 1, false, posMatrixc, 0);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
@@ -208,45 +198,12 @@ public class FBORenderer implements GLSurfaceView.Renderer {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
     }
 
-    private void calculationVertexMatrix(float[] posMatrixc) {
-        Matrix.setIdentityM(posMatrixc, 0);
-
-        float viewScale = (float) viewWidth / (float) viewHeight;
-        float previewScale = (float) previewWidth / (float) previewHeight;
-
-        final float aspectRatio = viewScale > previewScale ?
-                viewScale / previewScale :
-                previewScale / viewScale;
-
-        LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
-        if (viewScale > previewScale) {
-            //视图的宽高比更大，同高下视图更宽，映射出来应该缩放宽度
-            //高度已经全屏，只能使用正交投影
-            Matrix.orthoM(posMatrixc, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
-        } else {
-            //纹理的宽高比更大，同高下纹理更宽，映射出来应该缩放高度
-            //方法一，使用正交矩阵，视图按比例居中
-//            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
-
-            //方法二，按比例修改顶点(需注意使用VAO VBO的情况)，视图可控制居上
-//            float v = 2 - 2 / aspectRatio;
-//            //-1.0f, -1.0f, //左下
-//            vertexBuffer.put(3, -1f + v);
-//            // 1.0f, -1.0f,  //右下
-//            vertexBuffer.put(7, -1f + v);
-
-            //方法三，按比例裁剪视图渲染区域(反向)，视图可控制居上
-            float portHeight = viewHeight / aspectRatio;
-            GLES30.glViewport(0, (int) (viewHeight - portHeight), viewWidth, (int) portHeight);
-        }
-    }
-
     public void confirmSize(Size cameraSize) {
         LogUtil.INSTANCE.log(TAG, "cameraSize " + cameraSize.getHeight() + "--" + cameraSize.getWidth());
         //宽高需要对调
         this.previewWidth = cameraSize.getHeight();
         this.previewHeight = cameraSize.getWidth();
-
+        screenRenderer.confirmSize(cameraSize);
         createFBO();
     }
 
