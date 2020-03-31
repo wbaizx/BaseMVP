@@ -1,4 +1,4 @@
-package com.camera_opengl.home.gl;
+package com.camera_opengl.home.gl.renderer;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
@@ -8,14 +8,16 @@ import android.opengl.Matrix;
 import android.util.Size;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.gl.GLHelper;
+import com.camera_opengl.home.gl.SurfaceTextureListener;
 
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class CameraRenderer implements GLSurfaceView.Renderer {
-    private static final String TAG = "CameraRenderer";
+public class ScreenRenderer implements GLSurfaceView.Renderer {
+    private static final String TAG = "ScreenRenderer";
 
     private static final int POSITION_LOCAL = 0;
     private static final int TEXCOORD_LOCAL = 1;
@@ -72,35 +74,44 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         program = GLHelper.compileAndLink("vshader/camera_v_shader.glsl", "fshader/camera_f_shader.glsl");
         GLES30.glUseProgram(program);
 
+        createVBO();
         createVAO();
     }
 
-    private void createVAO() {
-        //创建VBO
+    private void createVBO() {
         GLES30.glGenBuffers(2, vboArray, 0);
-        //创建VAO
-        GLES30.glGenVertexArrays(1, vaoArray, 0);
-        //绑定VAO
-        GLES30.glBindVertexArray(vaoArray[0]);
 
         //绑定VBO顶点数组
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[0]);
         GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexBuffer.capacity() * GLHelper.BYTES_PER_FLOAT,
                 vertexBuffer, GLES30.GL_STATIC_DRAW);
-        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
-        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
 
         //绑定VBO纹理数组
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[1]);
         GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, textureCoordBuffer.capacity() * GLHelper.BYTES_PER_FLOAT,
                 textureCoordBuffer, GLES30.GL_STATIC_DRAW);
+
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
+    }
+
+    private void createVAO() {
+        //创建VAO
+        GLES30.glGenVertexArrays(1, vaoArray, 0);
+        //绑定VAO
+        GLES30.glBindVertexArray(vaoArray[0]);
+
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[0]);
+        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
+        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
+
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[1]);
         GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
         GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
 
         //解绑VBO
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
         //解绑VAO
-        GLES30.glBindVertexArray(0);
+        GLES30.glBindVertexArray(GLES30.GL_NONE);
     }
 
 
@@ -132,11 +143,11 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4);
 
-        GLES30.glBindVertexArray(0);
+        GLES30.glBindVertexArray(GLES30.GL_NONE);
         GLES30.glDisableVertexAttribArray(POSITION_LOCAL);
         GLES30.glDisableVertexAttribArray(TEXCOORD_LOCAL);
 
-        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
+        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
     }
 
     private void calculationVertexMatrix(float[] posMatrixc) {

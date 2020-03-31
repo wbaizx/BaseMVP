@@ -5,8 +5,10 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Size;
 
+import com.camera_opengl.home.gl.renderer.FBORenderer;
+
 public class CameraGLSurfaceView extends GLSurfaceView {
-    private CameraRenderer renderer = new CameraRenderer();
+    private FBORenderer renderer = new FBORenderer();
 
     public CameraGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);

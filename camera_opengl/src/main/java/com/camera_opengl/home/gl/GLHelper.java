@@ -115,8 +115,23 @@ public class GLHelper {
             GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
             GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
             GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
-            GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
+            GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
         }
         LogUtil.INSTANCE.log(TAG, "创建外部纹理成功 " + texture[0]);
+    }
+
+    public static void createFBOSurface(int[] fboTexture) {
+        GLES30.glGenTextures(1, fboTexture, 0);
+        if (fboTexture[0] == 0) {
+            throw new RuntimeException("创建fbo挂载纹理失败");
+        } else {
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, fboTexture[0]);
+            GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+            GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
+            GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+            GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
+        }
+        LogUtil.INSTANCE.log(TAG, "创建fbo挂载纹理 " + fboTexture[0]);
     }
 }
