@@ -73,7 +73,8 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
         findViewById(R.id.takePicture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraControl.takePicture();
+//                cameraControl.takePicture();
+                glSurfaceView.takePicture();
             }
         });
     }

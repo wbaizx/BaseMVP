@@ -23,7 +23,12 @@ public class CameraGLSurfaceView extends GLSurfaceView {
     }
 
     public void confirmSize(Size cameraSize) {
-        renderer.confirmSize(cameraSize);
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                renderer.confirmSize(cameraSize);
+            }
+        });
     }
 
     @Override
@@ -42,6 +47,15 @@ public class CameraGLSurfaceView extends GLSurfaceView {
             @Override
             public void run() {
                 renderer.destroy();
+            }
+        });
+    }
+
+    public void takePicture() {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                renderer.takePicture();
             }
         });
     }
