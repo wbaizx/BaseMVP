@@ -15,8 +15,7 @@ import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraListener;
-import com.camera_opengl.home.gl.CameraGLSurfaceView;
-import com.camera_opengl.home.gl.SurfaceTextureListener;
+import com.camera_opengl.home.gl.egl.SurfaceTextureListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
@@ -40,7 +39,6 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     private boolean hasPermissions = false;
     private boolean isResume = false;
     private boolean isSurfaceCreated = false;
-    private CameraGLSurfaceView glSurfaceView;
     private CameraControl cameraControl;
 
     private EGLSurfaceView eglSurfaceView;
@@ -61,12 +59,10 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     protected void initView() {
         getPermissions();
 
-        eglSurfaceView = findViewById(R.id.eglSurfaceView);
-
         cameraControl = new CameraControl(this, this);
 
-        glSurfaceView = findViewById(R.id.glSurfaceView);
-        glSurfaceView.setSurfaceTextureListener(this);
+        eglSurfaceView = findViewById(R.id.eglSurfaceView);
+        eglSurfaceView.setSurfaceTextureListener(this);
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +75,7 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
             @Override
             public void onClick(View v) {
 //                cameraControl.takePicture();
-                glSurfaceView.takePicture();
+                eglSurfaceView.takePicture();
             }
         });
     }
@@ -148,7 +144,6 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     @Override
     protected void onResume() {
         super.onResume();
-        glSurfaceView.onResume();
 
         look.lock();
 
@@ -182,25 +177,18 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
         if (hasPermissions && isResume && isSurfaceCreated) {
             LogUtil.INSTANCE.log(TAG, "openCamera");
             cameraControl.startCameraThread();
-            cameraControl.getSurfaceTexture().setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-                @Override
-                public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                    glSurfaceView.requestRender();
-                }
-            });
             cameraControl.openCamera();
         }
     }
 
     @Override
-    public void confirmSize(Size cameraSize) {
-        glSurfaceView.confirmSize(cameraSize);
+    public void confirmCameraSize(Size cameraSize) {
+        eglSurfaceView.confirmCameraSize(cameraSize);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        glSurfaceView.onPause();
 
         look.lock();
         LogUtil.INSTANCE.log(TAG, "onPause");
@@ -217,7 +205,6 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     @Override
     protected void onDestroy() {
         LogUtil.INSTANCE.log(TAG, "onDestroy");
-        glSurfaceView.destroy();
         cameraControl.onDestroy();
         eglSurfaceView.onDestroy();
         super.onDestroy();

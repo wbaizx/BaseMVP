@@ -1,4 +1,4 @@
-package com.camera_opengl.home.gl;
+package com.camera_opengl.home.gl.egl;
 
 import android.graphics.SurfaceTexture;
 

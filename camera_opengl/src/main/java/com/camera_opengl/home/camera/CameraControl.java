@@ -314,7 +314,7 @@ public class CameraControl {
                 ((float) mfinalSize.getWidth() / mfinalSize.getHeight()));
 
         //确定size后回传出去
-        cameraListener.confirmSize(mfinalSize);
+        cameraListener.confirmCameraSize(mfinalSize);
     }
 
     private void createSurface() {

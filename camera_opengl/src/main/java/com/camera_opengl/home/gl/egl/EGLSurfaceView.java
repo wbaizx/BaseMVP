@@ -1,18 +1,24 @@
 package com.camera_opengl.home.gl.egl;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGLConfig;
 import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
 import android.opengl.EGLSurface;
+import android.opengl.GLES30;
 import android.util.AttributeSet;
+import android.util.Size;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
+import com.camera_opengl.home.gl.renderer.BaseRenderer;
+import com.camera_opengl.home.gl.renderer.FBORenderer;
+import com.camera_opengl.home.gl.renderer.ScreenRenderer;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,6 +27,7 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     private static final String TAG = "EGLSurfaceView";
 
     private GLThread glThread;
+
 
     public EGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,15 +55,32 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         glThread.onDestroy();
     }
 
+    public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
+        glThread.setSurfaceTextureListener(surfaceTextureListener);
+    }
+
+    public void takePicture() {
+    }
+
+    public void confirmCameraSize(Size cameraSize) {
+        glThread.confirmCameraSize(cameraSize);
+    }
+
     private static class GLThread extends Thread {
         private ReentrantLock look = new ReentrantLock();
         private Condition condition = look.newCondition();
 
         private boolean isDestroy = false;
+
         private boolean isSurfaceCreated = false;
+        private boolean isFirstSurfaceCreated = false;
+
         private boolean isSurfaceChanged = false;
+        private boolean isFirstSurfaceChanged = false;
+
         private boolean isSurfaceDestroyed = false;
 
+        //SurfaceView的surface，用于屏幕显示
         private Surface surface;
 
         private EGLDisplay eglDisplay;
@@ -65,8 +89,21 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         private EGLSurface fboEglSurface;
         private EGLContext eglContext;
 
+        //接收相机数据的纹理
+        private int[] texture = new int[1];
+        private SurfaceTexture surfaceTexture;
+
+        //SurfaceView的宽高
         private int viewWidth;
         private int viewHeight;
+
+        private SurfaceTextureListener surfaceTextureListener;
+        private BaseRenderer fboRenderer = new FBORenderer();
+        private BaseRenderer screenRenderer = new ScreenRenderer();
+
+        public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
+            this.surfaceTextureListener = surfaceTextureListener;
+        }
 
         @Override
         public void run() {
@@ -82,6 +119,7 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             look.lock();
 
             this.isSurfaceCreated = true;
+            this.isFirstSurfaceCreated = true;
             this.isSurfaceDestroyed = false;
             this.surface = surface;
             LogUtil.INSTANCE.log(TAG, "surfaceCreated");
@@ -94,6 +132,7 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             look.lock();
 
             this.isSurfaceChanged = true;
+            this.isFirstSurfaceChanged = true;
             this.viewWidth = width;
             this.viewHeight = height;
             LogUtil.INSTANCE.log(TAG, "surfaceChanged  " + width + " -- " + height);
@@ -180,7 +219,7 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                             throw new RuntimeException("eglCreateContext fail");
                         }
 
-                        LogUtil.INSTANCE.log(TAG, "eglCreateContext success");
+                        LogUtil.INSTANCE.log(TAG, "eglCreateContext X");
                     }
 
                     if (isSurfaceCreated) {
@@ -191,7 +230,7 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                             if (screenEglSurface == EGL14.EGL_NO_SURFACE) {
                                 throw new RuntimeException("create screenEglSurface fail");
                             }
-                            LogUtil.INSTANCE.log(TAG, "create screenEglSurface success");
+                            LogUtil.INSTANCE.log(TAG, "create screenEglSurface X");
                         }
 
                         if (isSurfaceChanged) {
@@ -202,23 +241,68 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                                 if (fboEglSurface == EGL14.EGL_NO_SURFACE) {
                                     throw new RuntimeException("create fboEglSurface fail");
                                 }
-                                LogUtil.INSTANCE.log(TAG, "create fboEglSurface success");
+                                LogUtil.INSTANCE.log(TAG, "create fboEglSurface X");
                             }
                         }
 
-                        //准备完成，绑定EGL环境
+                        //初始化准备完成，可以绑定EGL环境以及渲染
                         if (fboEglSurface != null) {
                             if (!EGL14.eglMakeCurrent(eglDisplay, fboEglSurface, fboEglSurface, eglContext)) {
                                 throw new RuntimeException("eglMakeCurrent fail");
                             }
 
-                            LogUtil.INSTANCE.log(TAG, "eglMakeCurrent success");
-                            GLHelper.createExternalSurface(new int[1]);
+                            LogUtil.INSTANCE.log(TAG, "eglMakeCurrent X");
+
+                            if (surfaceTexture == null) {
+                                GLHelper.createExternalSurface(texture);
+                                surfaceTexture = new SurfaceTexture(texture[0]);
+                                surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+                                    @Override
+                                    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                                        LogUtil.INSTANCE.log(TAG, "onFrameAvailable");
+                                        requestRender();
+                                    }
+                                });
+                            }
+
+                            if (isFirstSurfaceCreated) {
+                                isFirstSurfaceCreated = false;
+
+                                //回传surfaceTexture，控制相机打开
+                                surfaceTextureListener.onSurfaceCreated(surfaceTexture);
+
+                                fboRenderer.onSurfaceCreated();
+                                fboRenderer.setInTexture(texture[0]);
+                                fboRenderer.setSurfaceTexture(surfaceTexture);
+
+                                screenRenderer.onSurfaceCreated();
+                                screenRenderer.setInTexture(fboRenderer.getOutTexture());
+                            }
+
+                            if (isFirstSurfaceChanged) {
+                                isFirstSurfaceChanged = false;
+
+                                fboRenderer.onSurfaceChanged(viewWidth, viewHeight);
+                                screenRenderer.onSurfaceChanged(viewWidth, viewHeight);
+                            }
+
+
+                            fboRenderer.onDrawFrame();
+                            EGL14.eglSwapBuffers(eglDisplay, fboEglSurface);
+
+                            if (!EGL14.eglMakeCurrent(eglDisplay, screenEglSurface, screenEglSurface, eglContext)) {
+                                throw new RuntimeException("eglMakeCurrent fail");
+                            }
+                            screenRenderer.onDrawFrame();
+                            EGL14.eglSwapBuffers(eglDisplay, screenEglSurface);
                         }
                     }
 
                     if (isSurfaceDestroyed) {
                         if (fboEglSurface != null || screenEglSurface != null) {
+                            fboRenderer.onSurfaceDestroy();
+                            screenRenderer.onSurfaceDestroy();
+
                             EGL14.eglDestroySurface(eglDisplay, fboEglSurface);
                             EGL14.eglDestroySurface(eglDisplay, screenEglSurface);
                             checkError("destroyedSurface");
@@ -228,6 +312,18 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                     }
 
                     if (isDestroy) {
+                        if (surfaceTexture != null) {
+                            GLES30.glDeleteTextures(texture.length, texture, 0);
+                            if (surfaceTexture != null) {
+                                surfaceTexture.release();
+                            }
+                            surfaceTexture = null;
+                            LogUtil.INSTANCE.log(TAG, "delete camera texture X");
+                        }
+
+                        fboRenderer.onDestroy();
+                        screenRenderer.onDestroy();
+
                         EGL14.eglDestroyContext(eglDisplay, eglContext);
                         checkError("destroyContext");
                         EGL14.eglTerminate(eglDisplay);
@@ -245,12 +341,24 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             }
         }
 
+        private void requestRender() {
+            look.lock();
+            LogUtil.INSTANCE.log(TAG, "requestRender");
+            condition.signal();
+            look.unlock();
+        }
+
         private void checkError(String msg) {
             if (EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
-                LogUtil.INSTANCE.log(TAG, msg + " success");
+                LogUtil.INSTANCE.log(TAG, msg + " X");
             } else {
                 throw new RuntimeException(msg + " fail");
             }
+        }
+
+        public void confirmCameraSize(Size cameraSize) {
+            fboRenderer.confirmReallySize(cameraSize);
+            screenRenderer.confirmReallySize(cameraSize);
         }
     }
 }

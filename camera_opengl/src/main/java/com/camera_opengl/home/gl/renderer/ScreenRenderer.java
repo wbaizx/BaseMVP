@@ -1,7 +1,7 @@
 package com.camera_opengl.home.gl.renderer;
 
+import android.graphics.SurfaceTexture;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Size;
 
@@ -10,10 +10,7 @@ import com.camera_opengl.home.gl.GLHelper;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-public class ScreenRenderer implements GLSurfaceView.Renderer {
+public class ScreenRenderer extends BaseRenderer {
     private static final String TAG = "ScreenRenderer";
 
     private static final int POSITION_LOCAL = 0;
@@ -48,13 +45,13 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
 
     private float[] posMatrixc = new float[16];
 
-    private int cameraWidth;
-    private int cameraHeight;
+    private int reallyWidth;
+    private int reallyHeight;
     private int viewWidth;
     private int viewHeight;
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -62,10 +59,30 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
 
         createVBO();
         createVAO();
+
+        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
 
-    public void setFBOtextureId(int textureId) {
+    @Override
+    public int getOutTexture() {
+        return 0;
+    }
+
+    @Override
+    public void setInTexture(int textureId) {
         this.textureId = textureId;
+    }
+
+    @Override
+    public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(int viewWidth, int viewHeight) {
+        LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + viewWidth + "--" + viewHeight);
+        this.viewWidth = viewWidth;
+        this.viewHeight = viewHeight;
     }
 
     private void createVBO() {
@@ -82,6 +99,8 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
                 textureCoordBuffer, GLES30.GL_STATIC_DRAW);
 
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
+
+        LogUtil.INSTANCE.log(TAG, "createVBO X");
     }
 
     private void createVAO() {
@@ -102,18 +121,19 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
         //解绑VAO
         GLES30.glBindVertexArray(GLES30.GL_NONE);
-    }
 
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + width + "--" + height);
-        this.viewWidth = width;
-        this.viewHeight = height;
+        LogUtil.INSTANCE.log(TAG, "createVAO X");
     }
 
     @Override
-    public void onDrawFrame(GL10 gl) {
+    public void confirmReallySize(Size cameraSize) {
+        //宽高需要对调
+        this.reallyWidth = cameraSize.getHeight();
+        this.reallyHeight = cameraSize.getWidth();
+    }
+
+    @Override
+    public void onDrawFrame() {
         GLES30.glViewport(0, 0, viewWidth, viewHeight);
         GLES30.glUseProgram(program);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
@@ -139,7 +159,7 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(posMatrixc, 0);
 
         float viewScale = (float) viewWidth / (float) viewHeight;
-        float cameraScale = (float) cameraWidth / (float) cameraHeight;
+        float cameraScale = (float) reallyWidth / (float) reallyHeight;
 
         final float aspectRatio = viewScale > cameraScale ?
                 viewScale / cameraScale :
@@ -168,23 +188,20 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void confirmSize(Size cameraSize) {
-        //宽高需要对调
-        this.cameraWidth = cameraSize.getHeight();
-        this.cameraHeight = cameraSize.getWidth();
-    }
-
+    @Override
     public void onSurfaceDestroy() {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy");
         GLES30.glDeleteProgram(program);
         GLES30.glDeleteBuffers(2, vboArray, 0);
         GLES30.glDeleteVertexArrays(1, vaoArray, 0);
+
         LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
     }
 
-    public void destroy() {
+    @Override
+    public void onDestroy() {
         vertexBuffer.clear();
         textureCoordBuffer.clear();
-        LogUtil.INSTANCE.log(TAG, "destroy X");
+
+        LogUtil.INSTANCE.log(TAG, "onDestroy X");
     }
 }

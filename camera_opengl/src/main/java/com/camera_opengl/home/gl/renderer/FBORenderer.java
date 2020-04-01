@@ -1,25 +1,16 @@
 package com.camera_opengl.home.gl.renderer;
 
-import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
 import android.util.Size;
 
-import com.base.common.util.ImageUtil;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
-import com.camera_opengl.home.gl.SurfaceTextureListener;
 
-import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-public class FBORenderer implements GLSurfaceView.Renderer {
+public class FBORenderer extends BaseRenderer {
     private static final String TAG = "FBORenderer";
 
     private static final int POSITION_LOCAL = 0;
@@ -47,13 +38,11 @@ public class FBORenderer implements GLSurfaceView.Renderer {
 
     private int program;
 
+    private int textureId;
+    private SurfaceTexture surfaceTexture;
+
     private int[] fboTexture = new int[1];
     private int[] fboArray = new int[1];
-
-    //接收相机数据的纹理
-    private int[] texture = new int[1];
-    private SurfaceTexture surfaceTexture;
-    private SurfaceTextureListener surfaceTextureListener;
 
     //VBO
     private int[] vboArray = new int[2];
@@ -63,17 +52,10 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     private int viewWidth;
     private int viewHeight;
 
-    private ScreenRenderer screenRenderer = new ScreenRenderer();
-
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-        GLHelper.createExternalSurface(texture);
-        surfaceTexture = new SurfaceTexture(texture[0]);
-        //回传surfaceTexture
-        surfaceTextureListener.onSurfaceCreated(surfaceTexture);
 
         program = GLHelper.compileAndLink("vshader/fbo_v_shader.glsl", "fshader/fbo_f_shader.glsl");
 
@@ -81,9 +63,30 @@ public class FBORenderer implements GLSurfaceView.Renderer {
         createVAO();
 
         GLHelper.createFBOSurface(fboTexture);
+        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
+    }
 
-        screenRenderer.onSurfaceCreated(gl, config);
-        screenRenderer.setFBOtextureId(fboTexture[0]);
+    @Override
+    public int getOutTexture() {
+        return fboTexture[0];
+    }
+
+    @Override
+    public void setInTexture(int textureId) {
+        this.textureId = textureId;
+    }
+
+    @Override
+    public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
+        this.surfaceTexture = surfaceTexture;
+    }
+
+    @Override
+    public void onSurfaceChanged(int viewWidth, int viewHeight) {
+        LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + viewWidth + "--" + viewHeight);
+        this.viewWidth = viewWidth;
+        this.viewHeight = viewHeight;
+        createFBO();
     }
 
     private void createVBO() {
@@ -100,6 +103,8 @@ public class FBORenderer implements GLSurfaceView.Renderer {
                 textureCoordBuffer, GLES30.GL_STATIC_DRAW);
 
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
+
+        LogUtil.INSTANCE.log(TAG, "createVBO X");
     }
 
     private void createVAO() {
@@ -120,6 +125,8 @@ public class FBORenderer implements GLSurfaceView.Renderer {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
         //解绑VAO
         GLES30.glBindVertexArray(GLES30.GL_NONE);
+
+        LogUtil.INSTANCE.log(TAG, "createVAO X");
     }
 
     private void createFBO() {
@@ -141,20 +148,17 @@ public class FBORenderer implements GLSurfaceView.Renderer {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
+
+        LogUtil.INSTANCE.log(TAG, "createFBO X");
     }
 
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + width + "--" + height);
-        viewWidth = width;
-        viewHeight = height;
-        surfaceTextureListener.onSurfaceChanged(width, height);
-        screenRenderer.onSurfaceChanged(gl, width, height);
+    public void confirmReallySize(Size cameraSize) {
     }
 
     @Override
-    public void onDrawFrame(GL10 gl) {
+    public void onDrawFrame() {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
 
         GLES30.glViewport(0, 0, viewWidth, viewHeight);
@@ -166,7 +170,7 @@ public class FBORenderer implements GLSurfaceView.Renderer {
         GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, texMatrix, 0);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
-        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
+        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
 
         GLES30.glBindVertexArray(vaoArray[0]);
 
@@ -178,59 +182,24 @@ public class FBORenderer implements GLSurfaceView.Renderer {
 
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
-        screenRenderer.onDrawFrame(gl);
     }
 
-    /**
-     * 在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
-     */
-    public void takePicture() {
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
-
-        ByteBuffer buf = ByteBuffer.allocateDirect(viewWidth * viewHeight * GLHelper.BYTES_PER_FLOAT);
-        GLES30.glReadPixels(0, 0, viewWidth, viewHeight, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, buf);
-        if (GLES30.glGetError() != GLES30.GL_NO_ERROR) {
-            throw new RuntimeException("获取像素失败");
-        }
-        Bitmap bmp = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888);
-        bmp.copyPixelsFromBuffer(buf);
-
-        File file = ImageUtil.INSTANCE.savePicture(bmp, "AA" + System.currentTimeMillis() + ".jpg");
-        LogUtil.INSTANCE.log(TAG, "savePicture " + file.getAbsolutePath());
-
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
-    }
-
-    public void confirmSize(Size cameraSize) {
-        LogUtil.INSTANCE.log(TAG, "cameraSize " + cameraSize.getHeight() + "--" + cameraSize.getWidth());
-        screenRenderer.confirmSize(cameraSize);
-        createFBO();
-    }
-
-    public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
-        this.surfaceTextureListener = surfaceTextureListener;
-    }
-
+    @Override
     public void onSurfaceDestroy() {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy");
         GLES30.glDeleteProgram(program);
-        GLES30.glDeleteTextures(texture.length, texture, 0);
-        if (surfaceTexture != null) {
-            surfaceTexture.release();
-        }
         GLES30.glDeleteBuffers(2, vboArray, 0);
         GLES30.glDeleteVertexArrays(1, vaoArray, 0);
         GLES30.glDeleteTextures(1, fboTexture, 0);
         GLES30.glDeleteFramebuffers(1, fboArray, 0);
-        screenRenderer.onSurfaceDestroy();
+
         LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
     }
 
-    public void destroy() {
+    @Override
+    public void onDestroy() {
         vertexBuffer.clear();
         textureCoordBuffer.clear();
-        surfaceTextureListener = null;
-        screenRenderer.destroy();
-        LogUtil.INSTANCE.log(TAG, "destroy X");
+
+        LogUtil.INSTANCE.log(TAG, "onDestroy X");
     }
 }
