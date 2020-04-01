@@ -5,7 +5,6 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.util.Size;
 
 import com.base.common.util.ImageUtil;
@@ -61,8 +60,8 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     //VAO
     private int[] vaoArray = new int[1];
 
-    private int previewWidth;
-    private int previewHeight;
+    private int viewWidth;
+    private int viewHeight;
 
     private ScreenRenderer screenRenderer = new ScreenRenderer();
 
@@ -133,7 +132,7 @@ public class FBORenderer implements GLSurfaceView.Renderer {
         // 将纹理连接到 FBO 附着
         GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D,
                 fboTexture[0], 0);
-        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGBA, previewWidth, previewHeight, 0,
+        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGBA, viewWidth, viewHeight, 0,
                 GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, null);
 
         if (GLES30.glCheckFramebufferStatus(GLES30.GL_FRAMEBUFFER) != GLES30.GL_FRAMEBUFFER_COMPLETE) {
@@ -148,8 +147,8 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + width + "--" + height);
-        previewWidth = width;
-        previewHeight = height;
+        viewWidth = width;
+        viewHeight = height;
         surfaceTextureListener.onSurfaceChanged(width, height);
         screenRenderer.onSurfaceChanged(gl, width, height);
     }
@@ -158,7 +157,7 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
 
-        GLES30.glViewport(0, 0, previewWidth, previewHeight);
+        GLES30.glViewport(0, 0, viewWidth, viewHeight);
         GLES30.glUseProgram(program);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
         surfaceTexture.updateTexImage();
@@ -188,12 +187,12 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     public void takePicture() {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
 
-        ByteBuffer buf = ByteBuffer.allocateDirect(previewWidth * previewHeight * GLHelper.BYTES_PER_FLOAT);
-        GLES30.glReadPixels(0, 0, previewWidth, previewHeight, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, buf);
+        ByteBuffer buf = ByteBuffer.allocateDirect(viewWidth * viewHeight * GLHelper.BYTES_PER_FLOAT);
+        GLES30.glReadPixels(0, 0, viewWidth, viewHeight, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, buf);
         if (GLES30.glGetError() != GLES30.GL_NO_ERROR) {
             throw new RuntimeException("获取像素失败");
         }
-        Bitmap bmp = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888);
+        Bitmap bmp = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888);
         bmp.copyPixelsFromBuffer(buf);
 
         File file = ImageUtil.INSTANCE.savePicture(bmp, "AA" + System.currentTimeMillis() + ".jpg");

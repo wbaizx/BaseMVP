@@ -17,6 +17,7 @@ import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraListener;
 import com.camera_opengl.home.gl.CameraGLSurfaceView;
 import com.camera_opengl.home.gl.SurfaceTextureListener;
+import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -42,6 +43,8 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     private CameraGLSurfaceView glSurfaceView;
     private CameraControl cameraControl;
 
+    private EGLSurfaceView eglSurfaceView;
+
     private ReentrantLock look = new ReentrantLock();
 
     @Override
@@ -57,6 +60,8 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     @Override
     protected void initView() {
         getPermissions();
+
+        eglSurfaceView = findViewById(R.id.eglSurfaceView);
 
         cameraControl = new CameraControl(this, this);
 
@@ -213,7 +218,8 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     protected void onDestroy() {
         LogUtil.INSTANCE.log(TAG, "onDestroy");
         glSurfaceView.destroy();
-        cameraControl.destroy();
+        cameraControl.onDestroy();
+        eglSurfaceView.onDestroy();
         super.onDestroy();
     }
 }

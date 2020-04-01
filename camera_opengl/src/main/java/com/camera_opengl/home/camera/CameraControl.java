@@ -509,7 +509,7 @@ public class CameraControl {
         });
     }
 
-    public void destroy() {
+    public void onDestroy() {
         activity = null;
         cameraListener = null;
         mSaveThread.interrupt();

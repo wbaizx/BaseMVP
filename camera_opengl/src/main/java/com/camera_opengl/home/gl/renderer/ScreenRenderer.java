@@ -48,8 +48,8 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
 
     private float[] posMatrixc = new float[16];
 
-    private int previewWidth;
-    private int previewHeight;
+    private int cameraWidth;
+    private int cameraHeight;
     private int viewWidth;
     private int viewHeight;
 
@@ -110,11 +110,11 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
         LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + width + "--" + height);
         this.viewWidth = width;
         this.viewHeight = height;
-        GLES30.glViewport(0, 0, width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        GLES30.glViewport(0, 0, viewWidth, viewHeight);
         GLES30.glUseProgram(program);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
@@ -139,14 +139,14 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(posMatrixc, 0);
 
         float viewScale = (float) viewWidth / (float) viewHeight;
-        float previewScale = (float) previewWidth / (float) previewHeight;
+        float cameraScale = (float) cameraWidth / (float) cameraHeight;
 
-        final float aspectRatio = viewScale > previewScale ?
-                viewScale / previewScale :
-                previewScale / viewScale;
+        final float aspectRatio = viewScale > cameraScale ?
+                viewScale / cameraScale :
+                cameraScale / viewScale;
 
         LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
-        if (viewScale > previewScale) {
+        if (viewScale > cameraScale) {
             //视图的宽高比更大，同高下视图更宽，映射出来应该缩放宽度
             //高度已经全屏，只能使用正交投影
             Matrix.orthoM(posMatrixc, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
@@ -170,8 +170,8 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
 
     public void confirmSize(Size cameraSize) {
         //宽高需要对调
-        this.previewWidth = cameraSize.getHeight();
-        this.previewHeight = cameraSize.getWidth();
+        this.cameraWidth = cameraSize.getHeight();
+        this.cameraHeight = cameraSize.getWidth();
     }
 
     public void onSurfaceDestroy() {
