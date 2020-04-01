@@ -148,6 +148,8 @@ public class FBORenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + width + "--" + height);
+        previewWidth = width;
+        previewHeight = height;
         surfaceTextureListener.onSurfaceChanged(width, height);
         screenRenderer.onSurfaceChanged(gl, width, height);
     }
@@ -185,6 +187,7 @@ public class FBORenderer implements GLSurfaceView.Renderer {
      */
     public void takePicture() {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
+
         ByteBuffer buf = ByteBuffer.allocateDirect(previewWidth * previewHeight * GLHelper.BYTES_PER_FLOAT);
         GLES30.glReadPixels(0, 0, previewWidth, previewHeight, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, buf);
         if (GLES30.glGetError() != GLES30.GL_NO_ERROR) {
@@ -195,14 +198,12 @@ public class FBORenderer implements GLSurfaceView.Renderer {
 
         File file = ImageUtil.INSTANCE.savePicture(bmp, "AA" + System.currentTimeMillis() + ".jpg");
         LogUtil.INSTANCE.log(TAG, "savePicture " + file.getAbsolutePath());
+
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
     }
 
     public void confirmSize(Size cameraSize) {
         LogUtil.INSTANCE.log(TAG, "cameraSize " + cameraSize.getHeight() + "--" + cameraSize.getWidth());
-        //宽高需要对调
-        this.previewWidth = cameraSize.getHeight();
-        this.previewHeight = cameraSize.getWidth();
         screenRenderer.confirmSize(cameraSize);
         createFBO();
     }

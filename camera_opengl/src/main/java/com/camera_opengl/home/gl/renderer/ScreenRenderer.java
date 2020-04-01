@@ -153,7 +153,7 @@ public class ScreenRenderer implements GLSurfaceView.Renderer {
         } else {
             //纹理的宽高比更大，同高下纹理更宽，映射出来应该缩放高度
             //方法一，使用正交矩阵，视图按比例居中
-//            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+            Matrix.orthoM(posMatrixc, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
 
             //方法二，按比例修改顶点(需注意使用VAO VBO的情况)，视图可控制居上
 //            float v = 2 - 2 / aspectRatio;
