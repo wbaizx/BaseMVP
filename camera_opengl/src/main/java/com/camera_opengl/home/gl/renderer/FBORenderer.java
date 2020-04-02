@@ -1,9 +1,7 @@
 package com.camera_opengl.home.gl.renderer;
 
-import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
-import android.util.Size;
 
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
@@ -17,29 +15,20 @@ public class FBORenderer extends BaseRenderer {
     private static final int TEXCOORD_LOCAL = 1;
     private static final int TEX_MATRIXC_LOCAL = 2;
 
-    private float[] vertex = {
+    private FloatBuffer vertexBuffer = GLHelper.getFloatBuffer(new float[]{
             -1.0f, 1.0f, //左上
             -1.0f, -1.0f, //左下
             1.0f, 1.0f,  //右上
             1.0f, -1.0f,  //右下
-    };
-
-    private float[] textureCoord = {
+    });
+    private FloatBuffer textureCoordBuffer = GLHelper.getFloatBuffer(new float[]{
             0.0f, 1.0f, //左上
             0.0f, 0.0f, //左下
             1.0f, 1.0f, //右上
             1.0f, 0.0f, //右下
-    };
-
-    private float[] texMatrix = new float[16];
-
-    private FloatBuffer vertexBuffer = GLHelper.getFloatBuffer(vertex);
-    private FloatBuffer textureCoordBuffer = GLHelper.getFloatBuffer(textureCoord);
+    });
 
     private int program;
-
-    private int textureId;
-    private SurfaceTexture surfaceTexture;
 
     private int[] fboTexture = new int[1];
     private int[] fboArray = new int[1];
@@ -49,13 +38,9 @@ public class FBORenderer extends BaseRenderer {
     //VAO
     private int[] vaoArray = new int[1];
 
-    private int viewWidth;
-    private int viewHeight;
-
     @Override
     public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
-        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         program = GLHelper.compileAndLink("vshader/fbo_v_shader.glsl", "fshader/fbo_f_shader.glsl");
 
@@ -63,6 +48,7 @@ public class FBORenderer extends BaseRenderer {
         createVAO();
 
         GLHelper.createFBOSurface(fboTexture);
+        createFBO();
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
 
@@ -72,21 +58,9 @@ public class FBORenderer extends BaseRenderer {
     }
 
     @Override
-    public void setInTexture(int textureId) {
-        this.textureId = textureId;
-    }
-
-    @Override
-    public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
-        this.surfaceTexture = surfaceTexture;
-    }
-
-    @Override
     public void onSurfaceChanged(int viewWidth, int viewHeight) {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + viewWidth + "--" + viewHeight);
-        this.viewWidth = viewWidth;
-        this.viewHeight = viewHeight;
-        createFBO();
+        super.onSurfaceChanged(viewWidth, viewHeight);
+        updateFBO();
     }
 
     private void createVBO() {
@@ -132,6 +106,13 @@ public class FBORenderer extends BaseRenderer {
     private void createFBO() {
         // 创建 FBO
         GLES30.glGenFramebuffers(1, fboArray, 0);
+        if (fboArray[0] == 0) {
+            throw new RuntimeException("创建fbo失败");
+        }
+        LogUtil.INSTANCE.log(TAG, "createFBO X");
+    }
+
+    private void updateFBO() {
         // 绑定 FBO
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
         // 绑定 FBO 纹理
@@ -143,34 +124,28 @@ public class FBORenderer extends BaseRenderer {
                 GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, null);
 
         if (GLES30.glCheckFramebufferStatus(GLES30.GL_FRAMEBUFFER) != GLES30.GL_FRAMEBUFFER_COMPLETE) {
-            throw new RuntimeException("创建fbo失败");
+            throw new RuntimeException("fbo挂载失败");
         }
+
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
 
-        LogUtil.INSTANCE.log(TAG, "createFBO X");
-    }
-
-
-    @Override
-    public void confirmReallySize(Size cameraSize) {
+        LogUtil.INSTANCE.log(TAG, "updateFBO X");
     }
 
     @Override
-    public void onDrawFrame() {
+    public void onDrawFrame(float[] surfaceMatrix) {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
-
         GLES30.glViewport(0, 0, viewWidth, viewHeight);
+
         GLES30.glUseProgram(program);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
-        surfaceTexture.updateTexImage();
 
-        surfaceTexture.getTransformMatrix(texMatrix);
-        GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, texMatrix, 0);
+        GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, surfaceMatrix, 0);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
-        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
+        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, inTextureId);
 
         GLES30.glBindVertexArray(vaoArray[0]);
 
@@ -182,6 +157,11 @@ public class FBORenderer extends BaseRenderer {
 
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
+    }
+
+    @Override
+    public void onDrawFrame() {
+
     }
 
     @Override
