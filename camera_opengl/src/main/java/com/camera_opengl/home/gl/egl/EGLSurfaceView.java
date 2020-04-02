@@ -37,8 +37,12 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         glThread.surfaceDestroyed();
     }
 
-    public void confirmCameraSize(Size cameraSize) {
-        glThread.confirmCameraSize(cameraSize);
+    public void confirmCameraSize(Size reallySize) {
+        glThread.confirmCameraSize(reallySize);
+    }
+
+    public void queueEvent(Runnable event) {
+        glThread.queueEvent(event);
     }
 
     public void takePicture() {

@@ -16,6 +16,7 @@ import com.camera_opengl.home.gl.renderer.BaseRenderer;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,6 +37,8 @@ public class GLThread extends Thread {
     private boolean isSurfaceDestroyed = false;
 
     private boolean hasData = false;
+    private boolean isConfirmCameraSize = false;
+    private Size reallySize;
 
     //SurfaceView的surface，用于屏幕显示
     private Surface surface;
@@ -58,6 +61,8 @@ public class GLThread extends Thread {
     private SurfaceTextureListener surfaceTextureListener;
     private BaseRenderer fboRenderer = new FBORenderer();
     private BaseRenderer screenRenderer = new ScreenRenderer();
+
+    private ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(10);
 
     public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
         this.surfaceTextureListener = surfaceTextureListener;
@@ -130,6 +135,10 @@ public class GLThread extends Thread {
             while (true) {
                 LogUtil.INSTANCE.log(TAG, "guardedRun");
 
+                while (!queue.isEmpty()) {
+                    queue.poll().run();
+                }
+
                 if (eglContext == null) {
                     initEglContext();
                 }
@@ -188,8 +197,15 @@ public class GLThread extends Thread {
                         }
 
                         if (isFirstSurfaceChanged) {
-                            //离屏分辨率，可以随便设置，但是过小会导致模糊，这里设置为控件或容器宽高
-                            fboRenderer.onSurfaceChanged(viewWidth, viewHeight);
+                            //离屏分辨率是由fbo挂载纹理决定，fbo中使用的是实际宽高，所以这里随意传
+                            fboRenderer.onSurfaceChanged(0, 0);
+                        }
+
+                        if (isConfirmCameraSize) {
+                            //这里决定fbo挂载纹理分辨率，这里设置为实际宽高
+                            //不会影响预览尺寸，但是过小会导致模糊
+                            //读取像素模式的拍照是从fbo挂载纹理中读取，所以这里的宽高决定读取的图片的宽高
+                            fboRenderer.confirmReallySize(reallySize);
                         }
 
                         if (hasData) {
@@ -215,6 +231,10 @@ public class GLThread extends Thread {
                             screenRenderer.onSurfaceChanged(viewWidth, viewHeight);
                         }
 
+                        if (isConfirmCameraSize) {
+                            screenRenderer.confirmReallySize(reallySize);
+                        }
+
                         if (hasData) {
                             screenRenderer.onDrawFrame();
                             EGL14.eglSwapBuffers(eglDisplay, screenEglSurface);
@@ -224,6 +244,7 @@ public class GLThread extends Thread {
                         isFirstSurfaceCreated = false;
                         isFirstSurfaceChanged = false;
                         hasData = false;
+                        isConfirmCameraSize = false;
                     }
 
                 }
@@ -326,11 +347,17 @@ public class GLThread extends Thread {
     /**
      * 此方法一定会在相机数据来之前回调
      *
-     * @param cameraSize
+     * @param reallySize
      */
-    public void confirmCameraSize(Size cameraSize) {
-        fboRenderer.confirmReallySize(cameraSize);
-        screenRenderer.confirmReallySize(cameraSize);
+    public void confirmCameraSize(Size reallySize) {
+        look.lock();
+
+        isConfirmCameraSize = true;
+        this.reallySize = reallySize;
+        LogUtil.INSTANCE.log(TAG, "confirmCameraSize");
+
+        condition.signal();
+        look.unlock();
     }
 
     private void requestRender() {
@@ -351,10 +378,36 @@ public class GLThread extends Thread {
         }
     }
 
-    public void queueEvent(Runnable event){
+    /**
+     * 添加需要再gl线程中执行的任务
+     *
+     * @param event
+     */
+    public void queueEvent(Runnable event) {
+        look.lock();
 
+        queue.offer(event);
+        LogUtil.INSTANCE.log(TAG, "queueEvent");
+
+        condition.signal();
+        look.unlock();
     }
 
+    /**
+     * 拍照，直接从opengl中读取像素
+     */
     public void takePicture() {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                if (isSurfaceCreated && fboEglSurface != null && eglContext != null) {
+                    if (!EGL14.eglMakeCurrent(eglDisplay, fboEglSurface, fboEglSurface, eglContext)) {
+                        throw new RuntimeException("eglMakeCurrent takePicture fail");
+                    }
+
+                    ((FBORenderer) fboRenderer).takePicture();
+                }
+            }
+        });
     }
 }
