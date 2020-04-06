@@ -1,14 +1,16 @@
 package com.camera_opengl.home.gl.renderer;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Size;
 
+import com.base.common.util.AndroidUtil;
 import com.base.common.util.ImageUtil;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
@@ -51,7 +53,7 @@ public class FBORenderer extends BaseRenderer {
     public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
 
-        program = GLHelper.compileAndLink("vshader/fbo_v_shader.glsl", "fshader/fbo_f_shader.glsl");
+        program = GLHelper.compileAndLink("fbo/fbo_v_shader.glsl", "fbo/fbo_f_shader.glsl");
 
         createVBO();
         createVAO();
@@ -192,19 +194,13 @@ public class FBORenderer extends BaseRenderer {
         LogUtil.INSTANCE.log(TAG, "onDestroy X");
     }
 
-    /**
-     * 读取像素
-     * 在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
-     * 华为手机获取为黑图，但在fbo中就没问题（原因不知）
-     */
+    @Override
     public void takePicture() {
         LogUtil.INSTANCE.log(TAG, "savePicture");
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
         ByteBuffer buf = ByteBuffer.allocate(reallyWidth * reallyHeight * GLHelper.BYTES_PER_FLOAT);
         GLES30.glReadPixels(0, 0, reallyWidth, reallyHeight, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, buf);
-        if (GLES30.glGetError() != GLES30.GL_NO_ERROR) {
-            throw new RuntimeException("获取像素失败");
-        }
+        GLHelper.glGetError("glReadPixels");
 
         Bitmap bmp = Bitmap.createBitmap(reallyWidth, reallyHeight, Bitmap.Config.ARGB_8888);
         bmp.copyPixelsFromBuffer(buf);
@@ -219,7 +215,15 @@ public class FBORenderer extends BaseRenderer {
         Rect rect = new Rect(0, 0, reallyWidth, reallyHeight);
         cv.drawBitmap(saveBmp, rect, rect, null);
 
-        File file = ImageUtil.INSTANCE.savePicture(saveBmp, "AA" + System.currentTimeMillis() + ".jpg");
+        File file = ImageUtil.INSTANCE.savePicture(saveBmp, "IMG_" + System.currentTimeMillis() + ".jpg");
+        if (ImageUtil.INSTANCE.updateGallery(file)) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    AndroidUtil.INSTANCE.showToast("拍照成功");
+                }
+            });
+        }
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
 
         buf.clear();

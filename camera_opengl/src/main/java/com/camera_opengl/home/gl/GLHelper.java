@@ -1,5 +1,6 @@
 package com.camera_opengl.home.gl;
 
+import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
 
@@ -133,5 +134,19 @@ public class GLHelper {
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
         }
         LogUtil.INSTANCE.log(TAG, "创建fbo挂载纹理 " + fboTexture[0]);
+    }
+
+    public static void glGetError(String msg) {
+        int error = GLES30.glGetError();
+        if (error != GLES30.GL_NO_ERROR) {
+            throw new RuntimeException(msg + " fail " + error);
+        }
+    }
+
+    public static void eglGetError(String msg) {
+        int error = EGL14.eglGetError();
+        if (error != EGL14.EGL_SUCCESS) {
+            throw new RuntimeException(msg + " fail " + error);
+        }
     }
 }

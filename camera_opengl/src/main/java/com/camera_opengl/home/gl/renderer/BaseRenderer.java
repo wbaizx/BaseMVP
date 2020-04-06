@@ -28,7 +28,7 @@ abstract public class BaseRenderer {
     public abstract void onSurfaceCreated();
 
     /**
-     * 输入纹理id，主要用于fbo输出
+     * 输出纹理id，主要用于fbo输出
      */
     public int getOutTexture() {
         return 0;
@@ -61,7 +61,8 @@ abstract public class BaseRenderer {
 
     /**
      * 每帧绘制方法
-     * @param surfaceMatrix  携带相机surface的矩阵信息，主要用于fbo中纹理矩阵配置
+     *
+     * @param surfaceMatrix 携带相机surface的矩阵信息，主要用于fbo中纹理矩阵配置
      */
     public void onDrawFrame(float[] surfaceMatrix) {
     }
@@ -69,6 +70,14 @@ abstract public class BaseRenderer {
     public abstract void onSurfaceDestroy();
 
     public abstract void onDestroy();
+
+    /**
+     * 读取像素
+     * 在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
+     * 华为手机获取为黑图，但在fbo中就没问题（原因不知）
+     */
+    public void takePicture() {
+    }
 
     /**
      * 用于计算顶点矩阵

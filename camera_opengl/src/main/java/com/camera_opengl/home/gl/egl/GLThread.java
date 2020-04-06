@@ -12,7 +12,6 @@ import android.view.Surface;
 
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
-import com.camera_opengl.home.gl.renderer.BaseRenderer;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;
 
@@ -59,8 +58,8 @@ public class GLThread extends Thread {
     private int viewHeight;
 
     private SurfaceTextureListener surfaceTextureListener;
-    private BaseRenderer fboRenderer = new FBORenderer();
-    private BaseRenderer screenRenderer = new ScreenRenderer();
+    private FBORenderer fboRenderer = new FBORenderer();
+    private ScreenRenderer screenRenderer = new ScreenRenderer();
 
     private ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(10);
 
@@ -182,7 +181,6 @@ public class GLThread extends Thread {
                             surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
                                 @Override
                                 public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                                    LogUtil.INSTANCE.log(TAG, "onFrameAvailable");
                                     requestRender();
                                 }
                             });
@@ -256,7 +254,8 @@ public class GLThread extends Thread {
 
                         EGL14.eglDestroySurface(eglDisplay, fboEglSurface);
                         EGL14.eglDestroySurface(eglDisplay, screenEglSurface);
-                        checkError("destroyedSurface");
+                        GLHelper.eglGetError("destroyedSurface");
+
                         fboEglSurface = null;
                         screenEglSurface = null;
                     }
@@ -276,9 +275,9 @@ public class GLThread extends Thread {
                     screenRenderer.onDestroy();
 
                     EGL14.eglDestroyContext(eglDisplay, eglContext);
-                    checkError("destroyContext");
+                    GLHelper.eglGetError("destroyContext");
                     EGL14.eglTerminate(eglDisplay);
-                    checkError("destroyDisplay");
+                    GLHelper.eglGetError("destroyDisplay");
                     eglContext = null;
                     return;
                 }
@@ -293,6 +292,9 @@ public class GLThread extends Thread {
         }
     }
 
+    /**
+     * 初始化egl环境
+     */
     private void initEglContext() {
         eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
         if (eglDisplay == EGL14.EGL_NO_DISPLAY) {
@@ -370,14 +372,6 @@ public class GLThread extends Thread {
         look.unlock();
     }
 
-    private void checkError(String msg) {
-        if (EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
-            LogUtil.INSTANCE.log(TAG, msg + " X");
-        } else {
-            throw new RuntimeException(msg + " fail");
-        }
-    }
-
     /**
      * 添加需要再gl线程中执行的任务
      *
@@ -404,8 +398,7 @@ public class GLThread extends Thread {
                     if (!EGL14.eglMakeCurrent(eglDisplay, fboEglSurface, fboEglSurface, eglContext)) {
                         throw new RuntimeException("eglMakeCurrent takePicture fail");
                     }
-
-                    ((FBORenderer) fboRenderer).takePicture();
+                    fboRenderer.takePicture();
                 }
             }
         });

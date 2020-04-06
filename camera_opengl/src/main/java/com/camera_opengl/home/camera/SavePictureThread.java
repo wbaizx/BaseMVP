@@ -41,13 +41,11 @@ public class SavePictureThread extends Thread {
             try {
                 look.lock();
                 if (!queue.isEmpty()) {
-                    LogUtil.INSTANCE.log(TAG, "run poll");
                     byte[] poll = queue.poll();
 
                     if (poll != null) {
-                        File file = ImageUtil.INSTANCE.savePicture(poll, "IMG" + System.currentTimeMillis() + ".jpg");
+                        File file = ImageUtil.INSTANCE.savePicture(poll, "IMG_" + System.currentTimeMillis() + ".jpg");
                         if (ImageUtil.INSTANCE.updateGallery(file)) {
-                            LogUtil.INSTANCE.log(TAG, "run saveSuccess");
                             mCameraHandler.post(new Runnable() {
                                 @Override
                                 public void run() {

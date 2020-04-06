@@ -1,8 +1,6 @@
 package com.camera_opengl.home.gl.renderer;
 
 import android.opengl.GLES30;
-import android.opengl.Matrix;
-import android.util.Size;
 
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
@@ -36,14 +34,14 @@ public class ScreenRenderer extends BaseRenderer {
     //VAO
     private int[] vaoArray = new int[1];
 
-    private float[] posMatrixc = new float[16];
+    private float[] posMatrix = new float[16];
 
     @Override
     public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        program = GLHelper.compileAndLink("vshader/screen_v_shader.glsl", "fshader/screen_f_shader.glsl");
+        program = GLHelper.compileAndLink("screen/screen_v_shader.glsl", "screen/screen_f_shader.glsl");
 
         createVBO();
         createVAO();
@@ -101,8 +99,8 @@ public class ScreenRenderer extends BaseRenderer {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, inTextureId);
 
-        calculationVertexMatrix(posMatrixc);
-        GLES30.glUniformMatrix4fv(POS_MATRIX_LOCAL, 1, false, posMatrixc, 0);
+        calculationVertexMatrix(posMatrix);
+        GLES30.glUniformMatrix4fv(POS_MATRIX_LOCAL, 1, false, posMatrix, 0);
 
         GLES30.glBindVertexArray(vaoArray[0]);
 

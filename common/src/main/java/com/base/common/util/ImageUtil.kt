@@ -64,7 +64,7 @@ object ImageUtil {
     }
 
     /**
-     * 文件已经保存，插入到相册显示，需要 WRITE_EXTERNAL_STORAGE 权限
+     * 文件已经保存，插入到相册显示，一般需要 WRITE_EXTERNAL_STORAGE 权限
      */
     fun updateGallery(file: File): Boolean {
         LogUtil.log(TAG, "updateGallery - ${file.length()} -- ${file.absolutePath}")
