@@ -1,5 +1,6 @@
 package com.camera_opengl.home.gl.renderer;
 
+import android.graphics.Bitmap;
 import android.opengl.Matrix;
 import android.util.Size;
 
@@ -76,7 +77,8 @@ abstract public class BaseRenderer {
      * 在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
      * 华为手机获取为黑图，但在fbo中就没问题（原因不知）
      */
-    public void takePicture() {
+    public Bitmap takePicture() {
+        return null;
     }
 
     /**

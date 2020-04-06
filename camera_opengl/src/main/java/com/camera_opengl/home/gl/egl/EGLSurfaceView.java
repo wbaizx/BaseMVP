@@ -6,6 +6,8 @@ import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.camera_opengl.home.ControlListener;
+
 public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "EGLSurfaceView";
 
@@ -20,6 +22,10 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
     public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
         glThread.setSurfaceTextureListener(surfaceTextureListener);
+    }
+
+    public void setControlListener(ControlListener controlListener) {
+        glThread.setControlListener(controlListener);
     }
 
     @Override

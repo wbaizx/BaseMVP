@@ -11,6 +11,7 @@ import android.util.Size;
 import android.view.Surface;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.ControlListener;
 import com.camera_opengl.home.gl.GLHelper;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;
@@ -58,6 +59,8 @@ public class GLThread extends Thread {
     private int viewHeight;
 
     private SurfaceTextureListener surfaceTextureListener;
+    private ControlListener controlListener;
+
     private FBORenderer fboRenderer = new FBORenderer();
     private ScreenRenderer screenRenderer = new ScreenRenderer();
 
@@ -65,6 +68,10 @@ public class GLThread extends Thread {
 
     public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
         this.surfaceTextureListener = surfaceTextureListener;
+    }
+
+    public void setControlListener(ControlListener controlListener) {
+        this.controlListener = controlListener;
     }
 
     @Override
@@ -279,6 +286,7 @@ public class GLThread extends Thread {
                     EGL14.eglTerminate(eglDisplay);
                     GLHelper.eglGetError("destroyDisplay");
                     eglContext = null;
+                    controlListener = null;
                     return;
                 }
 
@@ -398,7 +406,8 @@ public class GLThread extends Thread {
                     if (!EGL14.eglMakeCurrent(eglDisplay, fboEglSurface, fboEglSurface, eglContext)) {
                         throw new RuntimeException("eglMakeCurrent takePicture fail");
                     }
-                    fboRenderer.takePicture();
+                    //在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
+                    controlListener.imageAvailable(fboRenderer.takePicture(), false, true);
                 }
             }
         });

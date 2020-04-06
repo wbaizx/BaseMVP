@@ -3,6 +3,7 @@ package com.camera_opengl.home;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.util.Size;
 import android.view.View;
@@ -14,9 +15,8 @@ import com.base.common.base.BaseActivity;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
-import com.camera_opengl.home.camera.CameraListener;
-import com.camera_opengl.home.gl.egl.SurfaceTextureListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
+import com.camera_opengl.home.gl.egl.SurfaceTextureListener;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -32,7 +32,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 //RouteString.CAMERA_HOME
 //RouteString.isNeedLogin
 @Route(path = "/camera/camera_home", name = "组件化camera首页", extras = 1)
-public class CameraActivity extends BaseActivity implements CameraListener, SurfaceTextureListener {
+public class CameraActivity extends BaseActivity implements ControlListener, SurfaceTextureListener {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;
 
@@ -44,6 +44,8 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     private EGLSurfaceView eglSurfaceView;
 
     private ReentrantLock look = new ReentrantLock();
+
+    private SavePictureThread mSaveThread;
 
     @Override
     protected int getContentView() {
@@ -59,10 +61,14 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     protected void initView() {
         getPermissions();
 
+        mSaveThread = new SavePictureThread();
+        mSaveThread.start();
+
         cameraControl = new CameraControl(this, this);
 
         eglSurfaceView = findViewById(R.id.eglSurfaceView);
         eglSurfaceView.setSurfaceTextureListener(this);
+        eglSurfaceView.setControlListener(this);
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +193,16 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
     }
 
     @Override
+    public void imageAvailable(byte[] bytes, boolean horizontalMirror, boolean verticalMirror) {
+        mSaveThread.putData(bytes, horizontalMirror, verticalMirror);
+    }
+
+    @Override
+    public void imageAvailable(Bitmap btm, boolean horizontalMirror, boolean verticalMirror) {
+        mSaveThread.putData(btm, horizontalMirror, verticalMirror);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
 
@@ -207,6 +223,7 @@ public class CameraActivity extends BaseActivity implements CameraListener, Surf
         LogUtil.INSTANCE.log(TAG, "onDestroy");
         cameraControl.onDestroy();
         eglSurfaceView.onDestroy();
+        mSaveThread.interrupt();
         super.onDestroy();
     }
 }

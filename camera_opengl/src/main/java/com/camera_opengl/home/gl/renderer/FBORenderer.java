@@ -1,21 +1,13 @@
 package com.camera_opengl.home.gl.renderer;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Size;
 
-import com.base.common.util.AndroidUtil;
-import com.base.common.util.ImageUtil;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.gl.GLHelper;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
@@ -195,40 +187,19 @@ public class FBORenderer extends BaseRenderer {
     }
 
     @Override
-    public void takePicture() {
-        LogUtil.INSTANCE.log(TAG, "savePicture");
+    public Bitmap takePicture() {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
         ByteBuffer buf = ByteBuffer.allocate(reallyWidth * reallyHeight * GLHelper.BYTES_PER_FLOAT);
         GLES30.glReadPixels(0, 0, reallyWidth, reallyHeight, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, buf);
         GLHelper.glGetError("glReadPixels");
 
-        Bitmap bmp = Bitmap.createBitmap(reallyWidth, reallyHeight, Bitmap.Config.ARGB_8888);
-        bmp.copyPixelsFromBuffer(buf);
-
-        Matrix m = new Matrix();
-        m.postScale(1, -1);   //镜像垂直翻转
-//        m.postScale(-1, 1);   //镜像水平翻转
-//        m.postRotate(-90);  //旋转-90度
-
-        Canvas cv = new Canvas(bmp);
-        Bitmap saveBmp = Bitmap.createBitmap(bmp, 0, 0, reallyWidth, reallyHeight, m, true);
-        Rect rect = new Rect(0, 0, reallyWidth, reallyHeight);
-        cv.drawBitmap(saveBmp, rect, rect, null);
-
-        File file = ImageUtil.INSTANCE.savePicture(saveBmp, "IMG_" + System.currentTimeMillis() + ".jpg");
-        if (ImageUtil.INSTANCE.updateGallery(file)) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    AndroidUtil.INSTANCE.showToast("拍照成功");
-                }
-            });
-        }
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
+        Bitmap btm = Bitmap.createBitmap(reallyWidth, reallyHeight, Bitmap.Config.ARGB_8888);
+        btm.copyPixelsFromBuffer(buf);
 
         buf.clear();
-        bmp.recycle();
-        saveBmp.recycle();
-        LogUtil.INSTANCE.log(TAG, "savePicture X " + file.getAbsolutePath());
+        LogUtil.INSTANCE.log(TAG, "takePicture glReadPixels X");
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
+
+        return btm;
     }
 }

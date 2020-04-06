@@ -30,6 +30,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.base.common.util.AndroidUtil;
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.ControlListener;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class CameraControl {
     private static final String TAG = "CameraControl";
 
     private Activity activity;
-    private CameraListener cameraListener;
+    private ControlListener controlListener;
 
     private CameraManager manager;
     private Integer mSensorOrientation;
@@ -59,8 +60,6 @@ public class CameraControl {
     private int expectHeight = AndroidUtil.INSTANCE.getScreenWidth();
     //最终确定的尺寸
     private Size mfinalSize;
-
-    private SavePictureThread mSaveThread;
 
     private HandlerThread mCameraThread;
     private Handler mCameraHandler;
@@ -103,21 +102,14 @@ public class CameraControl {
     private final int TAKE_PICTURE = 2;
     private int mState = PREVIEW;
 
-    public CameraControl(Activity activity, CameraListener cameraListener) {
+    public CameraControl(Activity activity, ControlListener controlListener) {
         this.activity = activity;
-        this.cameraListener = cameraListener;
+        this.controlListener = controlListener;
         manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
-
-        mSaveThread = new SavePictureThread();
-        mSaveThread.start();
     }
 
     public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
         this.surfaceTexture = surfaceTexture;
-    }
-
-    public SurfaceTexture getSurfaceTexture() {
-        return surfaceTexture;
     }
 
     public void startCameraThread() {
@@ -218,8 +210,8 @@ public class CameraControl {
             byte[] bytes = new byte[byteBuffer.remaining()];
             byteBuffer.get(bytes);
 
-            mSaveThread.putData(bytes);
-            mSaveThread.signal();
+            controlListener.imageAvailable(bytes,
+                    cameraOrientation == CameraCharacteristics.LENS_FACING_FRONT, false);
 
             image.close();
             LogUtil.INSTANCE.log(TAG, "onImageAvailable X");
@@ -314,7 +306,7 @@ public class CameraControl {
                 ((float) mfinalSize.getWidth() / mfinalSize.getHeight()));
 
         //确定size后回传出去
-        cameraListener.confirmCameraSize(mfinalSize);
+        controlListener.confirmCameraSize(mfinalSize);
     }
 
     private void createSurface() {
@@ -511,8 +503,7 @@ public class CameraControl {
 
     public void onDestroy() {
         activity = null;
-        cameraListener = null;
-        mSaveThread.interrupt();
+        controlListener = null;
         LogUtil.INSTANCE.log(TAG, "destroy X");
     }
 }
