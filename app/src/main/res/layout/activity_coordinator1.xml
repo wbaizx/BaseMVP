@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".main.coordinator.coordinator1.Coordinator1Activity">
 
+    <!--app:layout_behavior="com.yuruiyin.appbarlayoutbehavior.AppBarLayoutBehavior"-->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
@@ -15,7 +16,9 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:contentScrim="@color/color_black"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:scrimAnimationDuration="800">
 
             <LinearLayout
                 android:layout_width="match_parent"

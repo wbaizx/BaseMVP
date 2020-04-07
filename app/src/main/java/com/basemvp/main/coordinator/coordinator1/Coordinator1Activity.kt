@@ -5,13 +5,14 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
 import com.base.common.util.LogUtil
+import com.basemvp.R
 import com.google.android.material.appbar.AppBarLayout
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_coordinator1.*
+import kotlin.math.abs
 
 @Route(path = RouteString.COORDINATOR1, name = "折叠滚动布局第一种 coordinator1")
 class Coordinator1Activity : BaseActivity() {
@@ -49,7 +50,7 @@ class Coordinator1Activity : BaseActivity() {
         }
 
         appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBar, offset ->
-            val off = -offset.toFloat()
+            val off = abs(offset.toFloat())
             toolbar.alpha = off / appBar.totalScrollRange
             testArea.y = appBar.totalScrollRange.toFloat() + toolbar.paddingTop
             testArea.translationX = -off
