@@ -20,10 +20,11 @@ import javax.net.ssl.X509TrustManager
 
 
 object BaseHttp {
+    //网络连接时间
     private const val TIMEOUT = 10
-    //2Mb
+    //缓存大小2Mb
     private const val CACHEMAXSIZE = 1024 * 1024 * 2
-    //5秒
+    //缓存时间5秒
     private const val CACHETIME = 5
 
     private const val BASE_URL = "https://easy-mock.com/"
@@ -63,7 +64,6 @@ object BaseHttp {
         }
     }
 
-
     /**
      * 日志拦截
      * release 版本需要去掉
@@ -98,11 +98,11 @@ object BaseHttp {
 
 
     //如果okhttp使用了拦截器，则下载不会实时回调
-    private val client by lazy {
+    private fun getBaseClient(): OkHttpClient {
         LogUtil.log("BaseHttp", "client")
         val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "BaseHttpCache")
         val cache = Cache(cacheFile, CACHEMAXSIZE.toLong())
-        OkHttpClient.Builder()
+        return OkHttpClient.Builder()
             .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
             .addInterceptor(baseInterceptor)
@@ -114,10 +114,32 @@ object BaseHttp {
             .build()
     }
 
+    /**
+     * 带各种拦截器的Retrofit，用于普通网络请求
+     */
     val retrofit: Retrofit by lazy {
         LogUtil.log("BaseHttp", "retrofit")
         Retrofit.Builder()
-            .client(client)
+            .client(getBaseClient())
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * 最简单的Retrofit，主要用于下载
+     */
+    val simpleRetrofit: Retrofit by lazy {
+        LogUtil.log("BaseHttp", "retrofit")
+        Retrofit.Builder()
+            .client(
+                OkHttpClient.Builder()
+                    .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
+                    .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
+//                    .sslSocketFactory(getSSLSocketFactory(), trustAllCerts[0])
+//                    .hostnameVerifier(HostnameVerifier { hostname, session -> true })
+                    .build()
+            )
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

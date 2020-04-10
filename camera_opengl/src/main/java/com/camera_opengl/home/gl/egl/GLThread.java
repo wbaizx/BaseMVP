@@ -191,12 +191,11 @@ public class GLThread extends Thread {
                                     requestRender();
                                 }
                             });
+                            //回传surfaceTexture
+                            surfaceTextureListener.onSurfaceCreated(surfaceTexture);
                         }
 
                         if (isFirstSurfaceCreated) {
-                            //回传surfaceTexture，控制相机打开
-                            surfaceTextureListener.onSurfaceCreated(surfaceTexture);
-
                             fboRenderer.onSurfaceCreated();
                             fboRenderer.setInTexture(texture[0]);
                         }

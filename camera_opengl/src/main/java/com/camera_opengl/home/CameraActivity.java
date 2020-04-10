@@ -179,7 +179,7 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
     }
 
     private void openCamera() {
-        LogUtil.INSTANCE.log(TAG, "try openCamera");
+        LogUtil.INSTANCE.log(TAG, "try openCamera " + hasPermissions + "-" + isResume + "-" + isSurfaceCreated);
         if (hasPermissions && isResume && isSurfaceCreated) {
             LogUtil.INSTANCE.log(TAG, "openCamera");
             cameraControl.startCameraThread();
@@ -214,7 +214,6 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
         }
 
         isResume = false;
-        isSurfaceCreated = false;
         look.unlock();
     }
 
