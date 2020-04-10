@@ -13,12 +13,9 @@ import java.net.UnknownHostException
 /**
  * CoroutineScope
  * GlobalScope  用于启动全局协程
- * MainScope
  * Dispatchers  运行线程切换
  *
- * runBlocking()
- *
- * by CoroutineScope(Dispatchers.Main)
+ * by CoroutineScope(Dispatchers.Main) 用这种方式async会有bug，所以用 by MainScope()方式
  */
 abstract class BasePresenterImpl<V, M>(protected var view: V?, protected var model: M) : CoroutineScope by MainScope() {
 

@@ -6,6 +6,7 @@ import android.opengl.GLES30;
 import android.util.Size;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.R;
 import com.camera_opengl.home.gl.GLHelper;
 
 import java.nio.ByteBuffer;
@@ -50,8 +51,9 @@ public class FBORenderer extends BaseRenderer {
         createVBO();
         createVAO();
 
-        GLHelper.createFBOSurface(fboTexture);
+        GLHelper.createFBOTexture(fboTexture);
         createFBO();
+//        GLHelper.createLUTFilterTexture(R.drawable.amatorka,new int[1]);
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
 

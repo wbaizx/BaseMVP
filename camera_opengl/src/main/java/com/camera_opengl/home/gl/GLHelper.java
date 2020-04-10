@@ -1,8 +1,11 @@
 package com.camera_opengl.home.gl;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
+import android.opengl.GLUtils;
 
 import com.base.common.BaseAPP;
 import com.base.common.util.LogUtil;
@@ -106,34 +109,59 @@ public class GLHelper {
         return floatBuffer;
     }
 
-    public static void createExternalSurface(int[] texture) {
+    public static void createExternalTexture(int[] texture) {
         GLES30.glGenTextures(1, texture, 0);
         if (texture[0] == 0) {
             throw new RuntimeException("创建外部纹理失败");
-        } else {
-            GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
-            GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
-            GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
-            GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
-            GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
-            GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
         }
+        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
+        GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
+
         LogUtil.INSTANCE.log(TAG, "创建外部纹理成功 " + texture[0]);
     }
 
-    public static void createFBOSurface(int[] fboTexture) {
+    public static void createFBOTexture(int[] fboTexture) {
         GLES30.glGenTextures(1, fboTexture, 0);
         if (fboTexture[0] == 0) {
             throw new RuntimeException("创建fbo挂载纹理失败");
-        } else {
-            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, fboTexture[0]);
-            GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
-            GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
-            GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
-            GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
-            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
         }
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, fboTexture[0]);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
+
         LogUtil.INSTANCE.log(TAG, "创建fbo挂载纹理 " + fboTexture[0]);
+    }
+
+    public static void createLUTFilterTexture(int resId, int[] texture) {
+        GLES30.glGenTextures(1, texture, 0);
+        if (texture[0] == 0) {
+            throw new RuntimeException("创建滤镜纹理失败");
+        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        //原尺寸加载位图资源（禁止缩放）
+        options.inScaled = false;
+        Bitmap bitmap = BitmapFactory.decodeResource(BaseAPP.baseAppContext.getResources(), resId, options);
+        if (bitmap == null) {
+            GLES30.glDeleteTextures(1, texture, 0);
+            throw new RuntimeException("加载位图失败");
+        }
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture[0]);
+        //设置放大、缩小时的纹理过滤方式，必须设定，否则纹理全黑
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+        //将位图加载到opengl中，并复制到当前绑定的纹理对象上
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
+        bitmap.recycle();
+        LogUtil.INSTANCE.log(TAG, "创建滤镜纹理成功 " + texture[0]);
     }
 
     public static void glGetError(String msg) {

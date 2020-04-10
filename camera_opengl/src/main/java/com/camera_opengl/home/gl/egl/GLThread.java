@@ -183,7 +183,7 @@ public class GLThread extends Thread {
                         }
                         if (surfaceTexture == null) {
                             //创建外部纹理用于接收相机数据
-                            GLHelper.createExternalSurface(texture);
+                            GLHelper.createExternalTexture(texture);
                             surfaceTexture = new SurfaceTexture(texture[0]);
                             surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
                                 @Override
