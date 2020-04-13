@@ -81,7 +81,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     fun showLoadDialog() {
         if (!loadDialog.isShow) {
             LogUtil.log(TAG, "showLoadDialog")
-            loadDialog.showDialog("loading")
+            loadDialog.showDialog()
         }
     }
 

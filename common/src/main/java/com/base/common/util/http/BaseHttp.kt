@@ -66,6 +66,9 @@ object BaseHttp {
 
     /**
      * 日志拦截
+     * HttpLoggingInterceptor拦截器如果level设置成Body，则下载不会实时回调
+     * 改成其他即可
+     *
      * release 版本需要去掉
      */
     private val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -97,7 +100,6 @@ object BaseHttp {
     })
 
 
-    //如果okhttp使用了拦截器，则下载不会实时回调
     private fun getBaseClient(): OkHttpClient {
         LogUtil.log("BaseHttp", "client")
         val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "BaseHttpCache")

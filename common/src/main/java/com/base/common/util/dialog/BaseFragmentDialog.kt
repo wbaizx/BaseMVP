@@ -143,9 +143,11 @@ abstract class BaseFragmentDialog : DialogFragment() {
     /**
      * 调用showDialog展示dialog，注意已经show了再调容易出错，可以用isShow标志控制
      */
-    fun showDialog(tag: String) {
+    fun showDialog() {
         //onSaveInstanceState调用后，最好不要调showDialog
         if (!isSaveInstanceState) {
+            val tag = getDialogTag()
+            LogUtil.log(TAG, "showDialog  $tag")
             val ft = mActivity.supportFragmentManager.beginTransaction()
             val prev = mActivity.supportFragmentManager.findFragmentByTag(tag)
             if (prev != null) {
@@ -156,6 +158,8 @@ abstract class BaseFragmentDialog : DialogFragment() {
             isShow = true
         }
     }
+
+    fun getDialogTag() = "fragment_tag_${this::class.java.simpleName}_${hashCode()}"
 
     /**
      * 任何关闭的情况都会回调该方法，包括activity旋转重建也会回调该方法，但我们在activity旋转时不需要回调

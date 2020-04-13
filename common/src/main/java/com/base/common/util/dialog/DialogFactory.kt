@@ -28,7 +28,7 @@ object DialogFactory {
         dialog.yesClick = yesClick
         dialog.noName = noName
         dialog.noClick = noClick
-        dialog.showDialog("normal")
+        dialog.showDialog()
     }
 }
 
