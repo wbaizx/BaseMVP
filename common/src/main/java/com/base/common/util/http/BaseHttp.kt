@@ -115,9 +115,9 @@ object BaseHttp {
     }
 
     /**
-     * 带各种拦截器的Retrofit，用于普通网络请求
+     * 带各种拦截器的普通Retrofit，主要用于普通网络请求
      */
-    val retrofit: Retrofit by lazy {
+    val normalRetrofit: Retrofit by lazy {
         LogUtil.log("BaseHttp", "retrofit")
         Retrofit.Builder()
             .client(getBaseClient())
@@ -127,7 +127,7 @@ object BaseHttp {
     }
 
     /**
-     * 最简单的Retrofit，主要用于下载
+     * 最简单的Retrofit，不带拦截器，主要用于下载
      */
     val simpleRetrofit: Retrofit by lazy {
         LogUtil.log("BaseHttp", "retrofit")
