@@ -27,6 +27,7 @@ public class FBORenderer extends BaseRenderer {
             1.0f, 1.0f,  //右上
             1.0f, -1.0f,  //右下
     });
+
     private FloatBuffer textureCoordBuffer = GLHelper.getFloatBuffer(new float[]{
             0.0f, 1.0f, //左上
             0.0f, 0.0f, //左下
@@ -48,6 +49,8 @@ public class FBORenderer extends BaseRenderer {
     private int filterType = -1;
     private int[] filterTexture = new int[1];
 
+    private WatermarkRenderer watermarkRenderer = new WatermarkRenderer();
+
     @Override
     public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
@@ -62,6 +65,7 @@ public class FBORenderer extends BaseRenderer {
 
         GLHelper.createLUTFilterTexture(R.drawable.amatorka, filterTexture);
 
+        watermarkRenderer.onSurfaceCreated();
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
 
@@ -149,8 +153,8 @@ public class FBORenderer extends BaseRenderer {
 
     @Override
     public void onDrawFrame(float[] surfaceMatrix) {
-        GLES30.glUseProgram(program);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
+        GLES30.glUseProgram(program);
         GLES30.glViewport(0, 0, reallyWidth, reallyHeight);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
@@ -171,6 +175,8 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glDisableVertexAttribArray(TEXCOORD_LOCAL);
 
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
+
+        watermarkRenderer.onDrawFrame();
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
     }
 
@@ -188,6 +194,7 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glDeleteFramebuffers(1, fboArray, 0);
         GLES30.glDeleteTextures(filterTexture.length, filterTexture, 0);
 
+        watermarkRenderer.onSurfaceDestroy();
         LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
     }
 
@@ -196,6 +203,7 @@ public class FBORenderer extends BaseRenderer {
         vertexBuffer.clear();
         textureCoordBuffer.clear();
 
+        watermarkRenderer.onDestroy();
         LogUtil.INSTANCE.log(TAG, "onDestroy X");
     }
 

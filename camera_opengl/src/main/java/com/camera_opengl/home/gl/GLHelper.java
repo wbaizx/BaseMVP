@@ -161,11 +161,34 @@ public class GLHelper {
         GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
         //将位图加载到opengl中，并复制到当前绑定的纹理对象上
         GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
 
         bitmap.recycle();
 
         LogUtil.INSTANCE.log(TAG, "创建LUT滤镜纹理成功 " + texture[0]);
+    }
+
+    /**
+     * 创建水印纹理
+     */
+    public static void createWatermarkTexture(Bitmap watermarkBitmap, int[] watermarkTexture) {
+        GLES30.glGenTextures(1, watermarkTexture, 0);
+        if (watermarkTexture[0] == 0) {
+            throw new RuntimeException("创建水印纹理失败");
+        }
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, watermarkTexture[0]);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_REPEAT);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, watermarkBitmap, 0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
+
+//        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
+
+        watermarkBitmap.recycle();
+
+        LogUtil.INSTANCE.log(TAG, "创建水印纹理 " + watermarkTexture[0]);
     }
 
     public static void glGetError(String msg) {
