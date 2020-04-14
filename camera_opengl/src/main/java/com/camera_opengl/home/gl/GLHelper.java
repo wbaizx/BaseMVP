@@ -139,28 +139,38 @@ public class GLHelper {
         LogUtil.INSTANCE.log(TAG, "创建fbo挂载纹理 " + fboTexture[0]);
     }
 
-    public static void createLUTFilterTexture(int resId, int[] texture) {
-        GLES30.glGenTextures(1, texture, 0);
-        if (texture[0] == 0) {
-            throw new RuntimeException("创建滤镜纹理失败");
-        }
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        //原尺寸加载位图资源（禁止缩放）
-        options.inScaled = false;
-        Bitmap bitmap = BitmapFactory.decodeResource(BaseAPP.baseAppContext.getResources(), resId, options);
-        if (bitmap == null) {
-            GLES30.glDeleteTextures(1, texture, 0);
-            throw new RuntimeException("加载位图失败");
-        }
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture[0]);
-        //设置放大、缩小时的纹理过滤方式，必须设定，否则纹理全黑
-        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
-        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
-        //将位图加载到opengl中，并复制到当前绑定的纹理对象上
-        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+    /**
+     * 同时创建多个滤镜纹理
+     *
+     * @param resId
+     * @param texture
+     */
+    public static void createLUTFilterTexture(int[] resId, int[] texture) {
+        GLES30.glGenTextures(texture.length, texture, 0);
 
-        bitmap.recycle();
+        for (int i = 0; i < texture.length; i++) {
+            if (texture[i] == 0) {
+                throw new RuntimeException("创建滤镜纹理失败");
+            }
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            //原尺寸加载位图资源（禁止缩放）
+            options.inScaled = false;
+            Bitmap bitmap = BitmapFactory.decodeResource(BaseAPP.baseAppContext.getResources(), resId[i], options);
+            if (bitmap == null) {
+                GLES30.glDeleteTextures(1, texture, 0);
+                throw new RuntimeException("加载位图失败");
+            }
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture[i]);
+            //设置放大、缩小时的纹理过滤方式，必须设定，否则纹理全黑
+            GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+            GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+            //将位图加载到opengl中，并复制到当前绑定的纹理对象上
+            GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
+            bitmap.recycle();
+        }
+
         LogUtil.INSTANCE.log(TAG, "创建滤镜纹理成功 " + texture[0]);
     }
 

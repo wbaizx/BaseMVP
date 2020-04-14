@@ -54,6 +54,9 @@ public class CameraControl {
     public static final float RATIO_4_3 = 4f / 3;
     public static final float RATIO_16_9 = 16f / 9;
     private float aspectRatio = RATIO_16_9;
+
+    //因为activity使用沉浸式，获取的屏幕高度会不准确，需要加上导航栏和状态栏高度
+    //ImmersionBar.getNavigationBarHeight(activity) + ImmersionBar.getStatusBarHeight(activity)
     //期望预览宽，宽高需要对调
     private int expectWidth = AndroidUtil.INSTANCE.getScreenHeight();
     //期望预览高，宽高需要对调

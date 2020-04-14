@@ -18,6 +18,7 @@ public class FBORenderer extends BaseRenderer {
     private static final int POSITION_LOCAL = 0;
     private static final int TEXCOORD_LOCAL = 1;
     private static final int TEX_MATRIXC_LOCAL = 2;
+    private static final int FILTER_LOCAL = 3;
 
     private FloatBuffer vertexBuffer = GLHelper.getFloatBuffer(new float[]{
             -1.0f, 1.0f, //左上
@@ -42,6 +43,10 @@ public class FBORenderer extends BaseRenderer {
     //VAO
     private int[] vaoArray = new int[1];
 
+    //滤镜1
+    private int[] filterTexture = new int[3];
+    private int[] filterRes = new int[]{R.drawable.amatorka, R.drawable.highkey, R.drawable.purity};
+
     @Override
     public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
@@ -53,7 +58,9 @@ public class FBORenderer extends BaseRenderer {
 
         GLHelper.createFBOTexture(fboTexture);
         createFBO();
-//        GLHelper.createLUTFilterTexture(R.drawable.amatorka,new int[1]);
+
+        GLHelper.createLUTFilterTexture(filterRes, filterTexture);
+
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
 
@@ -149,8 +156,15 @@ public class FBORenderer extends BaseRenderer {
 
         GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, surfaceMatrix, 0);
 
+        //激活启用0纹理单元，绑定输入纹理数据
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, inTextureId);
+
+        //激活启用1纹理单元，绑定滤镜纹理数据，
+        //调用glUniform1i传递1（个人理解glUniform1i仅是告诉层级关系的，所以上面原始数据可以不调，默认为0）
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE1);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, filterTexture[0]);
+        GLES30.glUniform1i(FILTER_LOCAL, 1);
 
         GLES30.glBindVertexArray(vaoArray[0]);
 
@@ -176,6 +190,7 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glDeleteVertexArrays(1, vaoArray, 0);
         GLES30.glDeleteTextures(1, fboTexture, 0);
         GLES30.glDeleteFramebuffers(1, fboArray, 0);
+        GLES30.glDeleteTextures(filterTexture.length, filterTexture, 0);
 
         LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
     }
