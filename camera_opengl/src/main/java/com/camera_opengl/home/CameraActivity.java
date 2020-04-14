@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.util.Size;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
@@ -47,6 +48,9 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
 
     private SavePictureThread mSaveThread;
 
+    //滤镜type
+    private int filterType = -1;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_camera;
@@ -82,6 +86,28 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
             public void onClick(View v) {
 //                cameraControl.takePicture();
                 eglSurfaceView.takePicture();
+            }
+        });
+
+        Button switchFilter = findViewById(R.id.switchFilter);
+        switchFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterType++;
+                //filterType的判断和着色器中的逻辑判断要一致
+                if (filterType == 0) {
+                    switchFilter.setText("LUT滤镜");
+                } else if (filterType == 1) {
+                    switchFilter.setText("灰度滤镜");
+                } else if (filterType == 2) {
+                    switchFilter.setText("亮度滤镜");
+                } else {
+                    //没有滤镜
+                    filterType = -1;
+                    switchFilter.setText("原色");
+                }
+
+                eglSurfaceView.setFilterType(filterType);
             }
         });
     }

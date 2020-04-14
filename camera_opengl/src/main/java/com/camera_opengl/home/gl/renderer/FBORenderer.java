@@ -19,6 +19,7 @@ public class FBORenderer extends BaseRenderer {
     private static final int TEXCOORD_LOCAL = 1;
     private static final int TEX_MATRIXC_LOCAL = 2;
     private static final int FILTER_LOCAL = 3;
+    private static final int FILTER_TYPE_LOCAL = 4;
 
     private FloatBuffer vertexBuffer = GLHelper.getFloatBuffer(new float[]{
             -1.0f, 1.0f, //左上
@@ -43,9 +44,9 @@ public class FBORenderer extends BaseRenderer {
     //VAO
     private int[] vaoArray = new int[1];
 
-    //滤镜1
-    private int[] filterTexture = new int[3];
-    private int[] filterRes = new int[]{R.drawable.amatorka, R.drawable.highkey, R.drawable.purity};
+    //滤镜type
+    private int filterType = -1;
+    private int[] filterTexture = new int[1];
 
     @Override
     public void onSurfaceCreated() {
@@ -59,7 +60,7 @@ public class FBORenderer extends BaseRenderer {
         GLHelper.createFBOTexture(fboTexture);
         createFBO();
 
-        GLHelper.createLUTFilterTexture(filterRes, filterTexture);
+        GLHelper.createLUTFilterTexture(R.drawable.amatorka, filterTexture);
 
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
@@ -148,10 +149,9 @@ public class FBORenderer extends BaseRenderer {
 
     @Override
     public void onDrawFrame(float[] surfaceMatrix) {
+        GLES30.glUseProgram(program);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
         GLES30.glViewport(0, 0, reallyWidth, reallyHeight);
-
-        GLES30.glUseProgram(program);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         GLES30.glUniformMatrix4fv(TEX_MATRIXC_LOCAL, 1, false, surfaceMatrix, 0);
@@ -160,11 +160,7 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, inTextureId);
 
-        //激活启用1纹理单元，绑定滤镜纹理数据，
-        //调用glUniform1i传递1（个人理解glUniform1i仅是告诉层级关系的，所以上面原始数据可以不调，默认为0）
-        GLES30.glActiveTexture(GLES30.GL_TEXTURE1);
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, filterTexture[0]);
-        GLES30.glUniform1i(FILTER_LOCAL, 1);
+        setFilter(filterType);
 
         GLES30.glBindVertexArray(vaoArray[0]);
 
@@ -218,5 +214,30 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
 
         return btm;
+    }
+
+    private void setFilter(int filterType) {
+        GLES30.glUniform1f(FILTER_TYPE_LOCAL, filterType);
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE1);
+
+        //filterType的判断和着色器中的逻辑判断要一致
+        if (filterType == 0) {
+            //LUT滤镜
+            //激活启用1纹理单元，绑定滤镜纹理数据，
+            //调用glUniform1i传递1（个人理解glUniform1i仅是告诉层级关系的，所以上面原始数据可以不调，默认为0）
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, filterTexture[filterType]);
+        } else if (filterType == 1) {
+            //灰度滤镜
+        } else if (filterType == 2) {
+            //亮度滤镜
+        } else {
+            //没有滤镜
+        }
+
+        GLES30.glUniform1i(FILTER_LOCAL, 1);
+    }
+
+    public void setFilterType(int filterType) {
+        this.filterType = filterType;
     }
 }

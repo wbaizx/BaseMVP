@@ -91,10 +91,9 @@ public class ScreenRenderer extends BaseRenderer {
 
     @Override
     public void onDrawFrame() {
+        GLES30.glUseProgram(program);
         GLES30.glViewport(0, 0, viewWidth, viewHeight);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
-
-        GLES30.glUseProgram(program);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, inTextureId);

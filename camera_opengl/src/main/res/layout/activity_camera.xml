@@ -20,6 +20,7 @@
             android:id="@+id/switchCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/camera_btn_bg"
             android:text="switch"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,10 +30,21 @@
             android:id="@+id/takePicture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/camera_btn_bg"
             android:text="takePicture"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/switchCamera" />
+
+        <Button
+            android:id="@+id/switchFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/camera_btn_bg"
+            android:text="原色"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/takePicture" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

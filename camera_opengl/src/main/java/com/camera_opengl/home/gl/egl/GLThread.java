@@ -411,4 +411,8 @@ public class GLThread extends Thread {
             }
         });
     }
+
+    public void setFilterType(int filterType) {
+        fboRenderer.setFilterType(filterType);
+    }
 }
