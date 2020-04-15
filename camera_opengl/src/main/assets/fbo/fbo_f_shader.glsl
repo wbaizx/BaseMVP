@@ -6,7 +6,9 @@ in vec2 out_texCoord;
 out vec4 outColor;
 
 //滤镜type，需要传递
-layout (location = 4) uniform float filterType;
+//这里是int值使用glUniform1i
+//如果是float使用glUniform1f，另外在着色器中，float写法必须带小数点
+layout (location = 4) uniform int filterType;
 //滤镜纹理
 layout (location = 3) uniform sampler2D filter_texture;
 
@@ -71,13 +73,13 @@ vec4 light(inout vec4 color){
 void main(){
     vec4 tmpColor = texture(f_texture, out_texCoord);
 
-    if (filterType == 0.0){
+    if (filterType == 0){
         //LUT滤镜
         outColor = lookupTable(tmpColor);
-    } else if (filterType == 1.0){
+    } else if (filterType == 1){
         //灰度滤镜
         outColor = grey(tmpColor);
-    } else if (filterType == 2.0){
+    } else if (filterType == 2){
         //亮度滤镜
         outColor = light(tmpColor);
     } else {

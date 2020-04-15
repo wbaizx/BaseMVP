@@ -11,6 +11,7 @@ import com.camera_opengl.home.gl.GLHelper;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 public class FBORenderer extends BaseRenderer {
     private static final String TAG = "FBORenderer";
@@ -49,7 +50,11 @@ public class FBORenderer extends BaseRenderer {
     private int filterType = -1;
     private int[] filterTexture = new int[1];
 
-    private WatermarkRenderer watermarkRenderer = new WatermarkRenderer();
+    private ArrayList<BaseRenderer> rendererList = new ArrayList<>();
+
+    public FBORenderer() {
+        rendererList.add(new WatermarkRenderer());
+    }
 
     @Override
     public void onSurfaceCreated() {
@@ -65,7 +70,10 @@ public class FBORenderer extends BaseRenderer {
 
         GLHelper.createLUTFilterTexture(R.drawable.amatorka, filterTexture);
 
-        watermarkRenderer.onSurfaceCreated();
+        for (BaseRenderer renderer : rendererList) {
+            renderer.onSurfaceCreated();
+        }
+
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
     }
 
@@ -176,7 +184,9 @@ public class FBORenderer extends BaseRenderer {
 
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES30.GL_NONE);
 
-        watermarkRenderer.onDrawFrame();
+        for (BaseRenderer renderer : rendererList) {
+            renderer.onDrawFrame();
+        }
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
     }
 
@@ -194,7 +204,9 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glDeleteFramebuffers(1, fboArray, 0);
         GLES30.glDeleteTextures(filterTexture.length, filterTexture, 0);
 
-        watermarkRenderer.onSurfaceDestroy();
+        for (BaseRenderer renderer : rendererList) {
+            renderer.onSurfaceDestroy();
+        }
         LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
     }
 
@@ -203,7 +215,9 @@ public class FBORenderer extends BaseRenderer {
         vertexBuffer.clear();
         textureCoordBuffer.clear();
 
-        watermarkRenderer.onDestroy();
+        for (BaseRenderer renderer : rendererList) {
+            renderer.onDestroy();
+        }
         LogUtil.INSTANCE.log(TAG, "onDestroy X");
     }
 
@@ -225,7 +239,8 @@ public class FBORenderer extends BaseRenderer {
     }
 
     private void setFilter(int filterType) {
-        GLES30.glUniform1f(FILTER_TYPE_LOCAL, filterType);
+        GLES30.glUniform1i(FILTER_TYPE_LOCAL, filterType);
+
         GLES30.glActiveTexture(GLES30.GL_TEXTURE1);
 
         //filterType的判断和着色器中的逻辑判断要一致
