@@ -6,7 +6,7 @@ import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.camera_opengl.home.ControlListener;
+import com.camera_opengl.home.camera.ControlListener;
 
 public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "EGLSurfaceView";

@@ -11,7 +11,7 @@ import android.util.Size;
 import android.view.Surface;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.ControlListener;
+import com.camera_opengl.home.camera.ControlListener;
 import com.camera_opengl.home.gl.GLHelper;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;

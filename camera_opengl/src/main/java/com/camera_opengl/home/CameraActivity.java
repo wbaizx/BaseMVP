@@ -16,6 +16,7 @@ import com.base.common.base.BaseActivity;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
+import com.camera_opengl.home.camera.ControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.SurfaceTextureListener;
 import com.gyf.immersionbar.BarHide;
@@ -186,6 +187,11 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
         look.unlock();
     }
 
+    /**
+     * eglSurfaceView 供相机预览的 SurfaceTexture 创建完成回调
+     *
+     * @param surfaceTexture
+     */
     @Override
     public void onSurfaceCreated(SurfaceTexture surfaceTexture) {
         cameraControl.setSurfaceTexture(surfaceTexture);
@@ -199,11 +205,6 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
         look.unlock();
     }
 
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-
-    }
-
     private void openCamera() {
         LogUtil.INSTANCE.log(TAG, "try openCamera " + hasPermissions + "-" + isResume + "-" + isSurfaceCreated);
         if (hasPermissions && isResume && isSurfaceCreated) {
@@ -213,16 +214,30 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
         }
     }
 
+    /**
+     * CameraControl 预览大小确定回调
+     *
+     * @param cameraSize
+     */
     @Override
     public void confirmCameraSize(Size cameraSize) {
         eglSurfaceView.confirmCameraSize(cameraSize);
     }
 
+    /**
+     * 相机拍照数据回调
+     *
+     * @param horizontalMirror 是否需要水平镜像处理
+     * @param verticalMirror   是否需要垂直镜像处理
+     */
     @Override
     public void imageAvailable(byte[] bytes, boolean horizontalMirror, boolean verticalMirror) {
         mSaveThread.putData(bytes, horizontalMirror, verticalMirror);
     }
 
+    /**
+     * opengl 拍照数据回调
+     */
     @Override
     public void imageAvailable(Bitmap btm, boolean horizontalMirror, boolean verticalMirror) {
         mSaveThread.putData(btm, horizontalMirror, verticalMirror);

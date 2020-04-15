@@ -25,26 +25,28 @@ public class SavePictureThread extends Thread {
 
     private ArrayBlockingQueue<Picture> queue = new ArrayBlockingQueue<>(5);
 
-    public void signal() {
-        look.lock();
-        condition.signal();
-        look.unlock();
-    }
-
     public void putData(byte[] data, boolean horizontalMirror, boolean verticalMirror) {
+        look.lock();
+
         LogUtil.INSTANCE.log(TAG, "putData bytes");
         Picture picture = new Picture(horizontalMirror, verticalMirror);
         picture.data = data;
         queue.offer(picture);
-        signal();
+
+        condition.signal();
+        look.unlock();
     }
 
     public void putData(Bitmap btm, boolean horizontalMirror, boolean verticalMirror) {
+        look.lock();
+
         LogUtil.INSTANCE.log(TAG, "putData bitmap");
         Picture picture = new Picture(horizontalMirror, verticalMirror);
         picture.btm = btm;
         queue.offer(picture);
-        signal();
+
+        condition.signal();
+        look.unlock();
     }
 
     @Override

@@ -30,7 +30,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.base.common.util.AndroidUtil;
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.ControlListener;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
