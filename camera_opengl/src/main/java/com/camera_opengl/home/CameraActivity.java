@@ -16,9 +16,11 @@ import com.base.common.base.BaseActivity;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
-import com.camera_opengl.home.camera.ControlListener;
+import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
-import com.camera_opengl.home.gl.egl.SurfaceTextureListener;
+import com.camera_opengl.home.gl.egl.GLSurfaceListener;
+import com.camera_opengl.home.gl.record.RecordManager;
+import com.camera_opengl.home.gl.record.VideoEncoder;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -34,16 +36,17 @@ import pub.devrel.easypermissions.EasyPermissions;
 //RouteString.CAMERA_HOME
 //RouteString.isNeedLogin
 @Route(path = "/camera/camera_home", name = "组件化camera首页", extras = 1)
-public class CameraActivity extends BaseActivity implements ControlListener, SurfaceTextureListener {
+public class CameraActivity extends BaseActivity implements CameraControlListener, GLSurfaceListener {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;
 
     private boolean hasPermissions = false;
     private boolean isResume = false;
     private boolean isSurfaceCreated = false;
-    private CameraControl cameraControl;
 
+    private CameraControl cameraControl;
     private EGLSurfaceView eglSurfaceView;
+    private RecordManager recordManager;
 
     private ReentrantLock look = new ReentrantLock();
 
@@ -72,8 +75,21 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
         cameraControl = new CameraControl(this, this);
 
         eglSurfaceView = findViewById(R.id.eglSurfaceView);
-        eglSurfaceView.setSurfaceTextureListener(this);
-        eglSurfaceView.setControlListener(this);
+        eglSurfaceView.setGlSurfaceListener(this);
+        eglSurfaceView.setCameraControlListener(this);
+
+        recordManager = new RecordManager(eglSurfaceView);
+
+        findViewById(R.id.record).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (recordManager.getStatus() == VideoEncoder.STATUS_READY) {
+                    recordManager.startRecord();
+                } else if (recordManager.getStatus() == VideoEncoder.STATUS_START) {
+                    recordManager.stopRecord();
+                }
+            }
+        });
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,7 +209,7 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
      * @param surfaceTexture
      */
     @Override
-    public void onSurfaceCreated(SurfaceTexture surfaceTexture) {
+    public void onGLSurfaceCreated(SurfaceTexture surfaceTexture) {
         cameraControl.setSurfaceTexture(surfaceTexture);
 
         look.lock();
@@ -221,7 +237,8 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
      */
     @Override
     public void confirmCameraSize(Size cameraSize) {
-        eglSurfaceView.confirmCameraSize(cameraSize);
+        eglSurfaceView.confirmReallySize(cameraSize);
+        recordManager.confirmReallySize(cameraSize);
     }
 
     /**
@@ -246,9 +263,10 @@ public class CameraActivity extends BaseActivity implements ControlListener, Sur
     @Override
     protected void onPause() {
         super.onPause();
-
         look.lock();
+
         LogUtil.INSTANCE.log(TAG, "onPause");
+        recordManager.onPause();
         if (hasPermissions && isResume && isSurfaceCreated) {
             cameraControl.closeCamera();
             cameraControl.stopCameraThread();

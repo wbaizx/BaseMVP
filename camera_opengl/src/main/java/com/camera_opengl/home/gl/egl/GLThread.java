@@ -11,7 +11,7 @@ import android.util.Size;
 import android.view.Surface;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.camera.ControlListener;
+import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.GLHelper;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;
@@ -37,16 +37,19 @@ public class GLThread extends Thread {
     private boolean isSurfaceDestroyed = false;
 
     private boolean hasData = false;
-    private boolean isConfirmCameraSize = false;
+    private boolean isConfirmReallySize = false;
     private Size reallySize;
 
     //SurfaceView的surface，用于屏幕显示
     private Surface surface;
+    //编码器的输入Surface
+    private Surface codecSurface;
 
     private EGLDisplay eglDisplay;
     private EGLConfig eglConfig;
     private EGLSurface screenEglSurface;
     private EGLSurface fboEglSurface;
+    private EGLSurface codecEglSurface;
     private EGLContext eglContext;
 
     //接收相机数据的纹理
@@ -58,20 +61,21 @@ public class GLThread extends Thread {
     private int viewWidth;
     private int viewHeight;
 
-    private SurfaceTextureListener surfaceTextureListener;
-    private ControlListener controlListener;
+    private GLSurfaceListener glSurfaceListener;
+    private CameraControlListener cameraControlListener;
 
     private FBORenderer fboRenderer = new FBORenderer();
     private ScreenRenderer screenRenderer = new ScreenRenderer();
+    private ScreenRenderer codecRenderer;
 
     private ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(10);
 
-    public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
-        this.surfaceTextureListener = surfaceTextureListener;
+    public void setGlSurfaceListener(GLSurfaceListener glSurfaceListener) {
+        this.glSurfaceListener = glSurfaceListener;
     }
 
-    public void setControlListener(ControlListener controlListener) {
-        this.controlListener = controlListener;
+    public void setCameraControlListener(CameraControlListener cameraControlListener) {
+        this.cameraControlListener = cameraControlListener;
     }
 
     @Override
@@ -150,7 +154,7 @@ public class GLThread extends Thread {
                 }
 
                 if (isSurfaceCreated) {
-                    //创建可显示的Surface
+                    //创建可显示的EglSurface
                     if (screenEglSurface == null) {
                         int[] surfaceAttribs = {EGL14.EGL_NONE};
                         screenEglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surface, surfaceAttribs, 0);
@@ -161,8 +165,9 @@ public class GLThread extends Thread {
                     }
 
                     if (isSurfaceChanged) {
-                        //创建离屏Surface
+                        //创建离屏EglSurface
                         if (fboEglSurface == null) {
+                            //离屏分辨率是由fbo挂载纹理决定，这里的宽高使用的是控件宽高
                             int[] surfaceAttribs = {EGL14.EGL_WIDTH, viewWidth, EGL14.EGL_HEIGHT, viewHeight, EGL14.EGL_NONE};
                             fboEglSurface = EGL14.eglCreatePbufferSurface(eglDisplay, eglConfig, surfaceAttribs, 0);
                             if (fboEglSurface == EGL14.EGL_NO_SURFACE) {
@@ -174,9 +179,8 @@ public class GLThread extends Thread {
 
                     //初始化准备完成，可以绑定EGL环境以及渲染
                     if (fboEglSurface != null) {
-
                         /*
-                        离屏操作部分
+                         * 离屏操作部分
                          */
                         if (!EGL14.eglMakeCurrent(eglDisplay, fboEglSurface, fboEglSurface, eglContext)) {
                             throw new RuntimeException("eglMakeCurrent fbo fail");
@@ -192,7 +196,7 @@ public class GLThread extends Thread {
                                 }
                             });
                             //回传surfaceTexture
-                            surfaceTextureListener.onSurfaceCreated(surfaceTexture);
+                            glSurfaceListener.onGLSurfaceCreated(surfaceTexture);
                         }
 
                         if (isFirstSurfaceCreated) {
@@ -205,7 +209,7 @@ public class GLThread extends Thread {
                             fboRenderer.onSurfaceChanged(0, 0);
                         }
 
-                        if (isConfirmCameraSize) {
+                        if (isConfirmReallySize) {
                             //这里决定fbo挂载纹理分辨率，这里设置为实际宽高
                             //不会影响预览尺寸，但是过小会导致模糊
                             //读取像素模式的拍照是从fbo挂载纹理中读取，所以这里的宽高决定读取的图片的宽高
@@ -220,7 +224,7 @@ public class GLThread extends Thread {
                         }
 
                         /*
-                        显示操作部分
+                         * 显示操作部分
                          */
                         if (!EGL14.eglMakeCurrent(eglDisplay, screenEglSurface, screenEglSurface, eglContext)) {
                             throw new RuntimeException("eglMakeCurrent screen fail");
@@ -235,7 +239,7 @@ public class GLThread extends Thread {
                             screenRenderer.onSurfaceChanged(viewWidth, viewHeight);
                         }
 
-                        if (isConfirmCameraSize) {
+                        if (isConfirmReallySize) {
                             screenRenderer.confirmReallySize(reallySize);
                         }
 
@@ -244,11 +248,46 @@ public class GLThread extends Thread {
                             EGL14.eglSwapBuffers(eglDisplay, screenEglSurface);
                         }
 
+                        /*
+                         * 需要编码器输入部分
+                         */
+                        if (codecSurface != null) {
+                            //创建编码器的EglSurface
+                            if (codecEglSurface == null) {
+                                int[] surfaceAttribs = {EGL14.EGL_NONE};
+                                codecEglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, codecSurface, surfaceAttribs, 0);
+                                if (codecEglSurface == EGL14.EGL_NO_SURFACE) {
+                                    throw new RuntimeException("create codecEglSurface fail");
+                                }
+                                LogUtil.INSTANCE.log(TAG, "create codecEglSurface X");
+                            }
+
+                            if (!EGL14.eglMakeCurrent(eglDisplay, codecEglSurface, codecEglSurface, eglContext)) {
+                                throw new RuntimeException("eglMakeCurrent codec fail");
+                            }
+
+                            if (codecRenderer == null && reallySize != null) {
+                                codecRenderer = new ScreenRenderer();
+                                codecRenderer.onSurfaceCreated();
+                                codecRenderer.setInTexture(fboRenderer.getOutTexture());
+                                //编码器分辨率需要使用实际宽高，所以这里随意传
+                                codecRenderer.onSurfaceChanged(0, 0);
+                                //编码器分辨率需要使用实际宽高
+                                codecRenderer.confirmReallySize(reallySize);
+                                LogUtil.INSTANCE.log(TAG, "init codecRenderer");
+                            }
+
+                            if (hasData && codecRenderer != null) {
+                                codecRenderer.onDrawFrame();
+                                EGL14.eglSwapBuffers(eglDisplay, codecEglSurface);
+                            }
+                        }
+
                         //一次性变量重置
                         isFirstSurfaceCreated = false;
                         isFirstSurfaceChanged = false;
                         hasData = false;
-                        isConfirmCameraSize = false;
+                        isConfirmReallySize = false;
                     }
 
                 }
@@ -257,6 +296,7 @@ public class GLThread extends Thread {
                     if (fboEglSurface != null || screenEglSurface != null) {
                         fboRenderer.onSurfaceDestroy();
                         screenRenderer.onSurfaceDestroy();
+                        LogUtil.INSTANCE.log(TAG, "destroyedSurface");
 
                         EGL14.eglDestroySurface(eglDisplay, fboEglSurface);
                         EGL14.eglDestroySurface(eglDisplay, screenEglSurface);
@@ -276,7 +316,7 @@ public class GLThread extends Thread {
                         surfaceTexture = null;
                         LogUtil.INSTANCE.log(TAG, "delete camera texture X");
                     }
-
+                    LogUtil.INSTANCE.log(TAG, "onDestroy");
                     fboRenderer.onDestroy();
                     screenRenderer.onDestroy();
 
@@ -285,7 +325,7 @@ public class GLThread extends Thread {
                     EGL14.eglTerminate(eglDisplay);
                     GLHelper.eglGetError("destroyDisplay");
                     eglContext = null;
-                    controlListener = null;
+                    cameraControlListener = null;
                     return;
                 }
 
@@ -358,10 +398,10 @@ public class GLThread extends Thread {
      *
      * @param reallySize
      */
-    public void confirmCameraSize(Size reallySize) {
+    public void confirmReallySize(Size reallySize) {
         look.lock();
 
-        isConfirmCameraSize = true;
+        isConfirmReallySize = true;
         this.reallySize = reallySize;
         LogUtil.INSTANCE.log(TAG, "confirmCameraSize");
 
@@ -377,6 +417,44 @@ public class GLThread extends Thread {
 
         condition.signal();
         look.unlock();
+    }
+
+    /**
+     * 编码surface创建完成
+     *
+     * @param surface
+     */
+    public void onEncoderSurfaceCreated(Surface surface) {
+        LogUtil.INSTANCE.log(TAG, "onEncoderSurfaceCreated");
+        codecSurface = surface;
+    }
+
+    /**
+     * 停止录制，销毁EncoderSurface相关
+     */
+    public void onEncoderSurfaceDestroy() {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                if (eglContext != null && codecEglSurface != null) {
+                    if (!EGL14.eglMakeCurrent(eglDisplay, codecEglSurface, codecEglSurface, eglContext)) {
+                        throw new RuntimeException("eglMakeCurrent codec fail");
+                    }
+
+                    codecRenderer.onSurfaceDestroy();
+                    codecRenderer.onDestroy();
+
+                    EGL14.eglDestroySurface(eglDisplay, codecEglSurface);
+                    GLHelper.eglGetError("destroyedCodecSurface");
+
+                    codecSurface = null;
+                    codecEglSurface = null;
+                    codecRenderer = null;
+
+                    LogUtil.INSTANCE.log(TAG, "onEncoderSurfaceDestroy");
+                }
+            }
+        });
     }
 
     /**
@@ -406,7 +484,7 @@ public class GLThread extends Thread {
                         throw new RuntimeException("eglMakeCurrent takePicture fail");
                     }
                     //在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
-                    controlListener.imageAvailable(fboRenderer.takePicture(), false, true);
+                    cameraControlListener.imageAvailable(fboRenderer.takePicture(), false, true);
                 }
             }
         });

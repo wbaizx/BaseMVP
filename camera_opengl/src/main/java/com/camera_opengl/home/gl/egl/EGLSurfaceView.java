@@ -3,12 +3,14 @@ package com.camera_opengl.home.gl.egl;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Size;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.camera_opengl.home.camera.ControlListener;
+import com.camera_opengl.home.camera.CameraControlListener;
+import com.camera_opengl.home.gl.record.RecordListener;
 
-public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback, RecordListener {
     private static final String TAG = "EGLSurfaceView";
 
     private GLThread glThread;
@@ -20,12 +22,12 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         glThread.start();
     }
 
-    public void setSurfaceTextureListener(SurfaceTextureListener surfaceTextureListener) {
-        glThread.setSurfaceTextureListener(surfaceTextureListener);
+    public void setGlSurfaceListener(GLSurfaceListener glSurfaceListener) {
+        glThread.setGlSurfaceListener(glSurfaceListener);
     }
 
-    public void setControlListener(ControlListener controlListener) {
-        glThread.setControlListener(controlListener);
+    public void setCameraControlListener(CameraControlListener cameraControlListener) {
+        glThread.setCameraControlListener(cameraControlListener);
     }
 
     @Override
@@ -43,8 +45,8 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         glThread.surfaceDestroyed();
     }
 
-    public void confirmCameraSize(Size reallySize) {
-        glThread.confirmCameraSize(reallySize);
+    public void confirmReallySize(Size reallySize) {
+        glThread.confirmReallySize(reallySize);
     }
 
     public void queueEvent(Runnable event) {
@@ -61,5 +63,15 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
     public void setFilterType(int filterType) {
         glThread.setFilterType(filterType);
+    }
+
+    @Override
+    public void onEncoderSurfaceCreated(Surface surface) {
+        glThread.onEncoderSurfaceCreated(surface);
+    }
+
+    @Override
+    public void onEncoderSurfaceDestroy() {
+        glThread.onEncoderSurfaceDestroy();
     }
 }

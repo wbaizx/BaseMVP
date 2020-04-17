@@ -3,7 +3,7 @@ package com.camera_opengl.home.camera;
 import android.graphics.Bitmap;
 import android.util.Size;
 
-public interface ControlListener {
+public interface CameraControlListener {
     void confirmCameraSize(Size cameraSize);
 
     void imageAvailable(byte[] bytes, boolean horizontalMirror, boolean verticalMirror);
