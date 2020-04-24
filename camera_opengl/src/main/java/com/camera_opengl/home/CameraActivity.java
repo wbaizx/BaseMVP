@@ -20,7 +20,7 @@ import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.camera_opengl.home.gl.record.RecordManager;
-import com.camera_opengl.home.gl.record.VideoEncoder;
+import com.camera_opengl.home.gl.record.video.VideoEncoder;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 

@@ -1,4 +1,4 @@
-package com.camera_opengl.home.gl.record;
+package com.camera_opengl.home.gl.record.video;
 
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
@@ -11,6 +11,8 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.gl.record.MuxerManager;
+import com.camera_opengl.home.gl.record.RecordListener;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

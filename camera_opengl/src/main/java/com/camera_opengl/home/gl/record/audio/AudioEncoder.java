@@ -1,4 +1,6 @@
-package com.camera_opengl.home.gl.record;
+package com.camera_opengl.home.gl.record.audio;
+
+import com.camera_opengl.home.gl.record.MuxerManager;
 
 public class AudioEncoder {
     private MuxerManager muxerManager;
