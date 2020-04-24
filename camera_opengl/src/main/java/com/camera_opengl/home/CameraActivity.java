@@ -80,16 +80,6 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
         recordManager = new RecordManager(eglSurfaceView);
 
-        findViewById(R.id.record).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (recordManager.getStatus() == VideoEncoder.STATUS_READY) {
-                    recordManager.startRecord();
-                } else if (recordManager.getStatus() == VideoEncoder.STATUS_START) {
-                    recordManager.stopRecord();
-                }
-            }
-        });
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +115,20 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
                 }
 
                 eglSurfaceView.setFilterType(filterType);
+            }
+        });
+
+        Button record = findViewById(R.id.record);
+        findViewById(R.id.record).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (recordManager.getStatus() == VideoEncoder.STATUS_READY) {
+                    recordManager.startRecord();
+                    record.setText("停止录制");
+                } else if (recordManager.getStatus() == VideoEncoder.STATUS_START) {
+                    recordManager.stopRecord();
+                    record.setText("录制");
+                }
             }
         });
     }
@@ -267,6 +271,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
         LogUtil.INSTANCE.log(TAG, "onPause");
         recordManager.onPause();
+
         if (hasPermissions && isResume && isSurfaceCreated) {
             cameraControl.closeCamera();
             cameraControl.stopCameraThread();
@@ -279,6 +284,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
     @Override
     protected void onDestroy() {
         LogUtil.INSTANCE.log(TAG, "onDestroy");
+        recordManager.onDestroy();
         cameraControl.onDestroy();
         eglSurfaceView.onDestroy();
         mSaveThread.interrupt();

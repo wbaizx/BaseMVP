@@ -13,6 +13,7 @@ import android.view.Surface;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.GLHelper;
+import com.camera_opengl.home.gl.renderer.CodecRenderer;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;
 
@@ -66,7 +67,7 @@ public class GLThread extends Thread {
 
     private FBORenderer fboRenderer = new FBORenderer();
     private ScreenRenderer screenRenderer = new ScreenRenderer();
-    private ScreenRenderer codecRenderer;
+    private CodecRenderer codecRenderer;
 
     private ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(10);
 
@@ -267,7 +268,7 @@ public class GLThread extends Thread {
                             }
 
                             if (codecRenderer == null && reallySize != null) {
-                                codecRenderer = new ScreenRenderer();
+                                codecRenderer = new CodecRenderer();
                                 codecRenderer.onSurfaceCreated();
                                 codecRenderer.setInTexture(fboRenderer.getOutTexture());
                                 //编码器分辨率需要使用实际宽高，所以这里随意传

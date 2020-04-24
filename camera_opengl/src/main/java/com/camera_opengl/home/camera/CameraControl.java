@@ -128,9 +128,10 @@ public class CameraControl {
             LogUtil.INSTANCE.log(TAG, "stopCameraThread");
             mCameraThread.quitSafely();
             try {
+                mCameraHandler.removeCallbacksAndMessages(null);
+                mCameraHandler = null;
                 mCameraThread.join();
                 mCameraThread = null;
-                mCameraHandler = null;
                 LogUtil.INSTANCE.log(TAG, "stopCameraThread X");
             } catch (InterruptedException e) {
                 e.printStackTrace();
