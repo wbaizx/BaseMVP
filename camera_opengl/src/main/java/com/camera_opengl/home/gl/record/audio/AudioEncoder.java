@@ -173,7 +173,7 @@ public class AudioEncoder extends Thread {
                 inputBuffer.put(bytes, 0, recordLength);//添加数据
                 inputBuffer.limit(recordLength);
             }
-            mMediaCodec.queueInputBuffer(inputBufferId, 0, recordLength, 0, 0);
+            mMediaCodec.queueInputBuffer(inputBufferId, 0, recordLength, muxerManager.getSampleTime(), 0);
         }
 
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
@@ -186,15 +186,11 @@ public class AudioEncoder extends Thread {
                 LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
             }
 
-//            byte[] adtsbytes = new byte[info.size + 7];
-//            ByteBuffer adtsBuffer = ByteBuffer.wrap(adtsbytes);
-//            byte[] array = new byte[info.size];
-//            outputBuffer.get(array);
-//            System.arraycopy(array, 0, adtsbytes, 7, info.size);
-//            addADTStoPacket(adtsbytes, adtsbytes.length);
-//            adtsBuffer.limit(adtsbytes.length);
-//            info.size = adtsbytes.length;
+            byte[] adtsbytes = new byte[info.size + 7];
+            addADTStoPacket(adtsbytes, adtsbytes.length);
+            outputBuffer.get(adtsbytes, 7, info.size);
 
+            outputBuffer.position(info.offset);
             muxerManager.writeAudioSampleData(outputBuffer, info);
 
             mMediaCodec.releaseOutputBuffer(outputBufferId, false);
@@ -205,6 +201,9 @@ public class AudioEncoder extends Thread {
         }
     }
 
+    /**
+     * 添加ADTS头部，MediaMuxer不要，推流需要
+     */
     private void addADTStoPacket(byte[] packet, int packetLen) {
         int profile = 2;  //AAC LC
         int freqIdx = 4;  //44.1KHz

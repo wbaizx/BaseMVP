@@ -92,18 +92,19 @@ public class MuxerManager {
     public void writeVideoSampleData(ByteBuffer buffer, MediaCodec.BufferInfo info) {
         LogUtil.INSTANCE.log(TAG, "writeVideo");
         if (status == STATUS_START) {
-            info.presentationTimeUs = getSampleTime();
-            muxer.writeSampleData(videoTrackIndex, buffer, info);
             LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
+//            info.presentationTimeUs = getSampleTime();
+//            LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
+            muxer.writeSampleData(videoTrackIndex, buffer, info);
         }
     }
 
     public void writeAudioSampleData(ByteBuffer buffer, MediaCodec.BufferInfo info) {
         LogUtil.INSTANCE.log(TAG, "writeAudio");
         if (status == STATUS_START) {
-            info.presentationTimeUs = getSampleTime();
-            muxer.writeSampleData(audioTrackIndex, buffer, info);
             LogUtil.INSTANCE.log(TAG, "writeAudioSampleData " + info.presentationTimeUs);
+//            info.presentationTimeUs = getSampleTime();
+            muxer.writeSampleData(audioTrackIndex, buffer, info);
         }
     }
 
@@ -141,7 +142,7 @@ public class MuxerManager {
     }
 
     //标注时间戳用的
-    private long getSampleTime() {
+    public long getSampleTime() {
         return System.nanoTime() / 1000;
     }
 }
