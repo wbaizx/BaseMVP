@@ -1,4 +1,4 @@
-package com.camera_opengl.home.gl.record.video;
+package com.camera_opengl.home.record.video;
 
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
@@ -12,8 +12,8 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.gl.record.MuxerManager;
-import com.camera_opengl.home.gl.record.RecordListener;
+import com.camera_opengl.home.record.MuxerManager;
+import com.camera_opengl.home.record.RecordListener;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -147,19 +147,21 @@ public class VideoEncoder {
 
     public void stopRecord() {
         LogUtil.INSTANCE.log(TAG, "stopRecord  status " + status);
-        videoEncoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status == STATUS_START) {
-                    LogUtil.INSTANCE.log(TAG, "stopRecord");
-                    status = STATUS_SNAP;
+        if (videoEncoderHandler != null) {
+            videoEncoderHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (status == STATUS_START) {
+                        LogUtil.INSTANCE.log(TAG, "stopRecord");
+                        status = STATUS_SNAP;
 
-                    mMediaCodec.signalEndOfInputStream();
+                        mMediaCodec.signalEndOfInputStream();
 
-                    recordListener.onEncoderSurfaceDestroy();
+                        recordListener.onEncoderSurfaceDestroy();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void release() {

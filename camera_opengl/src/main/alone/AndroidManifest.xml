@@ -6,14 +6,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- Tell the system this app requires OpenGL ES 3.0. -->
-    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <uses-feature
+        android:glEsVersion="0x00030000"
+        android:required="true" />
 
-    <!--   配置Camera组件是否可以独立运行
-    android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
-    解决办法:
-    1. 将http请求改为https请求
-    2. 添加usesCleartextTraffic属性
-    -->
     <application
         android:name=".debug.CameraAPP"
         android:allowBackup="true"
@@ -34,8 +30,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
+        <activity android:name=".videolist.VideoListActivity"/>
     </application>
 
 </manifest>

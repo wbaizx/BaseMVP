@@ -8,7 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.camera_opengl.home.camera.CameraControlListener;
-import com.camera_opengl.home.gl.record.RecordListener;
+import com.camera_opengl.home.record.RecordListener;
 
 public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback, RecordListener {
     private static final String TAG = "EGLSurfaceView";

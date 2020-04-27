@@ -1,10 +1,10 @@
-package com.camera_opengl.home.gl.record;
+package com.camera_opengl.home.record;
 
 import android.util.Size;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.gl.record.audio.AudioEncoder;
-import com.camera_opengl.home.gl.record.video.VideoEncoder;
+import com.camera_opengl.home.record.audio.AudioEncoder;
+import com.camera_opengl.home.record.video.VideoEncoder;
 
 public class RecordManager {
     private static final String TAG = "RecordManager";

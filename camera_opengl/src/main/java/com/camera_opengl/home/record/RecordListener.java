@@ -1,4 +1,4 @@
-package com.camera_opengl.home.gl.record;
+package com.camera_opengl.home.record;
 
 import android.view.Surface;
 

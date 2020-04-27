@@ -12,14 +12,17 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.base.common.base.BaseActivity;
+import com.base.common.config.ExtensionKt;
+import com.base.common.config.RouteString;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
-import com.camera_opengl.home.gl.record.RecordManager;
+import com.camera_opengl.home.record.RecordManager;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -79,6 +82,13 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
         recordManager = new RecordManager(eglSurfaceView);
 
+
+        findViewById(R.id.goVideoList).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExtensionKt.loginNavigation(ARouter.getInstance().build(RouteString.VIDEO_LIST), null);
+            }
+        });
 
         findViewById(R.id.switchCamera).setOnClickListener(new View.OnClickListener() {
             @Override

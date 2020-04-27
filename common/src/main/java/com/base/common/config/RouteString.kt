@@ -27,6 +27,7 @@ object RouteString {
     const val LOGIN = "/login/loginMain"
 
     const val CAMERA_HOME = "/camera/camera_home"
+    const val VIDEO_LIST = "/camera/video_list"
 
 
     const val isNeedLogin = 1

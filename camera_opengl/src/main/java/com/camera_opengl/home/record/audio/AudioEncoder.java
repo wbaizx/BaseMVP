@@ -1,4 +1,4 @@
-package com.camera_opengl.home.gl.record.audio;
+package com.camera_opengl.home.record.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -9,7 +9,7 @@ import android.media.MediaFormat;
 import android.media.MediaRecorder;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.gl.record.MuxerManager;
+import com.camera_opengl.home.record.MuxerManager;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
