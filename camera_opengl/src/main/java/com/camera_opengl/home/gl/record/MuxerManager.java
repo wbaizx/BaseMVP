@@ -93,8 +93,6 @@ public class MuxerManager {
         LogUtil.INSTANCE.log(TAG, "writeVideo");
         if (status == STATUS_START) {
             LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
-//            info.presentationTimeUs = getSampleTime();
-//            LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
             muxer.writeSampleData(videoTrackIndex, buffer, info);
         }
     }
@@ -103,7 +101,6 @@ public class MuxerManager {
         LogUtil.INSTANCE.log(TAG, "writeAudio");
         if (status == STATUS_START) {
             LogUtil.INSTANCE.log(TAG, "writeAudioSampleData " + info.presentationTimeUs);
-//            info.presentationTimeUs = getSampleTime();
             muxer.writeSampleData(audioTrackIndex, buffer, info);
         }
     }
@@ -139,10 +136,5 @@ public class MuxerManager {
                 videoTrackIndex = -1;
             }
         }
-    }
-
-    //标注时间戳用的
-    public long getSampleTime() {
-        return System.nanoTime() / 1000;
     }
 }

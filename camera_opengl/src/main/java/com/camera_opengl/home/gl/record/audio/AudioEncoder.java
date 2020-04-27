@@ -37,7 +37,7 @@ public class AudioEncoder extends Thread {
     // 采样频率一般共分为22.05KHz、44.1KHz、48KHz三个等级
     private final static int AUDIO_SAMPLE_RATE = 44100;
     //音频码率
-    private final static int BIT_RATE = 96000;
+    private final static int BIT_RATE = 128000;
 
     public AudioEncoder(MuxerManager muxerManager) {
         this.muxerManager = muxerManager;
@@ -157,7 +157,7 @@ public class AudioEncoder extends Thread {
         }
         mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, BIT_RATE);
-        mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, bufferSizeInBytes * 2);
+        mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, bufferSizeInBytes);
 
         mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         mMediaCodec.start();
@@ -173,33 +173,37 @@ public class AudioEncoder extends Thread {
                 inputBuffer.put(bytes, 0, recordLength);//添加数据
                 inputBuffer.limit(recordLength);
             }
-            mMediaCodec.queueInputBuffer(inputBufferId, 0, recordLength, muxerManager.getSampleTime(), 0);
+            mMediaCodec.queueInputBuffer(inputBufferId, 0, recordLength, getSampleTime(), 0);
         }
 
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
 
-        int outputBufferId = mMediaCodec.dequeueOutputBuffer(info, 0);
-        if (outputBufferId >= 0) {
-            ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(outputBufferId);
+        while (true) {
+            int outputBufferId = mMediaCodec.dequeueOutputBuffer(info, 0);
+            if (outputBufferId >= 0) {
+                ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(outputBufferId);
 
-            if (outputBuffer != null) {
-                if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
-                    LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
-                } else {
-                    byte[] adtsBytes = new byte[info.size + 7];
-                    addADTStoPacket(adtsBytes, adtsBytes.length);
-                    outputBuffer.get(adtsBytes, 7, info.size);
+                if (outputBuffer != null) {
+                    if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
+                        LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
+                    } else {
+                        byte[] adtsBytes = new byte[info.size + 7];
+                        addADTStoPacket(adtsBytes, adtsBytes.length);
+                        outputBuffer.get(adtsBytes, 7, info.size);
 
-                    outputBuffer.position(info.offset);
-                    muxerManager.writeAudioSampleData(outputBuffer, info);
+                        outputBuffer.position(info.offset);
+                        muxerManager.writeAudioSampleData(outputBuffer, info);
+                    }
                 }
+
+                mMediaCodec.releaseOutputBuffer(outputBufferId, false);
+
+            } else if (outputBufferId == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                LogUtil.INSTANCE.log(TAG, "onOutputFormatChanged");
+                muxerManager.addAudioTrack(mMediaCodec.getOutputFormat());
+            } else {
+                break;
             }
-
-            mMediaCodec.releaseOutputBuffer(outputBufferId, false);
-
-        } else if (outputBufferId == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-            LogUtil.INSTANCE.log(TAG, "onOutputFormatChanged");
-            muxerManager.addAudioTrack(mMediaCodec.getOutputFormat());
         }
     }
 
@@ -217,5 +221,10 @@ public class AudioEncoder extends Thread {
         packet[4] = (byte) ((packetLen & 0x7FF) >> 3);
         packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
         packet[6] = (byte) 0xFC;
+    }
+
+    //标注时间戳用的
+    private long getSampleTime() {
+        return System.nanoTime() / 1000;
     }
 }
