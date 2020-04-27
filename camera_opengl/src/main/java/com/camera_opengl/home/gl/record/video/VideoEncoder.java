@@ -51,15 +51,17 @@ public class VideoEncoder {
         @Override
         public void onOutputBufferAvailable(@NonNull MediaCodec codec, int index, @NonNull MediaCodec.BufferInfo info) {
             ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(index);
-            LogUtil.INSTANCE.log(TAG, info.flags + "--" + info.size + "--" + info.presentationTimeUs + "--" + System.currentTimeMillis());
 
             if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
                 LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
+
             } else if (MediaCodec.BUFFER_FLAG_KEY_FRAME == info.flags) {
                 LogUtil.INSTANCE.log(TAG, "key frame");
-            }
+                muxerManager.writeVideoSampleData(outputBuffer, info);
 
-            muxerManager.writeVideoSampleData(outputBuffer, info);
+            } else {
+                muxerManager.writeVideoSampleData(outputBuffer, info);
+            }
 
             mMediaCodec.releaseOutputBuffer(index, true);
 

@@ -182,16 +182,18 @@ public class AudioEncoder extends Thread {
         if (outputBufferId >= 0) {
             ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(outputBufferId);
 
-            if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
+            if (outputBuffer != null) {
+                if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
+                    LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
+                } else {
+                    byte[] adtsBytes = new byte[info.size + 7];
+                    addADTStoPacket(adtsBytes, adtsBytes.length);
+                    outputBuffer.get(adtsBytes, 7, info.size);
+
+                    outputBuffer.position(info.offset);
+                    muxerManager.writeAudioSampleData(outputBuffer, info);
+                }
             }
-
-            byte[] adtsbytes = new byte[info.size + 7];
-            addADTStoPacket(adtsbytes, adtsbytes.length);
-            outputBuffer.get(adtsbytes, 7, info.size);
-
-            outputBuffer.position(info.offset);
-            muxerManager.writeAudioSampleData(outputBuffer, info);
 
             mMediaCodec.releaseOutputBuffer(outputBufferId, false);
 
