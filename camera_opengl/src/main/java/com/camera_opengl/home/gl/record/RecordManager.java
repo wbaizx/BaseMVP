@@ -19,8 +19,16 @@ public class RecordManager {
         videoEncoder.setRecordListener(recordListener);
     }
 
-    public int getStatus() {
-        return videoEncoder.getStatus();
+    public boolean isRecording() {
+        return videoEncoder.getStatus() == VideoEncoder.STATUS_START
+                && audioEncoder.getStatus() == AudioEncoder.STATUS_START
+                && muxerManager.getStatus() == MuxerManager.STATUS_START;
+    }
+
+    public boolean isReady() {
+        return videoEncoder.getStatus() == VideoEncoder.STATUS_READY
+                && audioEncoder.getStatus() == AudioEncoder.STATUS_READY
+                && muxerManager.getStatus() == MuxerManager.STATUS_READY;
     }
 
     public void confirmReallySize(Size reallySize) {
@@ -29,15 +37,17 @@ public class RecordManager {
     }
 
     public void startRecord() {
-        if (videoEncoder.getStatus() == VideoEncoder.STATUS_READY && reallySize != null) {
+        if (isReady() && reallySize != null) {
             boolean initSuccess = muxerManager.init();
             if (initSuccess) {
+                audioEncoder.startRecord();
                 videoEncoder.startRecord(reallySize);
             }
         }
     }
 
     public void stopRecord() {
+        audioEncoder.stopRecord();
         videoEncoder.stopRecord();
     }
 
@@ -46,6 +56,7 @@ public class RecordManager {
     }
 
     public void onDestroy() {
+        audioEncoder.onDestroy();
         videoEncoder.onDestroy();
     }
 }

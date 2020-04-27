@@ -2,6 +2,7 @@ package com.camera_opengl.home.gl.record.video;
 
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -21,7 +22,7 @@ public class VideoEncoder {
     private static final String TAG = "VideoEncoder";
 
     public static final String H264 = MediaFormat.MIMETYPE_VIDEO_AVC;
-    public static final String H265 = MediaFormat.MIMETYPE_VIDEO_AVC;
+    public static final String H265 = MediaFormat.MIMETYPE_VIDEO_HEVC;
 
     public static final int STATUS_READY = 0;
     public static final int STATUS_START = 1;
@@ -50,10 +51,10 @@ public class VideoEncoder {
         @Override
         public void onOutputBufferAvailable(@NonNull MediaCodec codec, int index, @NonNull MediaCodec.BufferInfo info) {
             ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(index);
-            LogUtil.INSTANCE.log(TAG, info.flags + "--" + info.size + "--" + info.presentationTimeUs+ "--" + System.currentTimeMillis());
+            LogUtil.INSTANCE.log(TAG, info.flags + "--" + info.size + "--" + info.presentationTimeUs + "--" + System.currentTimeMillis());
 
             if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "codec config");
+                LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
             } else if (MediaCodec.BUFFER_FLAG_KEY_FRAME == info.flags) {
                 LogUtil.INSTANCE.log(TAG, "key frame");
             }
@@ -81,9 +82,6 @@ public class VideoEncoder {
     };
 
     public VideoEncoder(MuxerManager muxerManager) {
-        videoEncoderThread = new HandlerThread("videoEncoderBackground");
-        videoEncoderThread.start();
-        videoEncoderHandler = new Handler(videoEncoderThread.getLooper());
         this.muxerManager = muxerManager;
     }
 
@@ -95,7 +93,20 @@ public class VideoEncoder {
         this.recordListener = recordListener;
     }
 
+    /**
+     * 启动视频编码工作线程
+     */
+    private void startBackground() {
+        if (videoEncoderHandler == null) {
+            videoEncoderThread = new HandlerThread("videoEncoderBackground");
+            videoEncoderThread.start();
+            videoEncoderHandler = new Handler(videoEncoderThread.getLooper());
+        }
+    }
+
     public void startRecord(Size reallySize) {
+        startBackground();
+
         videoEncoderHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -103,14 +114,18 @@ public class VideoEncoder {
                     status = STATUS_START;
                     LogUtil.INSTANCE.log(TAG, "startRecord");
 
+                    //宽高需要对调
+                    mMediaFormat = MediaFormat.createVideoFormat(H264, reallySize.getHeight(), reallySize.getWidth());
+
+                    MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+                    String name = mediaCodecList.findEncoderForFormat(mMediaFormat);
+                    LogUtil.INSTANCE.log(TAG, "createCodec " + name);
                     try {
-                        mMediaCodec = MediaCodec.createEncoderByType(H264);
+                        mMediaCodec = MediaCodec.createByCodecName(name);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    //宽高需要对调
-                    mMediaFormat = MediaFormat.createVideoFormat(H264, reallySize.getHeight(), reallySize.getWidth());
                     mMediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
                     mMediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, reallySize.getHeight() * reallySize.getWidth() * 5);
                     mMediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
@@ -155,9 +170,11 @@ public class VideoEncoder {
     }
 
     public void onDestroy() {
-        //这里不能移除所有动作，否则可能导致资源无法释放
-        videoEncoderThread.quitSafely();
-        videoEncoderHandler = null;
-        videoEncoderThread = null;
+        if (videoEncoderHandler != null) {
+            //这里不能移除所有动作，否则可能导致资源无法释放
+            videoEncoderThread.quitSafely();
+            videoEncoderHandler = null;
+            videoEncoderThread = null;
+        }
     }
 }

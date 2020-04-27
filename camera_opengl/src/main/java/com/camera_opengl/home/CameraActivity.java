@@ -20,7 +20,6 @@ import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.camera_opengl.home.gl.record.RecordManager;
-import com.camera_opengl.home.gl.record.video.VideoEncoder;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -122,12 +121,12 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         findViewById(R.id.record).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (recordManager.getStatus() == VideoEncoder.STATUS_READY) {
-                    recordManager.startRecord();
-                    record.setText("停止录制");
-                } else if (recordManager.getStatus() == VideoEncoder.STATUS_START) {
+                if (recordManager.isRecording()) {
                     recordManager.stopRecord();
                     record.setText("录制");
+                } else if (recordManager.isReady()) {
+                    recordManager.startRecord();
+                    record.setText("停止录制");
                 }
             }
         });
@@ -138,13 +137,13 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
      */
     @AfterPermissionGranted(CAMERA_PERMISSION_CODE)
     private void getPermissions() {
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)) {
             LogUtil.INSTANCE.log(TAG, "hasPermissions");
             begin();
         } else {
             EasyPermissions.requestPermissions(
                     this, "为了正常使用，需要获取以下权限",
-                    CAMERA_PERMISSION_CODE, Manifest.permission.CAMERA);
+                    CAMERA_PERMISSION_CODE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
         }
     }
 
@@ -166,7 +165,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)) {
                 finish();
             } else {
                 begin();
@@ -204,6 +203,8 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         isResume = true;
         openCamera();
 
+        Button record = findViewById(R.id.record);
+        record.setText("录制");
         look.unlock();
     }
 

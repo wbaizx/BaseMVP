@@ -53,7 +53,7 @@ public class SavePictureThread extends Thread {
     public void run() {
         super.run();
 
-        Handler mCameraHandler = new Handler(Looper.getMainLooper());
+        Handler mMainHandler = new Handler(Looper.getMainLooper());
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
@@ -92,7 +92,7 @@ public class SavePictureThread extends Thread {
                         }
 
                         if (ImageUtil.INSTANCE.updateGallery(file)) {
-                            mCameraHandler.post(new Runnable() {
+                            mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     AndroidUtil.INSTANCE.showToast("拍照成功");

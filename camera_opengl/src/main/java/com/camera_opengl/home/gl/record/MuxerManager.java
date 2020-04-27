@@ -3,8 +3,11 @@ package com.camera_opengl.home.gl.record;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
+import com.base.common.util.AndroidUtil;
 import com.base.common.util.FileUtil;
 import com.base.common.util.LogUtil;
 
@@ -19,21 +22,28 @@ public class MuxerManager {
     private final String path = FileUtil.INSTANCE.getDiskFilePath("VIDEO") + File.separator;
     private String thisPath;
 
-    private static final int STATUS_STOP = 0;
-    private static final int STATUS_START = 1;
-    private static final int STATUS_INIT = 2;
-    private int status = STATUS_STOP;
+    public static final int STATUS_READY = 0;
+    public static final int STATUS_START = 1;
+    public static final int STATUS_INIT = 2;
+    public static final int STATUS_SNAP = 3;
+    private int status = STATUS_READY;
+
+    private MediaMuxer muxer;
 
     private ReentrantLock look = new ReentrantLock();
-    private MediaMuxer muxer;
 
     private int audioTrackIndex = -1;
     private int videoTrackIndex = -1;
 
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+    public int getStatus() {
+        return status;
+    }
+
     public boolean init() {
         boolean initSuccess = false;
-        look.lock();
-        if (status == STATUS_STOP) {
+        if (status == STATUS_READY) {
             try {
                 thisPath = path + System.currentTimeMillis() + ".mp4";
                 muxer = new MediaMuxer(thisPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
@@ -42,14 +52,9 @@ public class MuxerManager {
                 LogUtil.INSTANCE.log(TAG, "init");
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                look.unlock();
             }
         } else if (status == STATUS_INIT) {
             initSuccess = true;
-            look.unlock();
-        } else {
-            look.unlock();
         }
         return initSuccess;
     }
@@ -69,6 +74,7 @@ public class MuxerManager {
     public void addAudioTrack(MediaFormat audioFormat) {
         look.lock();
         if (status == STATUS_INIT) {
+            LogUtil.INSTANCE.log(TAG, "addAudioTrack");
             audioTrackIndex = muxer.addTrack(audioFormat);
             if (videoTrackIndex != -1) {
                 start();
@@ -84,44 +90,58 @@ public class MuxerManager {
     }
 
     public void writeVideoSampleData(ByteBuffer buffer, MediaCodec.BufferInfo info) {
-        look.lock();
+        LogUtil.INSTANCE.log(TAG, "writeVideo");
         if (status == STATUS_START) {
+            info.presentationTimeUs = getSampleTime();
             muxer.writeSampleData(videoTrackIndex, buffer, info);
-            LogUtil.INSTANCE.log(TAG, "writeVideoSampleData");
+            LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
         }
-        look.unlock();
     }
 
     public void writeAudioSampleData(ByteBuffer buffer, MediaCodec.BufferInfo info) {
-        look.lock();
+        LogUtil.INSTANCE.log(TAG, "writeAudio");
         if (status == STATUS_START) {
+            info.presentationTimeUs = getSampleTime();
             muxer.writeSampleData(audioTrackIndex, buffer, info);
-            LogUtil.INSTANCE.log(TAG, "writeAudioSampleData");
+            LogUtil.INSTANCE.log(TAG, "writeAudioSampleData " + info.presentationTimeUs);
         }
-        look.unlock();
     }
 
     public void stop() {
-        look.lock();
         if (status == STATUS_START) {
+            status = STATUS_SNAP;
             try {
                 muxer.stop();
                 muxer.release();
                 LogUtil.INSTANCE.log(TAG, "stop");
+
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AndroidUtil.INSTANCE.showToast("录制成功 " + thisPath);
+                    }
+                });
             } catch (Exception e) {
                 if (!TextUtils.isEmpty(thisPath)) {
                     File file = new File(thisPath);
                     file.delete();
                 }
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AndroidUtil.INSTANCE.showToast("录制失败");
+                    }
+                });
             } finally {
-                thisPath = null;
-                status = STATUS_STOP;
+                status = STATUS_READY;
                 audioTrackIndex = -1;
                 videoTrackIndex = -1;
-                look.unlock();
             }
-        } else {
-            look.unlock();
         }
+    }
+
+    //标注时间戳用的
+    private long getSampleTime() {
+        return System.nanoTime() / 1000;
     }
 }
