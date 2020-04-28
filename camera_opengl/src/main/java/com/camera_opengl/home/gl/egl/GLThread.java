@@ -491,7 +491,7 @@ public class GLThread extends Thread {
         });
     }
 
-    public void setFilterType(int filterType) {
-        fboRenderer.setFilterType(filterType);
+    public String switchFilterType() {
+        return fboRenderer.switchFilterType();
     }
 }

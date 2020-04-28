@@ -260,7 +260,19 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glUniform1i(FILTER_LOCAL, 1);
     }
 
-    public void setFilterType(int filterType) {
-        this.filterType = filterType;
+    public String switchFilterType() {
+        filterType++;
+        //filterType的判断和着色器中的逻辑判断要一致
+        if (filterType == 0) {
+            return "LUT滤镜";
+        } else if (filterType == 1) {
+            return "灰度滤镜";
+        } else if (filterType == 2) {
+            return "亮度滤镜";
+        } else {
+            //没有滤镜
+            filterType = -1;
+            return "原色";
+        }
     }
 }

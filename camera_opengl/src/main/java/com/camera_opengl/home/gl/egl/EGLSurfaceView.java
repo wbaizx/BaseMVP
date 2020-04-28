@@ -61,8 +61,8 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         glThread.onDestroy();
     }
 
-    public void setFilterType(int filterType) {
-        glThread.setFilterType(filterType);
+    public String switchFilterType() {
+        return glThread.switchFilterType();
     }
 
     @Override
