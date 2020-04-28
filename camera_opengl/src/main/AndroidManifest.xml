@@ -11,10 +11,7 @@
         android:required="true" />
 
     <application>
-        <activity
-            android:name=".home.CameraActivity"
-            android:screenOrientation="portrait" />
-
+        <activity android:name=".home.CameraActivity" />
         <activity android:name=".home.videolist.VideoListActivity" />
     </application>
 </manifest>

@@ -1,16 +1,20 @@
 package com.base.common.base
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.R
 import com.base.common.util.LogUtil
 import com.gyf.immersionbar.ImmersionBar
 import pub.devrel.easypermissions.EasyPermissions
+
 
 /**
  *  Activity基类
@@ -19,12 +23,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     private val TAG = "BaseActivity"
     private val loadDialog by lazy { LoadDialog(this) }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //强制竖屏，这里用代码方式，有问题，首次打开页面可能并非竖屏导致闪屏
+        //可以使用 xml 中 android:screenOrientation="portrait"，不过每个页面添加有点麻烦
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         BaseAPP.registerActivity(this)
 
-//        ARouter.getInstance().inject(this)
+        ARouter.getInstance().inject(this)
 
         configure()
 

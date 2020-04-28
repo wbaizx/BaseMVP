@@ -39,12 +39,8 @@
         <activity android:name=".main.item_animation.item_animation3.ItemAnimation3Activity" />
 
         <activity android:name=".main.fragment_example.FragmentExampleActivity" />
-        <activity
-            android:name=".main.fragment_example.show_fragment.ControlFragmentActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".main.fragment_example.vp_fragment.VP2FragmentActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".main.fragment_example.show_fragment.ControlFragmentActivity" />
+        <activity android:name=".main.fragment_example.vp_fragment.VP2FragmentActivity" />
 
         <activity android:name=".main.special_rc.SpecialRCActivity" />
         <activity android:name=".main.special_rc.damping_rc.DampingRCActivity" />
