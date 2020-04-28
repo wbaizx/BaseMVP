@@ -53,7 +53,7 @@ dependencies {
     api 'com.google.android.material:material:1.2.0-alpha03'
 
     //adapter
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.1'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.2'
 
     //权限
     api 'pub.devrel:easypermissions:3.0.0'

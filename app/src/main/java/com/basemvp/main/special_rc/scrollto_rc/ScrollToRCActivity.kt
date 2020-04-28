@@ -32,7 +32,7 @@ class ScrollToRCActivity : BaseActivity() {
         repeat(20) {
             data.add("第 $it 个")
         }
-        adapter.setNewData(data)
+        adapter.setList(data)
         simpleTabLayout.setData(data)
     }
 
