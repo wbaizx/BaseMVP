@@ -1,4 +1,4 @@
-package com.camera_opengl.videolist;
+package com.camera_opengl.home.videolist;
 
 import android.view.View;
 

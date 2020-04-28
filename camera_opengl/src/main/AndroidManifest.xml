@@ -15,6 +15,6 @@
             android:name=".home.CameraActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".videolist.VideoListActivity" />
+        <activity android:name=".home.videolist.VideoListActivity" />
     </application>
 </manifest>
