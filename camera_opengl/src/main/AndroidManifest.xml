@@ -13,5 +13,6 @@
     <application>
         <activity android:name=".home.CameraActivity" />
         <activity android:name=".home.videolist.VideoListActivity" />
+        <activity android:name=".home.play.PlayActivity"/>
     </application>
 </manifest>

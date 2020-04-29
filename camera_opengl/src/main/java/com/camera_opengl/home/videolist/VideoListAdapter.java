@@ -81,7 +81,12 @@ public class VideoListAdapter extends BaseQuickAdapter<VideoListAdapter.FileBean
 
     public static class FileBean {
         private boolean isSelect = false;
+
         private File file;
+
+        public File getFile() {
+            return file;
+        }
 
         public FileBean(File file) {
             this.file = file;

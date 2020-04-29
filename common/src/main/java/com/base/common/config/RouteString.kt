@@ -28,6 +28,7 @@ object RouteString {
 
     const val CAMERA_HOME = "/camera/camera_home"
     const val VIDEO_LIST = "/camera/video_list"
+    const val VIDEO_PLAY = "/camera/video_play"
 
 
     const val isNeedLogin = 1

@@ -83,7 +83,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         findViewById(R.id.goVideoList).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ExtensionKt.loginNavigation(ARouter.getInstance().build(RouteString.VIDEO_LIST), null);
+                ExtensionKt.normalNavigation(ARouter.getInstance().build(RouteString.VIDEO_LIST), null);
             }
         });
 

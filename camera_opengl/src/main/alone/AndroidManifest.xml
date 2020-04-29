@@ -3,9 +3,7 @@
     package="com.camera_opengl">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <!-- Tell the system this app requires OpenGL ES 3.0. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- Tell the system this app requires OpenGL ES 3.0. -->
     <uses-feature
         android:glEsVersion="0x00030000"
         android:required="true" />
@@ -20,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
         <activity android:name=".home.CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,8 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".home.videolist.VideoListActivity" />
+        <activity android:name=".home.play.PlayActivity"/>
     </application>
 
 </manifest>

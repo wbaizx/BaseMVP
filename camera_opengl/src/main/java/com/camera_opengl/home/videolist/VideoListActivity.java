@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.base.common.base.BaseActivity;
+import com.base.common.config.ExtensionKt;
+import com.base.common.config.RouteString;
 import com.base.common.util.FileUtil;
 import com.camera_opengl.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -54,7 +57,10 @@ public class VideoListActivity extends BaseActivity {
                 if (videoListAdapter.isSelectMode()) {
                     videoListAdapter.select(position);
                 } else {
-                    //TODO 播放
+                    ExtensionKt.normalNavigation(
+                            ARouter.getInstance().build(RouteString.VIDEO_PLAY)
+                                    .withString("path", videoListAdapter.getData().get(position).getFile().getAbsolutePath()),
+                            null);
                 }
             }
         });
