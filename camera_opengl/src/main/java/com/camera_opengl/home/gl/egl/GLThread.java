@@ -84,9 +84,8 @@ public class GLThread extends Thread {
         super.run();
         setName("mGLThread");
 
-        LogUtil.INSTANCE.log(TAG, "GLThread  run");
         guardedRun();
-        LogUtil.INSTANCE.log(TAG, "GLThread  run X");
+        LogUtil.INSTANCE.log(TAG, "GLThread  close");
     }
 
     public void surfaceCreated(Surface surface) {

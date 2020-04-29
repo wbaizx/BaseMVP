@@ -1,4 +1,4 @@
-package com.camera_opengl.home.record.video;
+package com.camera_opengl.home.record.encoder;
 
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
@@ -12,6 +12,7 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.MimeType;
 import com.camera_opengl.home.record.MuxerManager;
 import com.camera_opengl.home.record.RecordListener;
 
@@ -20,9 +21,6 @@ import java.nio.ByteBuffer;
 
 public class VideoEncoder {
     private static final String TAG = "VideoEncoder";
-
-    public static final String H264 = MediaFormat.MIMETYPE_VIDEO_AVC;
-    public static final String H265 = MediaFormat.MIMETYPE_VIDEO_HEVC;
 
     public static final int STATUS_READY = 0;
     public static final int STATUS_START = 1;
@@ -63,7 +61,7 @@ public class VideoEncoder {
                 muxerManager.writeVideoSampleData(outputBuffer, info);
             }
 
-            mMediaCodec.releaseOutputBuffer(index, true);
+            mMediaCodec.releaseOutputBuffer(index, false);
 
             if (MediaCodec.BUFFER_FLAG_END_OF_STREAM == info.flags) {
                 LogUtil.INSTANCE.log(TAG, "end stream");
@@ -117,7 +115,7 @@ public class VideoEncoder {
                     LogUtil.INSTANCE.log(TAG, "startRecord");
 
                     //宽高需要对调
-                    mMediaFormat = MediaFormat.createVideoFormat(H264, reallySize.getHeight(), reallySize.getWidth());
+                    mMediaFormat = MediaFormat.createVideoFormat(MimeType.H264, reallySize.getHeight(), reallySize.getWidth());
 
                     MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
                     String name = mediaCodecList.findEncoderForFormat(mMediaFormat);
@@ -132,7 +130,7 @@ public class VideoEncoder {
                     mMediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, reallySize.getHeight() * reallySize.getWidth() * 5);
                     mMediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
                     mMediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-                    mMediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+                    mMediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 0);
 
                     mMediaCodec.setCallback(callback, videoEncoderHandler);
                     mMediaCodec.configure(mMediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);

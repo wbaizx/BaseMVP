@@ -3,8 +3,8 @@ package com.camera_opengl.home.record;
 import android.util.Size;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.record.audio.AudioEncoder;
-import com.camera_opengl.home.record.video.VideoEncoder;
+import com.camera_opengl.home.record.encoder.AudioEncoder;
+import com.camera_opengl.home.record.encoder.VideoEncoder;
 
 public class RecordManager {
     private static final String TAG = "RecordManager";

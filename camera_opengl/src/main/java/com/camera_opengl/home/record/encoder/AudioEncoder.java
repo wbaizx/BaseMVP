@@ -1,4 +1,4 @@
-package com.camera_opengl.home.record.audio;
+package com.camera_opengl.home.record.encoder;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -9,6 +9,7 @@ import android.media.MediaFormat;
 import android.media.MediaRecorder;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.MimeType;
 import com.camera_opengl.home.record.MuxerManager;
 
 import java.io.IOException;
@@ -82,7 +83,6 @@ public class AudioEncoder extends Thread {
     public void run() {
         super.run();
         setName("AudioEncoderBackground");
-        LogUtil.INSTANCE.log(TAG, "run");
 
         //音频的录制的声道CHANNEL_IN_STEREO为双声道，CHANNEL_CONFIGURATION_MONO为单声道
         bufferSizeInBytes = AudioRecord.getMinBufferSize(
@@ -140,12 +140,13 @@ public class AudioEncoder extends Thread {
         } finally {
             look.unlock();
             audioRecord.release();
-            LogUtil.INSTANCE.log(TAG, "run end");
         }
+
+        LogUtil.INSTANCE.log(TAG, "AudioEncoder  close");
     }
 
     private void createCodec() {
-        MediaFormat mediaFormat = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, AUDIO_SAMPLE_RATE, 2);
+        MediaFormat mediaFormat = MediaFormat.createAudioFormat(MimeType.AAC, AUDIO_SAMPLE_RATE, 2);
 
         MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
         String name = mediaCodecList.findEncoderForFormat(mediaFormat);
@@ -208,7 +209,8 @@ public class AudioEncoder extends Thread {
     }
 
     /**
-     * 添加ADTS头部，MediaMuxer不要，推流需要
+     * MP4,flv,rtmp都不需要adts头
+     * hls,rtp,ts和单独aac文件需要adts头
      */
     private void addADTStoPacket(byte[] packet, int packetLen) {
         int profile = 2;  //AAC LC

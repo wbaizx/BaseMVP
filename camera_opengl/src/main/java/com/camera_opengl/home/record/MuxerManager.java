@@ -28,7 +28,7 @@ public class MuxerManager {
     public static final int STATUS_SNAP = 3;
     private int status = STATUS_READY;
 
-    private MediaMuxer muxer;
+    private MediaMuxer mediaMuxer;
 
     private ReentrantLock look = new ReentrantLock();
 
@@ -46,7 +46,7 @@ public class MuxerManager {
         if (status == STATUS_READY) {
             try {
                 thisPath = path + System.currentTimeMillis() + ".mp4";
-                muxer = new MediaMuxer(thisPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+                mediaMuxer = new MediaMuxer(thisPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
                 status = STATUS_INIT;
                 initSuccess = true;
                 LogUtil.INSTANCE.log(TAG, "init");
@@ -63,7 +63,7 @@ public class MuxerManager {
         look.lock();
         if (status == STATUS_INIT) {
             LogUtil.INSTANCE.log(TAG, "addVideoTrack");
-            videoTrackIndex = muxer.addTrack(videoFormat);
+            videoTrackIndex = mediaMuxer.addTrack(videoFormat);
             if (audioTrackIndex != -1) {
                 start();
             }
@@ -75,7 +75,7 @@ public class MuxerManager {
         look.lock();
         if (status == STATUS_INIT) {
             LogUtil.INSTANCE.log(TAG, "addAudioTrack");
-            audioTrackIndex = muxer.addTrack(audioFormat);
+            audioTrackIndex = mediaMuxer.addTrack(audioFormat);
             if (videoTrackIndex != -1) {
                 start();
             }
@@ -84,7 +84,7 @@ public class MuxerManager {
     }
 
     private void start() {
-        muxer.start();
+        mediaMuxer.start();
         status = STATUS_START;
         LogUtil.INSTANCE.log(TAG, "start");
     }
@@ -93,7 +93,7 @@ public class MuxerManager {
         LogUtil.INSTANCE.log(TAG, "writeVideo");
         if (status == STATUS_START) {
             LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
-            muxer.writeSampleData(videoTrackIndex, buffer, info);
+            mediaMuxer.writeSampleData(videoTrackIndex, buffer, info);
         }
     }
 
@@ -101,7 +101,7 @@ public class MuxerManager {
         LogUtil.INSTANCE.log(TAG, "writeAudio");
         if (status == STATUS_START) {
             LogUtil.INSTANCE.log(TAG, "writeAudioSampleData " + info.presentationTimeUs);
-            muxer.writeSampleData(audioTrackIndex, buffer, info);
+            mediaMuxer.writeSampleData(audioTrackIndex, buffer, info);
         }
     }
 
@@ -109,8 +109,8 @@ public class MuxerManager {
         if (status == STATUS_START) {
             status = STATUS_SNAP;
             try {
-                muxer.stop();
-                muxer.release();
+                mediaMuxer.stop();
+                mediaMuxer.release();
                 LogUtil.INSTANCE.log(TAG, "stop");
 
                 mMainHandler.post(new Runnable() {

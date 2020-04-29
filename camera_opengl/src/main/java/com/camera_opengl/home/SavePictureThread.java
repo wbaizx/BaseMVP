@@ -113,7 +113,7 @@ public class SavePictureThread extends Thread {
         }
 
         queue.clear();
-        LogUtil.INSTANCE.log(TAG, "close");
+        LogUtil.INSTANCE.log(TAG, "SavePictureThread close");
     }
 
     /**
