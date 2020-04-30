@@ -55,9 +55,9 @@ public class AudioExtractorThread extends Thread {
             mAudioExtractor = new MediaExtractor();
             mAudioExtractor.setDataSource(path);
 
-            int count2 = mAudioExtractor.getTrackCount();
+            int count = mAudioExtractor.getTrackCount();
             MediaFormat audioFormat = null;
-            for (int i = 0; i < count2; i++) {
+            for (int i = 0; i < count; i++) {
                 MediaFormat mediaFormat = mAudioExtractor.getTrackFormat(i);
                 String MIME = mediaFormat.getString(MediaFormat.KEY_MIME);
                 if (MimeType.AAC.equals(MIME)) {

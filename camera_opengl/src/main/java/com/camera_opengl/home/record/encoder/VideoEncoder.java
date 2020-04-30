@@ -114,8 +114,7 @@ public class VideoEncoder {
                     status = STATUS_START;
                     LogUtil.INSTANCE.log(TAG, "startRecord");
 
-                    //宽高需要对调
-                    mMediaFormat = MediaFormat.createVideoFormat(MimeType.H264, reallySize.getHeight(), reallySize.getWidth());
+                    mMediaFormat = MediaFormat.createVideoFormat(MimeType.H264, reallySize.getWidth(), reallySize.getHeight());
 
                     MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
                     String name = mediaCodecList.findEncoderForFormat(mMediaFormat);

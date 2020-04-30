@@ -8,9 +8,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.camera_opengl.home.camera.CameraControlListener;
-import com.camera_opengl.home.record.RecordListener;
 
-public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback, RecordListener {
+public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "EGLSurfaceView";
 
     private GLThread glThread;
@@ -65,12 +64,10 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         return glThread.switchFilterType();
     }
 
-    @Override
     public void onEncoderSurfaceCreated(Surface surface) {
         glThread.onEncoderSurfaceCreated(surface);
     }
 
-    @Override
     public void onEncoderSurfaceDestroy() {
         glThread.onEncoderSurfaceDestroy();
     }

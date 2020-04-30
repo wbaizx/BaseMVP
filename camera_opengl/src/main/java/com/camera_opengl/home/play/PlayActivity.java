@@ -1,23 +1,28 @@
 package com.camera_opengl.home.play;
 
+import android.graphics.SurfaceTexture;
+import android.util.Size;
 import android.view.View;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
 import com.camera_opengl.R;
+import com.camera_opengl.home.gl.egl.EGLSurfaceView;
+import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 //RouteString.VIDEO_PLAY
 @Route(path = "/camera/video_play", name = "组件化camera 视频播放页", extras = -1)
-public class PlayActivity extends BaseActivity {
+public class PlayActivity extends BaseActivity implements GLSurfaceListener, PlayListener {
     private static final String TAG = "PlayActivity";
 
     @Autowired
     String path;
 
-    private PlayManager playManager = new PlayManager();
+    private EGLSurfaceView eglSurfaceView;
+    private PlayManager playManager;
 
     @Override
     protected int getContentView() {
@@ -31,6 +36,11 @@ public class PlayActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        eglSurfaceView = findViewById(R.id.eglSurfaceView);
+        eglSurfaceView.setGlSurfaceListener(this);
+
+        playManager = new PlayManager(this);
+
         findViewById(R.id.playSwitch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,8 +54,17 @@ public class PlayActivity extends BaseActivity {
     }
 
     @Override
-    protected void initData() {
+    public void onGLSurfaceCreated(SurfaceTexture surfaceTexture) {
+        playManager.setSurfaceTexture(surfaceTexture);
+    }
 
+    @Override
+    public void confirmPlaySize(Size playSize) {
+        eglSurfaceView.confirmReallySize(playSize);
+    }
+
+    @Override
+    protected void initData() {
     }
 
     @Override
@@ -57,6 +76,7 @@ public class PlayActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         playManager.onDestroy();
+        eglSurfaceView.onDestroy();
         super.onDestroy();
     }
 }

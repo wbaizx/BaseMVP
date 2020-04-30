@@ -1,5 +1,8 @@
 package com.camera_opengl.home.play;
 
+import android.graphics.SurfaceTexture;
+import android.view.Surface;
+
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.play.extractor.AudioExtractorThread;
 import com.camera_opengl.home.play.extractor.VideoExtractorThread;
@@ -10,8 +13,16 @@ public class PlayManager {
     private VideoExtractorThread videoThread;
     private AudioExtractorThread audioThread;
 
+    private Surface surface;
+    private PlayListener playListener;
+
+    public PlayManager(PlayListener playListener) {
+        this.playListener = playListener;
+    }
+
     public void init(String path) {
         videoThread = new VideoExtractorThread(path);
+        videoThread.setPlayListener(playListener);
         videoThread.start();
 
         audioThread = new AudioExtractorThread(path);
@@ -20,7 +31,12 @@ public class PlayManager {
         LogUtil.INSTANCE.log(TAG, "init X");
     }
 
+    public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
+        surface = new Surface(surfaceTexture);
+    }
+
     public void play() {
+        videoThread.play();
         audioThread.play();
     }
 
@@ -29,10 +45,12 @@ public class PlayManager {
     }
 
     public void pause() {
+        videoThread.pause();
         audioThread.pause();
     }
 
     public void onDestroy() {
         audioThread.release();
+        videoThread.release();
     }
 }

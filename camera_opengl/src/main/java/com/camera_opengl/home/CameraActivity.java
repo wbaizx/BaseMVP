@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.util.Size;
+import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
 
@@ -22,6 +23,7 @@ import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
+import com.camera_opengl.home.record.RecordListener;
 import com.camera_opengl.home.record.RecordManager;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
@@ -38,7 +40,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 //RouteString.CAMERA_HOME
 //RouteString.isNeedLogin
 @Route(path = "/camera/camera_home", name = "组件化camera首页", extras = 1)
-public class CameraActivity extends BaseActivity implements CameraControlListener, GLSurfaceListener {
+public class CameraActivity extends BaseActivity implements CameraControlListener, GLSurfaceListener, RecordListener {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;
 
@@ -77,7 +79,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         eglSurfaceView.setGlSurfaceListener(this);
         eglSurfaceView.setCameraControlListener(this);
 
-        recordManager = new RecordManager(eglSurfaceView);
+        recordManager = new RecordManager(this);
 
 
         findViewById(R.id.goVideoList).setOnClickListener(new View.OnClickListener() {
@@ -230,13 +232,25 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
     /**
      * CameraControl 预览大小确定回调
+     * 因为是相机过来的数据，所以宽高需要对调
      *
      * @param cameraSize
      */
     @Override
     public void confirmCameraSize(Size cameraSize) {
-        eglSurfaceView.confirmReallySize(cameraSize);
-        recordManager.confirmReallySize(cameraSize);
+        Size reallySize = new Size(cameraSize.getHeight(), cameraSize.getWidth());
+        eglSurfaceView.confirmReallySize(reallySize);
+        recordManager.confirmReallySize(reallySize);
+    }
+
+    @Override
+    public void onEncoderSurfaceCreated(Surface surface) {
+        eglSurfaceView.onEncoderSurfaceCreated(surface);
+    }
+
+    @Override
+    public void onEncoderSurfaceDestroy() {
+        eglSurfaceView.onEncoderSurfaceDestroy();
     }
 
     /**

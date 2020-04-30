@@ -82,10 +82,9 @@ public class GLThread extends Thread {
     @Override
     public void run() {
         super.run();
-        setName("mGLThread");
-
+        setName(getName() + "-GLThread");
         guardedRun();
-        LogUtil.INSTANCE.log(TAG, "GLThread  close");
+        LogUtil.INSTANCE.log(TAG, getName() + " close");
     }
 
     public void surfaceCreated(Surface surface) {
@@ -484,7 +483,9 @@ public class GLThread extends Thread {
                         throw new RuntimeException("eglMakeCurrent takePicture fail");
                     }
                     //在Android平台中，Bitmap绑定的2D纹理，是上下颠倒的
-                    cameraControlListener.imageAvailable(fboRenderer.takePicture(), false, true);
+                    if (cameraControlListener != null) {
+                        cameraControlListener.imageAvailable(fboRenderer.takePicture(), false, true);
+                    }
                 }
             }
         });

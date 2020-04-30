@@ -83,8 +83,8 @@ public class FBORenderer extends BaseRenderer {
     }
 
     @Override
-    public void confirmReallySize(Size cameraSize) {
-        super.confirmReallySize(cameraSize);
+    public void confirmReallySize(Size reallySize) {
+        super.confirmReallySize(reallySize);
         updateFBO();
     }
 

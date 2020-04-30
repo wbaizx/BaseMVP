@@ -46,13 +46,12 @@ abstract public class BaseRenderer {
     }
 
     /**
-     * 获取实际数据宽高，因为是相机过来的数据，所以宽高需要对调
+     * 获取实际数据宽高
      */
-    public void confirmReallySize(Size cameraSize) {
-        LogUtil.INSTANCE.log(TAG, "confirmCameraSize");
-        //宽高需要对调
-        this.reallyWidth = cameraSize.getHeight();
-        this.reallyHeight = cameraSize.getWidth();
+    public void confirmReallySize(Size reallySize) {
+        LogUtil.INSTANCE.log(TAG, "confirmReallySize");
+        this.reallyHeight = reallySize.getHeight();
+        this.reallyWidth  = reallySize.getWidth();
     }
 
     /**
