@@ -43,6 +43,6 @@ public class VideoExtractorThread extends Thread {
             e.printStackTrace();
         }
 
-        LogUtil.INSTANCE.log(TAG, "AudioExtractorThread  close");
+        LogUtil.INSTANCE.log(TAG, "VideoExtractorThread  close");
     }
 }

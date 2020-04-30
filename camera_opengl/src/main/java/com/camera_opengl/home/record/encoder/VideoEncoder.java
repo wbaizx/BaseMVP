@@ -130,7 +130,7 @@ public class VideoEncoder {
                     mMediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, reallySize.getHeight() * reallySize.getWidth() * 5);
                     mMediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
                     mMediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-                    mMediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 0);
+                    mMediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
 
                     mMediaCodec.setCallback(callback, videoEncoderHandler);
                     mMediaCodec.configure(mMediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);

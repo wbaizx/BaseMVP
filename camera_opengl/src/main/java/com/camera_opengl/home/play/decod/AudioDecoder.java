@@ -1,5 +1,8 @@
 package com.camera_opengl.home.play.decod;
 
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.media.MediaCodec;
 import android.media.MediaCodecList;
 import android.media.MediaExtractor;
@@ -13,8 +16,19 @@ import java.nio.ByteBuffer;
 public class AudioDecoder {
     private static final String TAG = "AudioDecoder";
     private MediaCodec mMediaCodec;
+    private AudioTrack audioTrack;
 
     public AudioDecoder(MediaFormat audioFormat) {
+        int sampleHz = audioFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+        int channel = audioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT) == 1 ?
+                AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
+
+        int bufferSizeInBytes = AudioTrack.getMinBufferSize(sampleHz, channel, AudioFormat.ENCODING_PCM_16BIT);
+        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleHz, channel,
+                AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes, AudioTrack.MODE_STREAM);
+
+        LogUtil.INSTANCE.log(TAG, "audioFormat parameter " + sampleHz + " -- " + channel + " -- " + bufferSizeInBytes);
+
         MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
         String name = mediaCodecList.findDecoderForFormat(audioFormat);
         LogUtil.INSTANCE.log(TAG, "createCodec " + name);
@@ -23,7 +37,6 @@ public class AudioDecoder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         mMediaCodec.configure(audioFormat, null, null, 0);
         mMediaCodec.start();
     }
@@ -52,8 +65,10 @@ public class AudioDecoder {
                     if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
                         LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
                     } else {
-                        outputBuffer.position(info.offset);
-                        LogUtil.INSTANCE.log(TAG, "encoder " + info.size);
+                        byte[] bytes = new byte[info.size];
+                        outputBuffer.get(bytes);
+                        audioTrack.write(bytes, 0, info.size);
+                        LogUtil.INSTANCE.log(TAG, "write " + info.offset + " -- " + info.size);
                     }
                 }
 
@@ -67,8 +82,25 @@ public class AudioDecoder {
         }
     }
 
+    public void play() {
+        if (audioTrack.getPlayState() != AudioTrack.PLAYSTATE_PLAYING) {
+            audioTrack.play();
+            LogUtil.INSTANCE.log(TAG, "play");
+        }
+    }
+
+    public void pause() {
+        if (audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+            audioTrack.pause();
+            LogUtil.INSTANCE.log(TAG, "play pause");
+        }
+    }
+
     public void release() {
         mMediaCodec.stop();
         mMediaCodec.release();
+        audioTrack.stop();
+        audioTrack.release();
+        LogUtil.INSTANCE.log(TAG, "release X");
     }
 }

@@ -22,8 +22,8 @@ public class AudioExtractorThread extends Thread {
     private int status = STATUS_READY;
 
     private String path;
-    private MediaExtractor mAudioExtractor;
 
+    private MediaExtractor mAudioExtractor;
     private AudioDecoder audioDecoder;
 
     private ReentrantLock look = new ReentrantLock();
@@ -65,7 +65,6 @@ public class AudioExtractorThread extends Thread {
                     audioFormat = mediaFormat;
 
                     LogUtil.INSTANCE.log(TAG, "init Audio " + mediaFormat.getLong(MediaFormat.KEY_DURATION));//总时间
-                    LogUtil.INSTANCE.log(TAG, "init Audio " + mediaFormat.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE));//最大大小
                 }
             }
 
@@ -77,28 +76,21 @@ public class AudioExtractorThread extends Thread {
                             audioDecoder = new AudioDecoder(audioFormat);
                         }
 
+                        //开始播放，会多次调用，方法内判断
+                        audioDecoder.play();
+
                         if (mAudioExtractor.getSampleTime() == 0) {
                             previousFrameTimestamp = 0;
-                            currentTimestamp = getSampleTime();
-                            audioDecoder.encoder(mAudioExtractor);
-                            mAudioExtractor.advance();
+                            decodeFrame();
 
                         } else if (mAudioExtractor.getSampleTime() == -1) {
                             LogUtil.INSTANCE.log(TAG, "end of stream");
                             mAudioExtractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
 
                         } else {
-                            long timeDifference = getSampleTime() - currentTimestamp;
-                            long fileTimeDifference = mAudioExtractor.getSampleTime() - previousFrameTimestamp;
-                            if (timeDifference < fileTimeDifference) {
-                                condition.await(fileTimeDifference - timeDifference, TimeUnit.MICROSECONDS);
-                            }
+                            synchronisedTime();
 
-                            currentTimestamp = getSampleTime();
-                            previousFrameTimestamp = mAudioExtractor.getSampleTime();
-
-                            audioDecoder.encoder(mAudioExtractor);
-                            mAudioExtractor.advance();
+                            decodeFrame();
                         }
 
                     } else if (STATUS_RELEASE == status) {
@@ -108,6 +100,14 @@ public class AudioExtractorThread extends Thread {
                         break;
 
                     } else {
+                        LogUtil.INSTANCE.log(TAG, "SNAP status " + status + " -- await");
+                        if (STATUS_SNAP == status) {
+                            //如果是暂停态，通知解码器和播放器暂停，变为准备态
+                            if (audioDecoder != null) {
+                                audioDecoder.pause();
+                            }
+                            status = STATUS_READY;
+                        }
                         condition.await();
                     }
                 }
@@ -119,6 +119,29 @@ public class AudioExtractorThread extends Thread {
         }
 
         LogUtil.INSTANCE.log(TAG, "AudioExtractorThread  close");
+    }
+
+    /**
+     * 这个方法用来控制播放间隔，以及音视频同步
+     */
+    private void synchronisedTime() throws InterruptedException {
+        long timeDifference = getSampleTime() - currentTimestamp;
+        long fileTimeDifference = mAudioExtractor.getSampleTime() - previousFrameTimestamp;
+        if (timeDifference < fileTimeDifference) {
+            LogUtil.INSTANCE.log(TAG, "await " + (fileTimeDifference - timeDifference));
+            condition.await(fileTimeDifference - timeDifference, TimeUnit.MICROSECONDS);
+        }
+
+        previousFrameTimestamp = mAudioExtractor.getSampleTime();
+    }
+
+    /**
+     * 解码播放一帧，同时定位下一帧，记录当前时间戳
+     */
+    private void decodeFrame() {
+        currentTimestamp = getSampleTime();
+        audioDecoder.encoder(mAudioExtractor);
+        mAudioExtractor.advance();
     }
 
     public void play() {
