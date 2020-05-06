@@ -65,12 +65,6 @@ public class VideoDecoder {
         }
     }
 
-    public void play() {
-    }
-
-    public void pause() {
-    }
-
     public void release() {
         mMediaCodec.stop();
         mMediaCodec.release();

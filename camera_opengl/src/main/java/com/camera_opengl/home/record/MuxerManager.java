@@ -3,6 +3,7 @@ package com.camera_opengl.home.record;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
+import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -14,7 +15,6 @@ import com.base.common.util.LogUtil;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class MuxerManager {
     private static final String TAG = "MuxerManager";
@@ -30,7 +30,7 @@ public class MuxerManager {
 
     private MediaMuxer mediaMuxer;
 
-    private ReentrantLock look = new ReentrantLock();
+    private ConditionVariable conditionVariable = new ConditionVariable();
 
     private int audioTrackIndex = -1;
     private int videoTrackIndex = -1;
@@ -42,6 +42,8 @@ public class MuxerManager {
     }
 
     public boolean init() {
+        conditionVariable.close();
+
         boolean initSuccess = false;
         if (status == STATUS_READY) {
             try {
@@ -60,46 +62,53 @@ public class MuxerManager {
     }
 
     public void addVideoTrack(MediaFormat videoFormat) {
-        look.lock();
-        if (status == STATUS_INIT) {
-            LogUtil.INSTANCE.log(TAG, "addVideoTrack");
-            videoTrackIndex = mediaMuxer.addTrack(videoFormat);
-            if (audioTrackIndex != -1) {
-                start();
+        synchronized (this) {
+            if (status == STATUS_INIT) {
+                LogUtil.INSTANCE.log(TAG, "addVideoTrack");
+                videoTrackIndex = mediaMuxer.addTrack(videoFormat);
+                if (audioTrackIndex != -1) {
+                    start();
+                }
             }
         }
-        look.unlock();
     }
 
     public void addAudioTrack(MediaFormat audioFormat) {
-        look.lock();
-        if (status == STATUS_INIT) {
-            LogUtil.INSTANCE.log(TAG, "addAudioTrack");
-            audioTrackIndex = mediaMuxer.addTrack(audioFormat);
-            if (videoTrackIndex != -1) {
-                start();
+        synchronized (this) {
+            if (status == STATUS_INIT) {
+                LogUtil.INSTANCE.log(TAG, "addAudioTrack");
+                audioTrackIndex = mediaMuxer.addTrack(audioFormat);
+                if (videoTrackIndex != -1) {
+                    start();
+                }
             }
         }
-        look.unlock();
     }
 
     private void start() {
         mediaMuxer.start();
         status = STATUS_START;
+
+        conditionVariable.open();
         LogUtil.INSTANCE.log(TAG, "start");
     }
 
     public void writeVideoSampleData(ByteBuffer buffer, MediaCodec.BufferInfo info) {
         LogUtil.INSTANCE.log(TAG, "writeVideo");
-        if (status == STATUS_START) {
+        if (status == STATUS_START || status == STATUS_INIT) {
+            conditionVariable.block();
+
             LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.presentationTimeUs);
+            LogUtil.INSTANCE.log(TAG, "writeVideoSampleData " + info.flags);
             mediaMuxer.writeSampleData(videoTrackIndex, buffer, info);
         }
     }
 
     public void writeAudioSampleData(ByteBuffer buffer, MediaCodec.BufferInfo info) {
         LogUtil.INSTANCE.log(TAG, "writeAudio");
-        if (status == STATUS_START) {
+        if (status == STATUS_START || status == STATUS_INIT) {
+            conditionVariable.block();
+
             LogUtil.INSTANCE.log(TAG, "writeAudioSampleData " + info.presentationTimeUs);
             mediaMuxer.writeSampleData(audioTrackIndex, buffer, info);
         }

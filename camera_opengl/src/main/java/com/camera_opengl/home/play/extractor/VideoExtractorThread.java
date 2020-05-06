@@ -107,9 +107,6 @@ public class VideoExtractorThread extends Thread {
                             playListener.confirmPlaySize(new Size(width, height));
                         }
 
-                        //开始播放，会多次调用，方法内判断
-                        videoDecoder.play();
-
                         if (mVideoExtractor.getSampleTime() == 0) {
                             previousFrameTimestamp = 0;
                             decodeFrame();
@@ -134,9 +131,6 @@ public class VideoExtractorThread extends Thread {
                         LogUtil.INSTANCE.log(TAG, "SNAP status " + status + " -- await");
                         if (STATUS_SNAP == status) {
                             //如果是暂停态，通知解码器和播放器暂停，变为准备态
-                            if (videoDecoder != null) {
-                                videoDecoder.pause();
-                            }
                             status = STATUS_READY;
                         }
                         condition.await();
