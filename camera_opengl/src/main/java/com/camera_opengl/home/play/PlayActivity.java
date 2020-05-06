@@ -1,5 +1,6 @@
 package com.camera_opengl.home.play;
 
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.util.Size;
 import android.view.View;
@@ -8,6 +9,8 @@ import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
 import com.camera_opengl.R;
+import com.camera_opengl.home.SavePictureThread;
+import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.gyf.immersionbar.BarHide;
@@ -44,18 +47,15 @@ public class PlayActivity extends BaseActivity implements GLSurfaceListener, Pla
         findViewById(R.id.playSwitch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (true) {
-                    playManager.play();
-                }
+                playManager.play();
             }
         });
-
-        playManager.init(path);
     }
 
     @Override
     public void onGLSurfaceCreated(SurfaceTexture surfaceTexture) {
         playManager.setSurfaceTexture(surfaceTexture);
+        playManager.init(path);
     }
 
     @Override

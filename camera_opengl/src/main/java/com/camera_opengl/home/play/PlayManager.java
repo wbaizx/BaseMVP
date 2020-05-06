@@ -13,7 +13,7 @@ public class PlayManager {
     private VideoExtractorThread videoThread;
     private AudioExtractorThread audioThread;
 
-    private Surface surface;
+    private SurfaceTexture surfaceTexture;
     private PlayListener playListener;
 
     public PlayManager(PlayListener playListener) {
@@ -23,6 +23,7 @@ public class PlayManager {
     public void init(String path) {
         videoThread = new VideoExtractorThread(path);
         videoThread.setPlayListener(playListener);
+        videoThread.setSurfaceTexture(surfaceTexture);
         videoThread.start();
 
         audioThread = new AudioExtractorThread(path);
@@ -32,7 +33,7 @@ public class PlayManager {
     }
 
     public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
-        surface = new Surface(surfaceTexture);
+        this.surfaceTexture = surfaceTexture;
     }
 
     public void play() {

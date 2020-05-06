@@ -34,7 +34,7 @@ public class AudioExtractorThread extends Thread {
      */
     private long currentTimestamp = 0;
     /**
-     * 视频文件上一帧时间戳
+     * 音频文件上一帧时间戳
      */
     private long previousFrameTimestamp = 0;
 

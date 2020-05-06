@@ -177,6 +177,7 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glBindVertexArray(vaoArray[0]);
 
         GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4);
+        GLHelper.glGetError("glDrawArrays");
 
         GLES30.glBindVertexArray(GLES30.GL_NONE);
         GLES30.glDisableVertexAttribArray(POSITION_LOCAL);

@@ -53,7 +53,7 @@ public class GLThread extends Thread {
     private EGLSurface codecEglSurface;
     private EGLContext eglContext;
 
-    //接收相机数据的纹理
+    //接收外部数据的纹理
     private int[] texture = new int[1];
     private SurfaceTexture surfaceTexture;
     private float[] surfaceMatrix = new float[16];
@@ -185,7 +185,7 @@ public class GLThread extends Thread {
                             throw new RuntimeException("eglMakeCurrent fbo fail");
                         }
                         if (surfaceTexture == null) {
-                            //创建外部纹理用于接收相机数据
+                            //创建外部纹理用于接收数据
                             GLHelper.createExternalTexture(texture);
                             surfaceTexture = new SurfaceTexture(texture[0]);
                             surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
@@ -393,7 +393,7 @@ public class GLThread extends Thread {
     }
 
     /**
-     * 此方法一定会在相机数据来之前回调
+     * 此方法一定会在数据来之前回调
      *
      * @param reallySize
      */
