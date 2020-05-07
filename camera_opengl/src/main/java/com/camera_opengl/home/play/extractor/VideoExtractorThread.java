@@ -20,7 +20,6 @@ public class VideoExtractorThread extends ExtractorThread {
 
     private int width = 0;
     private int height = 0;
-    private long mp4Duration = 0;
 
     public VideoExtractorThread(String path) {
         super(path);
@@ -43,7 +42,6 @@ public class VideoExtractorThread extends ExtractorThread {
     protected Decoder initDecoder(MediaFormat format) {
         width = format.getInteger(MediaFormat.KEY_WIDTH);
         height = format.getInteger(MediaFormat.KEY_HEIGHT);
-        mp4Duration = format.getLong(MediaFormat.KEY_DURATION);
         return new VideoDecoder(format, new Surface(surfaceTexture));
     }
 
@@ -55,18 +53,12 @@ public class VideoExtractorThread extends ExtractorThread {
             playListener.confirmPlaySize(new Size(width, height));
         }
 
-        if (extractor.getSampleTime() == 0) {
-            previousFrameTimestamp = 0;
-            decodeFrame();
-
-        } else if (extractor.getSampleTime() == -1) {
+        if (extractor.getSampleTime() == -1) {
             LogUtil.INSTANCE.log(TAG, "end of stream");
             extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
-
-        } else {
-            synchronisedTime();
-
-            decodeFrame();
         }
+
+        synchronisedTime();
+        decodeFrame();
     }
 }

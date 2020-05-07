@@ -39,6 +39,11 @@ public abstract class ExtractorThread extends Thread {
      */
     protected long previousFrameTimestamp = 0;
 
+    /**
+     * 轨道总时长
+     */
+    protected long mp4Duration = 0;
+
     public ExtractorThread(String path) {
         this.path = path;
     }
@@ -66,6 +71,9 @@ public abstract class ExtractorThread extends Thread {
                 if (chooseMime(MIME)) {
                     extractor.selectTrack(i);
                     format = mediaFormat;
+
+                    mp4Duration = format.getLong(MediaFormat.KEY_DURATION);
+                    LogUtil.INSTANCE.log(TAG, getClass().getSimpleName() + " - " + mp4Duration);
                 }
             }
 
@@ -123,11 +131,14 @@ public abstract class ExtractorThread extends Thread {
     protected void synchronisedTime() throws InterruptedException {
         long timeDifference = getSampleTime() - currentTimestamp;
         long fileTimeDifference = extractor.getSampleTime() - previousFrameTimestamp;
-        if (timeDifference < fileTimeDifference) {
-            condition.await(fileTimeDifference - timeDifference, TimeUnit.MICROSECONDS);
-        }
+
         LogUtil.INSTANCE.log(TAG, "await " + timeDifference + " -- " + fileTimeDifference + " -- "
                 + (fileTimeDifference - timeDifference));
+
+        if (timeDifference < fileTimeDifference) {
+            condition.await(fileTimeDifference - timeDifference, TimeUnit.MICROSECONDS);
+            LogUtil.INSTANCE.log(TAG, "await  ------------------");
+        }
 
         previousFrameTimestamp = extractor.getSampleTime();
     }

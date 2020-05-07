@@ -32,17 +32,12 @@ public class AudioExtractorThread extends ExtractorThread {
             decoder.play();
         }
 
-        if (extractor.getSampleTime() == 0) {
-            previousFrameTimestamp = 0;
-            decodeFrame();
-
-        } else if (extractor.getSampleTime() == -1) {
+        if (extractor.getSampleTime() == -1) {
             LogUtil.INSTANCE.log(TAG, "end of stream");
             extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
-
-        } else {
-            synchronisedTime();
-            decodeFrame();
         }
+
+        synchronisedTime();
+        decodeFrame();
     }
 }
