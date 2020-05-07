@@ -11,7 +11,7 @@ import com.base.common.util.LogUtil;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class VideoDecoder {
+public class VideoDecoder implements Decoder {
     private static final String TAG = "VideoDecoder";
 
     private MediaCodec mMediaCodec;
@@ -29,6 +29,7 @@ public class VideoDecoder {
         mMediaCodec.start();
     }
 
+    @Override
     public void encoder(MediaExtractor mVideoExtractor) {
         //-1表示一直等待，0表示不等待有可能会丢帧，其他表示等待多少毫秒
         int inputBufferId = mMediaCodec.dequeueInputBuffer(0);
@@ -65,6 +66,15 @@ public class VideoDecoder {
         }
     }
 
+    @Override
+    public void play() {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
     public void release() {
         mMediaCodec.stop();
         mMediaCodec.release();

@@ -13,7 +13,7 @@ import com.base.common.util.LogUtil;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class AudioDecoder {
+public class AudioDecoder implements Decoder {
     private static final String TAG = "AudioDecoder";
     private MediaCodec mMediaCodec;
     private AudioTrack audioTrack;
@@ -41,6 +41,7 @@ public class AudioDecoder {
         mMediaCodec.start();
     }
 
+    @Override
     public void encoder(MediaExtractor mAudioExtractor) {
         //-1表示一直等待，0表示不等待有可能会丢帧，其他表示等待多少毫秒
         int inputBufferId = mMediaCodec.dequeueInputBuffer(0);
@@ -82,6 +83,7 @@ public class AudioDecoder {
         }
     }
 
+    @Override
     public void play() {
         if (audioTrack.getPlayState() != AudioTrack.PLAYSTATE_PLAYING) {
             audioTrack.play();
@@ -89,6 +91,7 @@ public class AudioDecoder {
         }
     }
 
+    @Override
     public void pause() {
         if (audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
             audioTrack.pause();
@@ -96,6 +99,7 @@ public class AudioDecoder {
         }
     }
 
+    @Override
     public void release() {
         mMediaCodec.stop();
         mMediaCodec.release();
