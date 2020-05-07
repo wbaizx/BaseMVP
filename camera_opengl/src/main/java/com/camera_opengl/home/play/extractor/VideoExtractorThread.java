@@ -48,7 +48,7 @@ public class VideoExtractorThread extends ExtractorThread {
     }
 
     @Override
-    protected void continuousDecode(Decoder decoder, MediaExtractor extractor,boolean isFirstPlay) throws InterruptedException {
+    protected void continuousDecode(Decoder decoder, MediaExtractor extractor, boolean isFirstPlay) throws InterruptedException {
         if (isFirstPlay) {
             LogUtil.INSTANCE.log(TAG, "isFirstPlay");
             surfaceTexture.setDefaultBufferSize(width, height);

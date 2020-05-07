@@ -1,10 +1,10 @@
 package com.camera_opengl.home.play;
 
 import android.graphics.SurfaceTexture;
-import android.view.Surface;
 
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.play.extractor.AudioExtractorThread;
+import com.camera_opengl.home.play.extractor.ExtractorThread;
 import com.camera_opengl.home.play.extractor.VideoExtractorThread;
 
 public class PlayManager {
@@ -37,8 +37,14 @@ public class PlayManager {
     }
 
     public void play() {
-        videoThread.play();
-        audioThread.play();
+        if (isReady()) {
+            videoThread.play();
+            audioThread.play();
+        }
+    }
+
+    public boolean isReady() {
+        return videoThread.getStatus() == ExtractorThread.STATUS_READY && audioThread.getStatus() == ExtractorThread.STATUS_READY;
     }
 
     public void onPause() {

@@ -1,6 +1,5 @@
 package com.camera_opengl.home.play;
 
-import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.util.Size;
 import android.view.View;
@@ -9,8 +8,6 @@ import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
 import com.camera_opengl.R;
-import com.camera_opengl.home.SavePictureThread;
-import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.gyf.immersionbar.BarHide;
@@ -26,6 +23,8 @@ public class PlayActivity extends BaseActivity implements GLSurfaceListener, Pla
 
     private EGLSurfaceView eglSurfaceView;
     private PlayManager playManager;
+
+    private View playSwitch;
 
     @Override
     protected int getContentView() {
@@ -44,10 +43,18 @@ public class PlayActivity extends BaseActivity implements GLSurfaceListener, Pla
 
         playManager = new PlayManager(this);
 
-        findViewById(R.id.playSwitch).setOnClickListener(new View.OnClickListener() {
+
+        playSwitch = findViewById(R.id.playSwitch);
+        findViewById(R.id.eglSurfaceView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playManager.play();
+                if (playManager.isReady()) {
+                    playManager.play();
+                    playSwitch.setVisibility(View.GONE);
+                } else {
+                    playManager.pause();
+                    playSwitch.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -69,8 +76,9 @@ public class PlayActivity extends BaseActivity implements GLSurfaceListener, Pla
 
     @Override
     protected void onPause() {
-        super.onPause();
+        playSwitch.setVisibility(View.VISIBLE);
         playManager.onPause();
+        super.onPause();
     }
 
     @Override
