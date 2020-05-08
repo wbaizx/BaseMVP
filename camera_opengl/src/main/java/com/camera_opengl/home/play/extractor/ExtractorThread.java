@@ -42,7 +42,7 @@ public abstract class ExtractorThread extends Thread {
     /**
      * 轨道总时长
      */
-    protected long mp4Duration = 0;
+    private long mp4Duration = 0;
 
     public ExtractorThread(String path) {
         this.path = path;
@@ -50,6 +50,10 @@ public abstract class ExtractorThread extends Thread {
 
     public int getStatus() {
         return status;
+    }
+
+    public long getMp4Duration() {
+        return mp4Duration;
     }
 
     @Override
@@ -73,7 +77,7 @@ public abstract class ExtractorThread extends Thread {
                     format = mediaFormat;
 
                     mp4Duration = format.getLong(MediaFormat.KEY_DURATION);
-                    LogUtil.INSTANCE.log(TAG, getClass().getSimpleName() + " - " + mp4Duration);
+                    LogUtil.INSTANCE.log(TAG, "duration " + mp4Duration);
                 }
             }
 
@@ -86,7 +90,12 @@ public abstract class ExtractorThread extends Thread {
                             decoder = initDecoder(format);
                         }
 
-                        continuousDecode(decoder, extractor, isFirstPlay);
+                        if (extractor.getSampleTime() == -1) {
+                            LogUtil.INSTANCE.log(TAG, "end of stream");
+                            decodeComplete();
+                        }else {
+                            continuousDecode(decoder, extractor, isFirstPlay);
+                        }
 
                         isFirstPlay = false;
                     } else if (STATUS_RELEASE == status) {
@@ -116,7 +125,7 @@ public abstract class ExtractorThread extends Thread {
             look.unlock();
         }
 
-        LogUtil.INSTANCE.log(TAG, getClass().getSimpleName() + " close");
+        LogUtil.INSTANCE.log(TAG, "close");
     }
 
     protected abstract boolean chooseMime(String mime);
@@ -125,22 +134,43 @@ public abstract class ExtractorThread extends Thread {
 
     protected abstract void continuousDecode(Decoder decoder, MediaExtractor extractor, boolean isFirstPlay) throws InterruptedException;
 
+    protected abstract void decodeComplete() throws InterruptedException;
+
     /**
      * 这个方法用来控制播放间隔，以及音视频同步
+     *
+     * @param sampleTime 传入的时间戳用于控制同步，一般由视频方传入音频方，-1表示不需要同步
      */
-    protected void synchronisedTime() throws InterruptedException {
+    protected long decodeOnTime(long sampleTime) throws InterruptedException {
+        LogUtil.INSTANCE.log(TAG, "decodeOnTime sampleTime " + sampleTime);
+        if (sampleTime != -1) {
+            long timeOffset = (extractor.getSampleTime() - sampleTime) / 1000;
+            if (timeOffset > 100) {
+                //当前轨道超前100毫秒（需要排除部分特殊情况）
+                LogUtil.INSTANCE.log(TAG, "decodeOnTime timeOffset " + timeOffset);
+                condition.await(80, TimeUnit.MILLISECONDS);
+            } else if (timeOffset < -50) {
+                //当前轨道滞后50毫秒（需要排除部分特殊情况）
+                LogUtil.INSTANCE.log(TAG, "decodeOnTime timeOffset " + timeOffset);
+                previousFrameTimestamp = extractor.getSampleTime();
+                return previousFrameTimestamp;
+            }
+        }
+
         long timeDifference = getSampleTime() - currentTimestamp;
         long fileTimeDifference = extractor.getSampleTime() - previousFrameTimestamp;
 
-        LogUtil.INSTANCE.log(TAG, "await " + timeDifference + " -- " + fileTimeDifference + " -- "
+        LogUtil.INSTANCE.log(TAG, "decodeOnTime await " + previousFrameTimestamp + " -- "
+                + timeDifference + " -- " + fileTimeDifference + " -- "
                 + (fileTimeDifference - timeDifference));
 
         if (timeDifference < fileTimeDifference) {
             condition.await(fileTimeDifference - timeDifference, TimeUnit.MICROSECONDS);
-            LogUtil.INSTANCE.log(TAG, "await  ------------------");
+            LogUtil.INSTANCE.log(TAG, "decodeOnTime await  ------------------");
         }
 
         previousFrameTimestamp = extractor.getSampleTime();
+        return previousFrameTimestamp;
     }
 
     /**
@@ -152,14 +182,35 @@ public abstract class ExtractorThread extends Thread {
         extractor.advance();
     }
 
+    /**
+     * 播放完毕重新开始
+     */
+    protected void restartPlay() {
+        LogUtil.INSTANCE.log(TAG, "restartPlay");
+        extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
+        currentTimestamp = 0;
+        previousFrameTimestamp = extractor.getSampleTime();
+    }
+
+    /**
+     * 用于被同步方轨道播放完毕后，进入阻塞态
+     */
+    protected void decodeCompletePause()  {
+        LogUtil.INSTANCE.log(TAG, "decodeCompletePause await");
+        status = STATUS_SNAP;
+    }
+
     public void play() {
+        LogUtil.INSTANCE.log(TAG, "play");
         look.lock();
         if (status == STATUS_READY) {
             status = STATUS_START;
             isFirstPlay = true;
+            LogUtil.INSTANCE.log(TAG, "play a");
         }
         condition.signal();
         look.unlock();
+        LogUtil.INSTANCE.log(TAG, "play X");
     }
 
     public void pause() {

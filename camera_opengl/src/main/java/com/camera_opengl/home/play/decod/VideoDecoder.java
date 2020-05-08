@@ -27,6 +27,7 @@ public class VideoDecoder implements Decoder {
         }
         mMediaCodec.configure(videoFormat, surface, null, 0);
         mMediaCodec.start();
+        LogUtil.INSTANCE.log(TAG, "VideoDecoder init X");
     }
 
     @Override

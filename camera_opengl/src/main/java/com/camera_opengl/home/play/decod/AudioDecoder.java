@@ -39,6 +39,7 @@ public class AudioDecoder implements Decoder {
         }
         mMediaCodec.configure(audioFormat, null, null, 0);
         mMediaCodec.start();
+        LogUtil.INSTANCE.log(TAG, "AudioDecoder init X");
     }
 
     @Override

@@ -20,6 +20,7 @@ public class VideoExtractorThread extends ExtractorThread {
 
     private int width = 0;
     private int height = 0;
+    private TimestampListener timeListener;
 
     public VideoExtractorThread(String path) {
         super(path);
@@ -31,6 +32,10 @@ public class VideoExtractorThread extends ExtractorThread {
 
     public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
         this.surfaceTexture = surfaceTexture;
+    }
+
+    public void setTimestampListener(TimestampListener listener) {
+        this.timeListener = listener;
     }
 
     @Override
@@ -53,12 +58,13 @@ public class VideoExtractorThread extends ExtractorThread {
             playListener.confirmPlaySize(new Size(width, height));
         }
 
-        if (extractor.getSampleTime() == -1) {
-            LogUtil.INSTANCE.log(TAG, "end of stream");
-            extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
-        }
-
-        synchronisedTime();
+        timeListener.syncTime(decodeOnTime(-1));
         decodeFrame();
+    }
+
+    @Override
+    protected void decodeComplete() {
+        restartPlay();
+        timeListener.endSyncTime();
     }
 }
