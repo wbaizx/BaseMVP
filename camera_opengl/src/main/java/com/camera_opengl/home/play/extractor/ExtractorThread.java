@@ -93,7 +93,7 @@ public abstract class ExtractorThread extends Thread {
                         if (extractor.getSampleTime() == -1) {
                             LogUtil.INSTANCE.log(TAG, "end of stream");
                             decodeComplete();
-                        }else {
+                        } else {
                             continuousDecode(decoder, extractor, isFirstPlay);
                         }
 
@@ -130,10 +130,13 @@ public abstract class ExtractorThread extends Thread {
 
     protected abstract boolean chooseMime(String mime);
 
+    //已经加锁
     protected abstract Decoder initDecoder(MediaFormat format);
 
+    //已经加锁
     protected abstract void continuousDecode(Decoder decoder, MediaExtractor extractor, boolean isFirstPlay) throws InterruptedException;
 
+    //已经加锁
     protected abstract void decodeComplete() throws InterruptedException;
 
     /**
@@ -146,11 +149,12 @@ public abstract class ExtractorThread extends Thread {
         if (sampleTime != -1) {
             long timeOffset = (extractor.getSampleTime() - sampleTime) / 1000;
             if (timeOffset > 100) {
-                //当前轨道超前100毫秒（需要排除部分特殊情况）
+                //当前轨道超前100毫秒
                 LogUtil.INSTANCE.log(TAG, "decodeOnTime timeOffset " + timeOffset);
-                condition.await(80, TimeUnit.MILLISECONDS);
+                condition.await(60, TimeUnit.MILLISECONDS);
+                currentTimestamp += 60;
             } else if (timeOffset < -50) {
-                //当前轨道滞后50毫秒（需要排除部分特殊情况）
+                //当前轨道滞后50毫秒
                 LogUtil.INSTANCE.log(TAG, "decodeOnTime timeOffset " + timeOffset);
                 previousFrameTimestamp = extractor.getSampleTime();
                 return previousFrameTimestamp;
@@ -190,23 +194,35 @@ public abstract class ExtractorThread extends Thread {
         extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
         currentTimestamp = 0;
         previousFrameTimestamp = extractor.getSampleTime();
+        if (status == STATUS_READY) {
+            status = STATUS_START;
+            isFirstPlay = true;
+        }
+    }
+
+    /**
+     * 播放完毕重新开始，带锁
+     */
+    protected void restartPlayHasLock() {
+        look.lock();
+        restartPlay();
+        condition.signal();
+        look.unlock();
     }
 
     /**
      * 用于被同步方轨道播放完毕后，进入阻塞态
      */
-    protected void decodeCompletePause()  {
+    protected void decodeCompletePause() {
         LogUtil.INSTANCE.log(TAG, "decodeCompletePause await");
         status = STATUS_SNAP;
     }
 
     public void play() {
-        LogUtil.INSTANCE.log(TAG, "play");
         look.lock();
         if (status == STATUS_READY) {
             status = STATUS_START;
             isFirstPlay = true;
-            LogUtil.INSTANCE.log(TAG, "play a");
         }
         condition.signal();
         look.unlock();

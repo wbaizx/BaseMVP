@@ -52,8 +52,7 @@ public class AudioExtractorThread extends ExtractorThread {
      */
     public void endSyncTime() {
         videoSampleTime = 0;
-        restartPlay();
-        //此处调play方法是保证，如果音频先播放完毕后进入阻塞态，也能被唤醒
-        play();
+        //注意保证如果音频先播放完毕后进入阻塞态，也能被唤醒
+        restartPlayHasLock();
     }
 }
