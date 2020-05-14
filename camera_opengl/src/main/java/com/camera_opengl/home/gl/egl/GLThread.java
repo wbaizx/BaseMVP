@@ -16,6 +16,7 @@ import com.camera_opengl.home.gl.GLHelper;
 import com.camera_opengl.home.gl.renderer.CodecRenderer;
 import com.camera_opengl.home.gl.renderer.FBORenderer;
 import com.camera_opengl.home.gl.renderer.ScreenRenderer;
+import com.camera_opengl.home.gl.renderer.filter.FilterType;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Condition;
@@ -174,10 +175,7 @@ public class GLThread extends Thread {
                             }
                             LogUtil.INSTANCE.log(TAG, "create fboEglSurface X");
                         }
-                    }
 
-                    //初始化准备完成，可以绑定EGL环境以及渲染
-                    if (fboEglSurface != null) {
                         /*
                          * 离屏操作部分
                          */
@@ -288,7 +286,6 @@ public class GLThread extends Thread {
                         hasData = false;
                         isConfirmReallySize = false;
                     }
-
                 }
 
                 if (isSurfaceDestroyed) {
@@ -491,7 +488,12 @@ public class GLThread extends Thread {
         });
     }
 
-    public String switchFilterType() {
-        return fboRenderer.switchFilterType();
+    public void switchFilterType(FilterType type) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                fboRenderer.switchFilterType(type);
+            }
+        });
     }
 }

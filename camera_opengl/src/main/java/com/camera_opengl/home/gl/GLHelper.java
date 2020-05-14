@@ -93,10 +93,8 @@ public class GLHelper {
         int shaderV = shaderLoad(fileNameV, GLES30.GL_VERTEX_SHADER);
         //编译片段着色器
         int shaderF = shaderLoad(fileNameF, GLES30.GL_FRAGMENT_SHADER);
-
         //链接
-        int program = linkLoad(shaderV, shaderF);
-        return program;
+        return linkLoad(shaderV, shaderF);
     }
 
     public static FloatBuffer getFloatBuffer(float[] point) {
@@ -155,10 +153,13 @@ public class GLHelper {
             GLES30.glDeleteTextures(1, texture, 0);
             throw new RuntimeException("LUT加载位图失败");
         }
+
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture[0]);
         //设置放大、缩小时的纹理过滤方式，必须设定，否则纹理全黑
-        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
-        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
         //将位图加载到opengl中，并复制到当前绑定的纹理对象上
         GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);

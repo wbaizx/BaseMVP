@@ -54,3 +54,8 @@ fun GlideRequest<Drawable>.normalInto(mainImg: ImageView) {
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(mainImg)
 }
+
+fun GlideRequest<Drawable>.simpleInto(mainImg: ImageView) {
+    transition(DrawableTransitionOptions.withCrossFade())
+        .into(mainImg)
+}

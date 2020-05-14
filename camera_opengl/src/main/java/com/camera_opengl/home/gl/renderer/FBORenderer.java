@@ -6,8 +6,9 @@ import android.opengl.GLES30;
 import android.util.Size;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.R;
 import com.camera_opengl.home.gl.GLHelper;
+import com.camera_opengl.home.gl.renderer.filter.BaseFilter;
+import com.camera_opengl.home.gl.renderer.filter.FilterType;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -19,8 +20,6 @@ public class FBORenderer extends BaseRenderer {
     private static final int POSITION_LOCAL = 0;
     private static final int TEXCOORD_LOCAL = 1;
     private static final int TEX_MATRIXC_LOCAL = 2;
-    private static final int FILTER_LOCAL = 3;
-    private static final int FILTER_TYPE_LOCAL = 4;
 
     private FloatBuffer vertexBuffer = GLHelper.getFloatBuffer(new float[]{
             -1.0f, 1.0f, //左上
@@ -36,19 +35,10 @@ public class FBORenderer extends BaseRenderer {
             1.0f, 0.0f, //右下
     });
 
-    private int program;
-
     private int[] fboTexture = new int[1];
     private int[] fboArray = new int[1];
 
-    //VBO
-    private int[] vboArray = new int[2];
-    //VAO
-    private int[] vaoArray = new int[1];
-
-    //滤镜type
-    private int filterType = -1;
-    private int[] filterTexture = new int[1];
+    private BaseFilter filter = FilterType.getFilter(FilterType.NONE);
 
     private ArrayList<BaseRenderer> rendererList = new ArrayList<>();
 
@@ -60,15 +50,10 @@ public class FBORenderer extends BaseRenderer {
     public void onSurfaceCreated() {
         LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
 
-        program = GLHelper.compileAndLink("fbo/fbo_v_shader.glsl", "fbo/fbo_f_shader.glsl");
-
-        createVBO();
-        createVAO();
+        filter.init();
 
         GLHelper.createFBOTexture(fboTexture);
         createFBO();
-
-        GLHelper.createLUTFilterTexture(R.drawable.amatorka, filterTexture);
 
         for (BaseRenderer renderer : rendererList) {
             renderer.onSurfaceCreated();
@@ -86,46 +71,6 @@ public class FBORenderer extends BaseRenderer {
     public void confirmReallySize(Size reallySize) {
         super.confirmReallySize(reallySize);
         updateFBO();
-    }
-
-    private void createVBO() {
-        GLES30.glGenBuffers(2, vboArray, 0);
-
-        //绑定VBO顶点数组
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[0]);
-        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexBuffer.capacity() * GLHelper.BYTES_PER_FLOAT,
-                vertexBuffer, GLES30.GL_STATIC_DRAW);
-
-        //绑定VBO纹理数组
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[1]);
-        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, textureCoordBuffer.capacity() * GLHelper.BYTES_PER_FLOAT,
-                textureCoordBuffer, GLES30.GL_STATIC_DRAW);
-
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
-
-        LogUtil.INSTANCE.log(TAG, "createVBO X");
-    }
-
-    private void createVAO() {
-        //创建VAO
-        GLES30.glGenVertexArrays(1, vaoArray, 0);
-        //绑定VAO
-        GLES30.glBindVertexArray(vaoArray[0]);
-
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[0]);
-        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
-        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
-
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboArray[1]);
-        GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
-        GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, 0);
-
-        //解绑VBO
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
-        //解绑VAO
-        GLES30.glBindVertexArray(GLES30.GL_NONE);
-
-        LogUtil.INSTANCE.log(TAG, "createVAO X");
     }
 
     private void createFBO() {
@@ -162,7 +107,9 @@ public class FBORenderer extends BaseRenderer {
     @Override
     public void onDrawFrame(float[] surfaceMatrix) {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fboArray[0]);
-        GLES30.glUseProgram(program);
+
+        filter.use();
+
         GLES30.glViewport(0, 0, reallyWidth, reallyHeight);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
@@ -172,14 +119,16 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, inTextureId);
 
-        setFilter(filterType);
+        filter.useFilter();
 
-        GLES30.glBindVertexArray(vaoArray[0]);
+        GLES30.glEnableVertexAttribArray(POSITION_LOCAL);
+        GLES30.glVertexAttribPointer(POSITION_LOCAL, 2, GLES30.GL_FLOAT, false, 0, vertexBuffer);
+        GLES30.glEnableVertexAttribArray(TEXCOORD_LOCAL);
+        GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, textureCoordBuffer);
 
         GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4);
         GLHelper.glGetError("glDrawArrays");
 
-        GLES30.glBindVertexArray(GLES30.GL_NONE);
         GLES30.glDisableVertexAttribArray(POSITION_LOCAL);
         GLES30.glDisableVertexAttribArray(TEXCOORD_LOCAL);
 
@@ -198,12 +147,9 @@ public class FBORenderer extends BaseRenderer {
 
     @Override
     public void onSurfaceDestroy() {
-        GLES30.glDeleteProgram(program);
-        GLES30.glDeleteBuffers(2, vboArray, 0);
-        GLES30.glDeleteVertexArrays(1, vaoArray, 0);
         GLES30.glDeleteTextures(1, fboTexture, 0);
         GLES30.glDeleteFramebuffers(1, fboArray, 0);
-        GLES30.glDeleteTextures(filterTexture.length, filterTexture, 0);
+        filter.onSurfaceDestroy();
 
         for (BaseRenderer renderer : rendererList) {
             renderer.onSurfaceDestroy();
@@ -215,6 +161,7 @@ public class FBORenderer extends BaseRenderer {
     public void onDestroy() {
         vertexBuffer.clear();
         textureCoordBuffer.clear();
+        filter.onDestroy();
 
         for (BaseRenderer renderer : rendererList) {
             renderer.onDestroy();
@@ -239,41 +186,12 @@ public class FBORenderer extends BaseRenderer {
         return btm;
     }
 
-    private void setFilter(int filterType) {
-        GLES30.glUniform1i(FILTER_TYPE_LOCAL, filterType);
-
-        GLES30.glActiveTexture(GLES30.GL_TEXTURE1);
-
-        //filterType的判断和着色器中的逻辑判断要一致
-        if (filterType == 0) {
-            //LUT滤镜
-            //激活启用1纹理单元，绑定滤镜纹理数据，
-            //调用glUniform1i传递1（个人理解glUniform1i仅是告诉层级关系的，所以上面原始数据可以不调，默认为0）
-            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, filterTexture[filterType]);
-        } else if (filterType == 1) {
-            //灰度滤镜
-        } else if (filterType == 2) {
-            //亮度滤镜
-        } else {
-            //没有滤镜
-        }
-
-        GLES30.glUniform1i(FILTER_LOCAL, 1);
-    }
-
-    public String switchFilterType() {
-        filterType++;
-        //filterType的判断和着色器中的逻辑判断要一致
-        if (filterType == 0) {
-            return "LUT滤镜";
-        } else if (filterType == 1) {
-            return "灰度滤镜";
-        } else if (filterType == 2) {
-            return "亮度滤镜";
-        } else {
-            //没有滤镜
-            filterType = -1;
-            return "原色";
+    public void switchFilterType(FilterType type) {
+        LogUtil.INSTANCE.log(TAG, "switchFilterType " + type.getName());
+        if (!filter.getId().equals(type.getId())) {
+            filter.release();
+            filter = FilterType.getFilter(type);
+            filter.init();
         }
     }
 }

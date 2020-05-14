@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.camera_opengl.home.camera.CameraControlListener;
+import com.camera_opengl.home.gl.renderer.filter.FilterType;
 
 public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "EGLSurfaceView";
@@ -63,8 +64,8 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         glThread.onDestroy();
     }
 
-    public String switchFilterType() {
-        return glThread.switchFilterType();
+    public void switchFilterType(FilterType type) {
+        glThread.switchFilterType(type);
     }
 
     public void onEncoderSurfaceCreated(Surface surface) {

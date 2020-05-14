@@ -2,6 +2,7 @@ package com.camera_opengl.home;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -23,6 +24,7 @@ import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
 import com.camera_opengl.home.gl.egl.GLSurfaceListener;
+import com.camera_opengl.home.gl.renderer.filter.FilterType;
 import com.camera_opengl.home.record.RecordListener;
 import com.camera_opengl.home.record.RecordManager;
 import com.gyf.immersionbar.BarHide;
@@ -53,6 +55,8 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
     private RecordManager recordManager;
 
     private ReentrantLock look = new ReentrantLock();
+
+    private FilterDialog filterDialog;
 
     private SavePictureThread mSaveThread;
 
@@ -104,11 +108,10 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
             }
         });
 
-        Button switchFilter = findViewById(R.id.switchFilter);
-        switchFilter.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.switchFilter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchFilter.setText(eglSurfaceView.switchFilterType());
+                showBottomDialog();
             }
         });
 
@@ -125,6 +128,30 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
                 }
             }
         });
+    }
+
+    private void showBottomDialog() {
+        if (filterDialog == null) {
+            filterDialog = new FilterDialog();
+
+            filterDialog.setOnItemClickListener(new FilterDialog.OnItemClickListener() {
+                @Override
+                public void onItemClick(FilterType type) {
+                    eglSurfaceView.switchFilterType(type);
+                }
+            });
+
+            filterDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    ImmersionBar.with(CameraActivity.this).hideBar(BarHide.FLAG_HIDE_BAR).init();
+                }
+            });
+
+            filterDialog.init(this);
+        }
+
+        filterDialog.show();
     }
 
     /**
