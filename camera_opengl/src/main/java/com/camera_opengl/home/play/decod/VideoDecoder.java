@@ -56,7 +56,7 @@ public class VideoDecoder implements Decoder {
                         LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
                     }
                 }
-
+                LogUtil.INSTANCE.log(TAG, "video Rendering " + info.presentationTimeUs + " -- size " + info.size);
                 mMediaCodec.releaseOutputBuffer(outputBufferId, true);
 
             } else if (outputBufferId == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {

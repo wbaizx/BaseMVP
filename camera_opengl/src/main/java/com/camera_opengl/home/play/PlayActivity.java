@@ -43,7 +43,6 @@ public class PlayActivity extends BaseActivity implements GLSurfaceListener, Pla
 
         playManager = new PlayManager(this);
 
-
         playSwitch = findViewById(R.id.playSwitch);
         findViewById(R.id.eglSurfaceView).setOnClickListener(new View.OnClickListener() {
             @Override

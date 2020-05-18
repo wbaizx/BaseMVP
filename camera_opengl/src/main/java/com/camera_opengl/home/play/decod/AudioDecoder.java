@@ -18,6 +18,9 @@ public class AudioDecoder implements Decoder {
     private MediaCodec mMediaCodec;
     private AudioTrack audioTrack;
 
+    private byte[] bytes;
+    private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+
     public AudioDecoder(MediaFormat audioFormat) {
         int sampleHz = audioFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
         int channel = audioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT) == 1 ?
@@ -28,6 +31,7 @@ public class AudioDecoder implements Decoder {
                 AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes, AudioTrack.MODE_STREAM);
 
         LogUtil.INSTANCE.log(TAG, "audioFormat parameter " + sampleHz + " -- " + channel + " -- " + bufferSizeInBytes);
+        bytes = new byte[bufferSizeInBytes];
 
         MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
         String name = mediaCodecList.findDecoderForFormat(audioFormat);
@@ -56,8 +60,6 @@ public class AudioDecoder implements Decoder {
             mMediaCodec.queueInputBuffer(inputBufferId, 0, size, mAudioExtractor.getSampleTime(), 0);
         }
 
-        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
-
         while (true) {
             int outputBufferId = mMediaCodec.dequeueOutputBuffer(info, 0);
             if (outputBufferId >= 0) {
@@ -67,10 +69,9 @@ public class AudioDecoder implements Decoder {
                     if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
                         LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
                     } else {
-                        byte[] bytes = new byte[info.size];
-                        outputBuffer.get(bytes);
+                        LogUtil.INSTANCE.log(TAG, "audio Rendering " + info.presentationTimeUs + " -- size " + info.size);
+                        outputBuffer.get(bytes, 0, info.size);
                         audioTrack.write(bytes, 0, info.size);
-                        LogUtil.INSTANCE.log(TAG, "write " + info.offset + " -- " + info.size);
                     }
                 }
 
