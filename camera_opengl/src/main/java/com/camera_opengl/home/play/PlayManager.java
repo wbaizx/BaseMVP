@@ -3,17 +3,14 @@ package com.camera_opengl.home.play;
 import android.graphics.SurfaceTexture;
 
 import com.base.common.util.LogUtil;
-import com.camera_opengl.home.play.extractor.AudioExtractorThread;
-import com.camera_opengl.home.play.extractor.AvSyncManager;
-import com.camera_opengl.home.play.extractor.ExtractorThread;
-import com.camera_opengl.home.play.extractor.VideoExtractorThread;
+import com.camera_opengl.home.play.decod.AudioDecoder;
+import com.camera_opengl.home.play.decod.VideoDecoder;
 
 public class PlayManager {
     private static final String TAG = "PlayManager";
 
-    private VideoExtractorThread videoThread;
-    private AudioExtractorThread audioThread;
-    private AvSyncManager avSyncManager = new AvSyncManager();
+    private VideoDecoder videoDecoder = new VideoDecoder();
+    private AudioDecoder audioDecoder = new AudioDecoder();
 
     private SurfaceTexture surfaceTexture;
     private PlayListener playListener;
@@ -22,31 +19,28 @@ public class PlayManager {
         this.playListener = playListener;
     }
 
-    public void init(String path) {
-        videoThread = new VideoExtractorThread(path, avSyncManager);
-        videoThread.setPlayListener(playListener);
-        videoThread.setSurfaceTexture(surfaceTexture);
-        videoThread.start();
-
-        audioThread = new AudioExtractorThread(path, avSyncManager);
-        audioThread.start();
-
-        LogUtil.INSTANCE.log(TAG, "init X");
-    }
-
     public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
         this.surfaceTexture = surfaceTexture;
     }
 
+    public void init(String path) {
+        videoDecoder.setPlayListener(playListener);
+        videoDecoder.init(path, surfaceTexture);
+
+        audioDecoder.init(path);
+
+        LogUtil.INSTANCE.log(TAG, "init X");
+    }
+
     public void play() {
         if (isReady()) {
-            videoThread.play();
-            audioThread.play();
+            videoDecoder.play();
+            audioDecoder.play();
         }
     }
 
     public boolean isReady() {
-        return videoThread.getStatus() == ExtractorThread.STATUS_READY && audioThread.getStatus() == ExtractorThread.STATUS_READY;
+        return videoDecoder.getStatus() == VideoDecoder.STATUS_READY && audioDecoder.getStatus() == AudioDecoder.STATUS_READY;
     }
 
     public void onPause() {
@@ -54,12 +48,12 @@ public class PlayManager {
     }
 
     public void pause() {
-        videoThread.pause();
-        audioThread.pause();
+        videoDecoder.pause();
+        audioDecoder.pause();
     }
 
     public void onDestroy() {
-        audioThread.release();
-        videoThread.release();
+        videoDecoder.release();
+        audioDecoder.release();
     }
 }
