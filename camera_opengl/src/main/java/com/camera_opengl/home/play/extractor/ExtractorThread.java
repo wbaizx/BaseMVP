@@ -165,6 +165,7 @@ public abstract class ExtractorThread extends Thread {
 
         avSyncTime(avSyncManager, previousFrameTimestamp);
 
+        LogUtil.INSTANCE.log(TAG, "decodeFrame - " + previousFrameTimestamp);
         decoder.encoder(extractor);
         extractor.advance();
     }
