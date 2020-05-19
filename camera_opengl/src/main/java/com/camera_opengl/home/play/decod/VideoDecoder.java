@@ -15,6 +15,7 @@ public class VideoDecoder implements Decoder {
     private static final String TAG = "VideoDecoder";
 
     private MediaCodec mMediaCodec;
+    private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
 
     public VideoDecoder(MediaFormat videoFormat, Surface surface) {
         MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
@@ -43,8 +44,6 @@ public class VideoDecoder implements Decoder {
             }
             mMediaCodec.queueInputBuffer(inputBufferId, 0, size, mVideoExtractor.getSampleTime(), 0);
         }
-
-        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
 
         while (true) {
             int outputBufferId = mMediaCodec.dequeueOutputBuffer(info, 0);

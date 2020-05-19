@@ -30,6 +30,8 @@ public abstract class ExtractorThread extends Thread {
 
     private boolean isFirstPlay = false;
 
+    private AvSyncManager avSyncManager;
+
     /**
      * 当前时间戳
      */
@@ -44,8 +46,9 @@ public abstract class ExtractorThread extends Thread {
      */
     private long mp4Duration = 0;
 
-    public ExtractorThread(String path) {
+    public ExtractorThread(String path, AvSyncManager avSyncManager) {
         this.path = path;
+        this.avSyncManager = avSyncManager;
     }
 
     public int getStatus() {
@@ -137,51 +140,31 @@ public abstract class ExtractorThread extends Thread {
     protected abstract void continuousDecode(Decoder decoder, MediaExtractor extractor, boolean isFirstPlay) throws InterruptedException;
 
     //已经加锁
-    protected abstract void decodeComplete() throws InterruptedException;
+    protected abstract void decodeComplete();
 
     /**
-     * 这个方法用来控制播放间隔，以及音视频同步
-     *
-     * @param sampleTime 传入的时间戳用于控制同步，一般由视频方传入音频方，-1表示不需要同步
+     * 控制播放间隔
+     * 解码播放一帧，同时定位下一帧
+     * 记录当前时间戳
      */
-    protected long decodeOnTime(long sampleTime) throws InterruptedException {
-        LogUtil.INSTANCE.log(TAG, "decodeOnTime sampleTime " + sampleTime);
-        if (sampleTime != -1) {
-            long timeOffset = (extractor.getSampleTime() - sampleTime) / 1000;
-            if (timeOffset > 100) {
-                //当前轨道超前100毫秒
-                LogUtil.INSTANCE.log(TAG, "decodeOnTime timeOffset " + timeOffset);
-                condition.await(60, TimeUnit.MILLISECONDS);
-                currentTimestamp += 60;
-            } else if (timeOffset < -50) {
-                //当前轨道滞后50毫秒
-                LogUtil.INSTANCE.log(TAG, "decodeOnTime timeOffset " + timeOffset);
-                previousFrameTimestamp = extractor.getSampleTime();
-                return previousFrameTimestamp;
-            }
-        }
-
+    protected void decodeFrame() throws InterruptedException {
         long timeDifference = getSampleTime() - currentTimestamp;
         long fileTimeDifference = extractor.getSampleTime() - previousFrameTimestamp;
 
-        LogUtil.INSTANCE.log(TAG, "decodeOnTime await " + previousFrameTimestamp + " -- "
+        LogUtil.INSTANCE.log(TAG, "decodeFrame await " + previousFrameTimestamp + " -- "
                 + timeDifference + " -- " + fileTimeDifference + " -- "
                 + (fileTimeDifference - timeDifference));
 
         if (timeDifference < fileTimeDifference) {
             condition.await(fileTimeDifference - timeDifference, TimeUnit.MICROSECONDS);
-            LogUtil.INSTANCE.log(TAG, "decodeOnTime await  ------------------");
+            LogUtil.INSTANCE.log(TAG, "decodeFrame await  ------------------");
         }
 
         previousFrameTimestamp = extractor.getSampleTime();
-        return previousFrameTimestamp;
-    }
-
-    /**
-     * 解码播放一帧，同时定位下一帧，记录当前时间戳
-     */
-    protected void decodeFrame() {
         currentTimestamp = getSampleTime();
+
+        avSyncTime(avSyncManager, previousFrameTimestamp);
+
         decoder.encoder(extractor);
         extractor.advance();
     }
@@ -193,12 +176,20 @@ public abstract class ExtractorThread extends Thread {
         LogUtil.INSTANCE.log(TAG, "restartPlay");
         extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
         currentTimestamp = 0;
-        previousFrameTimestamp = extractor.getSampleTime();
+        previousFrameTimestamp = 0;
         if (status == STATUS_READY) {
             status = STATUS_START;
             isFirstPlay = true;
         }
     }
+
+    /**
+     * 给AvSyncManager同步控制器传递时间戳
+     *
+     * @param avSyncManager
+     * @param previousFrameTimestamp
+     */
+    protected abstract void avSyncTime(AvSyncManager avSyncManager, long previousFrameTimestamp);
 
     /**
      * 播放完毕重新开始，带锁

@@ -11,10 +11,8 @@ import com.camera_opengl.home.play.decod.Decoder;
 public class AudioExtractorThread extends ExtractorThread {
     private static final String TAG = "AudioExtractorThread";
 
-    private long videoSampleTime = 0;
-
-    public AudioExtractorThread(String path) {
-        super(path);
+    public AudioExtractorThread(String path, AvSyncManager avSyncManager) {
+        super(path, avSyncManager);
     }
 
     @Override
@@ -27,32 +25,29 @@ public class AudioExtractorThread extends ExtractorThread {
         return new AudioDecoder(format);
     }
 
+    /**
+     * 带look锁
+     */
     @Override
     protected void continuousDecode(Decoder decoder, MediaExtractor extractor, boolean isFirstPlay) throws InterruptedException {
         if (isFirstPlay) {
             LogUtil.INSTANCE.log(TAG, "isFirstPlay");
             decoder.play();
         }
-        decodeOnTime(videoSampleTime);
         decodeFrame();
     }
 
+    /**
+     * 带look锁
+     */
     @Override
     protected void decodeComplete() {
-        decodeCompletePause();
+        restartPlay();
+//        decodeCompletePause();
     }
 
-    public void syncTime(long time) {
-        LogUtil.INSTANCE.log(TAG, "syncTime " + time);
-        videoSampleTime = time;
-    }
-
-    /**
-     * 同步方播放完毕回调
-     */
-    public void endSyncTime() {
-        videoSampleTime = 0;
-        //注意保证如果音频先播放完毕后进入阻塞态，也能被唤醒
-        restartPlayHasLock();
+    @Override
+    protected void avSyncTime(AvSyncManager avSyncManager, long previousFrameTimestamp) {
+        avSyncManager.syncAudioTime(previousFrameTimestamp);
     }
 }

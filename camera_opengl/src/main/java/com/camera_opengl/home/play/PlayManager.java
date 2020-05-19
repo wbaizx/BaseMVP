@@ -4,8 +4,8 @@ import android.graphics.SurfaceTexture;
 
 import com.base.common.util.LogUtil;
 import com.camera_opengl.home.play.extractor.AudioExtractorThread;
+import com.camera_opengl.home.play.extractor.AvSyncManager;
 import com.camera_opengl.home.play.extractor.ExtractorThread;
-import com.camera_opengl.home.play.extractor.TimestampListener;
 import com.camera_opengl.home.play.extractor.VideoExtractorThread;
 
 public class PlayManager {
@@ -13,6 +13,7 @@ public class PlayManager {
 
     private VideoExtractorThread videoThread;
     private AudioExtractorThread audioThread;
+    private AvSyncManager avSyncManager = new AvSyncManager();
 
     private SurfaceTexture surfaceTexture;
     private PlayListener playListener;
@@ -22,25 +23,13 @@ public class PlayManager {
     }
 
     public void init(String path) {
-        videoThread = new VideoExtractorThread(path);
+        videoThread = new VideoExtractorThread(path, avSyncManager);
         videoThread.setPlayListener(playListener);
         videoThread.setSurfaceTexture(surfaceTexture);
         videoThread.start();
 
-        audioThread = new AudioExtractorThread(path);
+        audioThread = new AudioExtractorThread(path, avSyncManager);
         audioThread.start();
-
-        videoThread.setTimestampListener(new TimestampListener() {
-            @Override
-            public void syncTime(long time) {
-                audioThread.syncTime(time);
-            }
-
-            @Override
-            public void endSyncTime() {
-                audioThread.endSyncTime();
-            }
-        });
 
         LogUtil.INSTANCE.log(TAG, "init X");
     }

@@ -20,10 +20,9 @@ public class VideoExtractorThread extends ExtractorThread {
 
     private int width = 0;
     private int height = 0;
-    private TimestampListener timeListener;
 
-    public VideoExtractorThread(String path) {
-        super(path);
+    public VideoExtractorThread(String path, AvSyncManager avSyncManager) {
+        super(path, avSyncManager);
     }
 
     public void setPlayListener(PlayListener playListener) {
@@ -32,10 +31,6 @@ public class VideoExtractorThread extends ExtractorThread {
 
     public void setSurfaceTexture(SurfaceTexture surfaceTexture) {
         this.surfaceTexture = surfaceTexture;
-    }
-
-    public void setTimestampListener(TimestampListener listener) {
-        this.timeListener = listener;
     }
 
     @Override
@@ -50,6 +45,9 @@ public class VideoExtractorThread extends ExtractorThread {
         return new VideoDecoder(format, new Surface(surfaceTexture));
     }
 
+    /**
+     * 带look锁
+     */
     @Override
     protected void continuousDecode(Decoder decoder, MediaExtractor extractor, boolean isFirstPlay) throws InterruptedException {
         if (isFirstPlay) {
@@ -57,14 +55,20 @@ public class VideoExtractorThread extends ExtractorThread {
             surfaceTexture.setDefaultBufferSize(width, height);
             playListener.confirmPlaySize(new Size(width, height));
         }
-
-        timeListener.syncTime(decodeOnTime(-1));
         decodeFrame();
     }
 
+    /**
+     * 带look锁
+     */
     @Override
     protected void decodeComplete() {
         restartPlay();
-        timeListener.endSyncTime();
+//        decodeCompletePause();
+    }
+
+    @Override
+    protected void avSyncTime(AvSyncManager avSyncManager, long previousFrameTimestamp) {
+        avSyncManager.syncVideoTime(previousFrameTimestamp);
     }
 }
