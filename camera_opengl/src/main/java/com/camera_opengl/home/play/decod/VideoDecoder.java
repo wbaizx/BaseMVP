@@ -91,7 +91,7 @@ public class VideoDecoder {
             int size = 0;
             if (inputBuffer != null) {
                 inputBuffer.clear();
-                size = videoExtractor.readSampleData(inputBuffer, 0);
+                size = videoExtractor.readSampleData(inputBuffer);
             }
 
             if (size > 0) {
@@ -130,14 +130,14 @@ public class VideoDecoder {
      * 音视频同步控制方法
      */
     private void avSyncTime() {
-//        try {
-//            look.lock();
-//            condition.await(30, TimeUnit.MILLISECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } finally {
-//            look.unlock();
-//        }
+        try {
+            look.lock();
+            condition.await(30, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            look.unlock();
+        }
     }
 
     public void play() {

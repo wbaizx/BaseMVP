@@ -17,7 +17,6 @@ import com.camera_opengl.home.play.extractor.Extractor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -92,7 +91,7 @@ public class AudioDecoder {
             int size = 0;
             if (inputBuffer != null) {
                 inputBuffer.clear();
-                size = audioExtractor.readSampleData(inputBuffer, 0);
+                size = audioExtractor.readSampleData(inputBuffer);
             }
 
             if (size > 0) {
@@ -109,8 +108,7 @@ public class AudioDecoder {
             LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable " + info.presentationTimeUs);
             avSyncTime();
 
-            ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(index);
-            outputBuffer.get(bytes, 0, info.size);
+            mMediaCodec.getOutputBuffer(index).get(bytes, 0, info.size);
             audioTrack.write(bytes, 0, info.size);
             mMediaCodec.releaseOutputBuffer(index, false);
 

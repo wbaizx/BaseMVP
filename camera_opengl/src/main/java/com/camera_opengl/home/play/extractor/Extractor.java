@@ -47,17 +47,33 @@ public abstract class Extractor {
 
     protected abstract boolean chooseMime(String mime);
 
-    public int readSampleData(ByteBuffer inputBuffer, int off) {
-        currentTimestamp = extractor.getSampleTime();
-        int size = extractor.readSampleData(inputBuffer, off);
-        extractor.advance();
+    /**
+     * 取数据
+     */
+    public int readSampleData(ByteBuffer inputBuffer) {
+        int size = extractor.readSampleData(inputBuffer, 0);
+        nextFrame();
         return size;
     }
 
+    /**
+     * 定位下一帧
+     */
+    public void nextFrame() {
+        extractor.advance();
+        currentTimestamp = extractor.getSampleTime();
+    }
+
+    /**
+     * 获取当前解封帧时间戳
+     */
     public long getSampleTime() {
         return extractor.getSampleTime();
     }
 
+    /**
+     * 用于暂停后
+     */
     public void goBack() {
         extractor.seekTo(currentTimestamp, MediaExtractor.SEEK_TO_PREVIOUS_SYNC);
     }
@@ -66,6 +82,9 @@ public abstract class Extractor {
         return format;
     }
 
+    /**
+     * 获取当前轨道总时长
+     */
     public long getMp4Duration() {
         return mp4Duration;
     }

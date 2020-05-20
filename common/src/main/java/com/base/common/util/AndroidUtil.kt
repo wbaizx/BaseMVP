@@ -14,6 +14,10 @@ import androidx.core.content.FileProvider
 import com.base.common.BaseAPP
 import java.io.File
 
+/**
+ * adb logcat -s GL_Thread -f /sdcard/log.txt
+ * 输入GL_Thread的Log日志到sd卡中，需要数据线连接电脑
+ */
 object AndroidUtil {
     private val TAG = "AndroidUtil"
 
