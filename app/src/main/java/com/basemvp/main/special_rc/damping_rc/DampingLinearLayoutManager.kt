@@ -29,6 +29,13 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
     private var upOffset = 0f
     private var downOffset = 0f
 
+    /**
+     * 是否允许item之间的滑动，这个标识可以用于禁用或放开item之间的滚动权限
+     * 一般用于比较耗时的网络请求，需要再滚动完毕禁用，数据请求完毕放开
+     * 需注意如果列表因数据动态改变高度，在放开权限时可以适当延迟，或者改变RecyclerView动画时间
+     */
+    private var itemSliding = true
+
     private var offsetListener: ((Float, Float) -> Unit)? = null
     private var pageListener: ((Int) -> Unit)? = null
 
@@ -60,19 +67,12 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                     offsetListener?.invoke(upOffset, downOffset)
                 }
                 RecyclerView.SCROLL_STATE_SETTLING -> {
-                    //只有屏幕中同时存在大于1个item时才需要屏手指拖动事件
+                    //只有在惯性滑动中，并且屏幕中同时存在大于1个item时才需要屏手指拖动事件
                     if (findFirstVisibleItemPosition() != findLastVisibleItemPosition()) {
                         parentView.setBlockClicks(true)
                     }
                 }
                 RecyclerView.SCROLL_STATE_IDLE -> {
-                    LogUtil.log(TAG, "scrollChanged end $isFinalScroll")
-                    if (isFinalScroll) {
-                        isFinalScroll = false
-                    } else {
-                        finalScroll()
-                    }
-
                     //当前页码监听回调
                     val nowTopViewPos = findFirstVisibleItemPosition()
                     val nowBottomViewPos = findLastVisibleItemPosition()
@@ -80,6 +80,9 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                         //某个item已经完全占据屏幕
                         pageListener?.invoke(nowTopViewPos)
                         parentView.setBlockClicks(false)
+                        isFinalScroll = false
+                    } else {
+                        finalScroll()
                     }
                 }
             }
@@ -94,20 +97,24 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
         LogUtil.log(TAG, "finalScroll")
         if (upOffset > barHeight / 5 * 3) {
             //需要滚动到下一条数据
+            isFinalScroll = true
             upOffset = 0f
             downOffset = 0f
-            isFinalScroll = true
-            val childPos = parentView.getChildAdapterPosition(bottomView!!)
+            val childPos = findLastVisibleItemPosition()
             LogUtil.log(TAG, "getChildAdapterPosition  up $childPos")
-            toTopAlignedScroll(childPos + 1)
+            //之前采用的getChildAdapterPosition + 1 获取位置，但是有时为空
+            //现在采用获取屏幕上对应显示的view的位置，因为偏移量出来时，要滚动到的那个view其实已经在屏幕上了
+            toTopAlignedScroll(childPos)
         } else if (downOffset > barHeight / 5 * 3) {
             //需要滚动到上一条数据
+            isFinalScroll = true
             upOffset = 0f
             downOffset = 0f
-            isFinalScroll = true
-            val childPos = parentView.getChildAdapterPosition(topView!!)
+            val childPos = findFirstVisibleItemPosition()
             LogUtil.log(TAG, "getChildAdapterPosition  down $childPos")
-            toTopAlignedScroll(childPos - 1)
+            //之前采用的getChildAdapterPosition - 1 获取位置，但是有时为空
+            //现在采用获取屏幕上对应显示的view的位置，因为偏移量出来时，要滚动到的那个view其实已经在屏幕上了
+            toTopAlignedScroll(childPos)
         } else {
             LogUtil.log(TAG, "Align")
             val nowTopViewPos = findFirstVisibleItemPosition()
@@ -157,28 +164,32 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
             if (dy > 0) {  //向上滑动
                 val bottomOffset = bottomView!!.bottom - parentView.height
                 LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
-                if (bottomOffset - dy < 0) {
-                    //判断屏幕中是否已经只剩下最后一项，如果是则不需要再计算距离和偏移量
-                    if (findFirstVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
-                        if (bottomOffset <= 0) {
-                            //已经超出
-                            finallyDy = calculationOffset(dy, bottomOffset, upOffset)
-                            //累加向上的偏移量
-                            upOffset += finallyDy
-                            LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
-                        } else {
-                            //滑动后将超出
-                            if (findLastVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
-                                finallyDy = calculationOffset(dy, dy - bottomOffset, upOffset) + bottomOffset
+                if (bottomOffset - dy < 0) {//此次滚动将会超出，也可能已经超出
+                    if (itemSliding) {
+                        //判断屏幕中是否已经只剩下最后一项，如果是则不需要再计算距离和偏移量
+                        if (findFirstVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
+                            if (bottomOffset <= 0) {
+                                //已经超出
+                                finallyDy = calculationOffset(dy, bottomOffset, upOffset)
                                 //累加向上的偏移量
-                                upOffset += finallyDy - bottomOffset
-                                LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                                upOffset += finallyDy
+                                LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
                             } else {
-                                //屏幕最后一项已经是底部，此时不允许超出
-                                finallyDy = dy - bottomOffset
-                                LogUtil.log(TAG, "scrollVerticallyBy will stop $upOffset")
+                                //滑动后将超出
+                                if (findLastVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
+                                    finallyDy = calculationOffset(dy, dy - bottomOffset, upOffset) + bottomOffset
+                                    //累加向上的偏移量
+                                    upOffset += finallyDy - bottomOffset
+                                    LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                                } else {
+                                    //屏幕最后一项已经是底部，此时不允许超出
+                                    finallyDy = dy - bottomOffset
+                                    LogUtil.log(TAG, "scrollVerticallyBy will stop $upOffset")
+                                }
                             }
                         }
+                    } else {
+                        finallyDy = 0
                     }
                 }
 
@@ -188,29 +199,33 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                 val topOffset = topView!!.top
                 LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
                 //注意dy为负值
-                if (topOffset - dy > 0) {
-                    //判断屏幕中是否已经只剩下第一项，如果是则不需要再计算距离和偏移量
-                    if (findLastVisibleItemPosition() != 0) {
-                        if (topOffset >= 0) {
-                            //已经超出
-                            finallyDy = -calculationOffset(dy, topOffset, downOffset)
-                            //注意 finallyDy 为负值
-                            downOffset -= finallyDy
-                            LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
-                        } else {
-                            //滑动后将超出
-                            //此时topOffset为负值
-                            if (findFirstVisibleItemPosition() != 0) {
-                                finallyDy = -calculationOffset(dy, dy - topOffset, downOffset) + topOffset
-                                //累加向下的偏移量
-                                downOffset -= finallyDy - topOffset
-                                LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                if (topOffset - dy > 0) {//此次滚动将会超出，也可能已经超出
+                    if (itemSliding) {
+                        //判断屏幕中是否已经只剩下第一项，如果是则不需要再计算距离和偏移量
+                        if (findLastVisibleItemPosition() != 0) {
+                            if (topOffset >= 0) {
+                                //已经超出
+                                finallyDy = -calculationOffset(dy, topOffset, downOffset)
+                                //注意 finallyDy 为负值
+                                downOffset -= finallyDy
+                                LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
                             } else {
-                                //屏幕第一项已经是顶部，此时不允许超出
-                                finallyDy = dy - topOffset
-                                LogUtil.log(TAG, "scrollVerticallyBy will stop $downOffset")
+                                //滑动后将超出
+                                //此时topOffset为负值
+                                if (findFirstVisibleItemPosition() != 0) {
+                                    finallyDy = -calculationOffset(dy, dy - topOffset, downOffset) + topOffset
+                                    //累加向下的偏移量
+                                    downOffset -= finallyDy - topOffset
+                                    LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                                } else {
+                                    //屏幕第一项已经是顶部，此时不允许超出
+                                    finallyDy = dy - topOffset
+                                    LogUtil.log(TAG, "scrollVerticallyBy will stop $downOffset")
+                                }
                             }
                         }
+                    } else {
+                        finallyDy = 0
                     }
                 }
 
@@ -241,5 +256,9 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
 
     fun setPageListener(listener: (Int) -> Unit) {
         this.pageListener = listener
+    }
+
+    fun setItemSliding(itemSliding: Boolean) {
+        this.itemSliding = itemSliding
     }
 }

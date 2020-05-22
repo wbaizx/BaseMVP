@@ -127,7 +127,7 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glVertexAttribPointer(TEXCOORD_LOCAL, 2, GLES30.GL_FLOAT, false, 0, textureCoordBuffer);
 
         GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4);
-        GLHelper.glGetError("glDrawArrays");
+        GLHelper.glGetError("glDrawArrays. May be did not update FBO from confirmReallySize");
 
         GLES30.glDisableVertexAttribArray(POSITION_LOCAL);
         GLES30.glDisableVertexAttribArray(TEXCOORD_LOCAL);

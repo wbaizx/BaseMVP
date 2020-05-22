@@ -46,7 +46,7 @@ public class EGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     /**
-     * 此方法设计fbo纹理配置更新，每次surface销毁重建后（比如home退出）都必须调用此方法
+     * 此方法涉及fbo纹理配置更新，每次surface销毁重建后（比如home退出）都必须调用此方法
      */
     public void confirmReallySize(Size reallySize) {
         glThread.confirmReallySize(reallySize);

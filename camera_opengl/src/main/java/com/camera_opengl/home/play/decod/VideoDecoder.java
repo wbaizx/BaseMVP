@@ -28,11 +28,11 @@ public class VideoDecoder {
     public static final int STATUS_READY = 0;
     public static final int STATUS_START = 1;
     public static final int STATUS_RELEASE = 2;
-    private int status = STATUS_RELEASE;
+    private int status = -1;
 
     private MediaCodec mMediaCodec;
     private SurfaceTexture surfaceTexture;
-    private Surface surface;
+    private boolean needCoverPicture = false;
 
     private HandlerThread videoDecoderThread;
     private Handler videoDecoderHandler;
@@ -72,8 +72,13 @@ public class VideoDecoder {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                     VideoDecoder.this.surfaceTexture = surfaceTexture;
-                    surface = new Surface(surfaceTexture);
+                    renderingConfiguration();
+
+                    mMediaCodec.setCallback(callback, videoDecoderHandler);
+                    mMediaCodec.configure(format, new Surface(surfaceTexture), null, 0);
+                    mMediaCodec.start();
 
                     status = STATUS_READY;
 
@@ -81,6 +86,20 @@ public class VideoDecoder {
                 }
             }
         });
+    }
+
+    /**
+     * 回调渲染配置，要确保在surface新建或每次销毁重建后调用
+     */
+    private void renderingConfiguration() {
+        if (format != null) {
+            int width = format.getInteger(MediaFormat.KEY_WIDTH);
+            int height = format.getInteger(MediaFormat.KEY_HEIGHT);
+
+            surfaceTexture.setDefaultBufferSize(width, height);
+            //此方法涉及fbo纹理配置更新，每次surface销毁重建后（比如home退出）都必须调用此方法
+            playListener.confirmPlaySize(new Size(width, height));
+        }
     }
 
     private MediaCodec.Callback callback = new MediaCodec.Callback() {
@@ -101,17 +120,22 @@ public class VideoDecoder {
 
         @Override
         public void onOutputBufferAvailable(@NonNull MediaCodec codec, int index, @NonNull MediaCodec.BufferInfo info) {
-            if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
-            }
+            try {
+                look.lock();
+                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable " + info.presentationTimeUs);
 
-            LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable " + info.presentationTimeUs);
-            avSyncTime();
+                avSyncTime();
 
-            mMediaCodec.releaseOutputBuffer(index, true);
+                //releaseOutputBuffer 在 checkPlayStatus 之前调用，保证release之前释放所有Buffer
+                //但这样会在播放开始之前先渲染一帧，正好用来做封面
+                mMediaCodec.releaseOutputBuffer(index, true);
 
-            if (MediaCodec.BUFFER_FLAG_END_OF_STREAM == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "end stream");
+                checkPlayStatus();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                look.unlock();
             }
         }
 
@@ -126,63 +150,50 @@ public class VideoDecoder {
         }
     };
 
-    /**
-     * 音视频同步控制方法
-     */
-    private void avSyncTime() {
-        try {
-            look.lock();
-            condition.await(30, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            look.unlock();
+    private void checkPlayStatus() throws InterruptedException {
+        if (status != STATUS_START && status != STATUS_RELEASE) {
+            LogUtil.INSTANCE.log(TAG, "await " + status);
+            condition.await();
         }
     }
 
-    public void play() {
-        videoDecoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status == STATUS_READY) {
-                    int width = format.getInteger(MediaFormat.KEY_WIDTH);
-                    int height = format.getInteger(MediaFormat.KEY_HEIGHT);
-                    surfaceTexture.setDefaultBufferSize(width, height);
-                    //此方法设计fbo纹理配置更新，每次surface销毁重建后（比如home退出）都必须调用此方法
-                    playListener.confirmPlaySize(new Size(width, height));
+    /**
+     * 音视频同步控制方法
+     */
+    private void avSyncTime() throws InterruptedException {
+        condition.await(30, TimeUnit.MILLISECONDS);
+    }
 
-                    mMediaCodec.setCallback(callback, videoDecoderHandler);
-                    mMediaCodec.configure(format, surface, null, 0);
-                    mMediaCodec.start();
-                    status = STATUS_START;
-                }
-            }
-        });
+    public void play() {
+        look.lock();
+        if (status == STATUS_READY) {
+            status = STATUS_START;
+            renderingConfiguration();
+            condition.signal();
+        }
+        look.unlock();
     }
 
     public void pause() {
-        videoDecoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status == STATUS_START) {
-                    mMediaCodec.stop();
-                    videoExtractor.goBack();
-                    status = STATUS_READY;
-                }
-            }
-        });
+        look.lock();
+        if (status == STATUS_START) {
+            status = STATUS_READY;
+            condition.signal();
+        }
+        look.unlock();
     }
 
     public void release() {
-        videoDecoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status != STATUS_RELEASE) {
-                    mMediaCodec.release();
-                    status = STATUS_RELEASE;
-                }
-            }
-        });
+        look.lock();
+        if (status != STATUS_RELEASE) {
+            status = STATUS_RELEASE;
+            mMediaCodec.flush();
+            mMediaCodec.stop();
+            mMediaCodec.release();
+            LogUtil.INSTANCE.log(TAG, "release");
+            condition.signal();
+        }
+        look.unlock();
         videoDecoderThread.quitSafely();
     }
 }
