@@ -70,7 +70,23 @@ public class PlayActivity extends BaseActivity implements GLSurfaceListener, Pla
     }
 
     @Override
+    public void playEnd() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playSwitch.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
     protected void initData() {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playManager.onResume();
     }
 
     @Override

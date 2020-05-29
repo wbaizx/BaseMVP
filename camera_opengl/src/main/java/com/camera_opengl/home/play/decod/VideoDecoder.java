@@ -27,7 +27,8 @@ public class VideoDecoder {
 
     public static final int STATUS_READY = 0;
     public static final int STATUS_START = 1;
-    public static final int STATUS_RELEASE = 2;
+    public static final int STATUS_STOP = 2;
+    public static final int STATUS_RELEASE = 3;
     private int status = -1;
 
     private MediaCodec mMediaCodec;
@@ -43,6 +44,21 @@ public class VideoDecoder {
 
     private ReentrantLock look = new ReentrantLock();
     private Condition condition = look.newCondition();
+
+    /**
+     * 系统时间线
+     */
+    private long systemTime = 0;
+
+    /**
+     * 基准帧时间
+     */
+    private long frameTime = 0;
+
+    /**
+     * 每次播放开始标识，用于重置时间线各变量
+     */
+    private boolean isFirstFrame = false;
 
     public int getStatus() {
         return status;
@@ -74,32 +90,14 @@ public class VideoDecoder {
                     }
 
                     VideoDecoder.this.surfaceTexture = surfaceTexture;
-                    renderingConfiguration();
 
-                    mMediaCodec.setCallback(callback, videoDecoderHandler);
-                    mMediaCodec.configure(format, new Surface(surfaceTexture), null, 0);
-                    mMediaCodec.start();
-
+                    start();
                     status = STATUS_READY;
 
                     LogUtil.INSTANCE.log(TAG, "VideoDecoder init X");
                 }
             }
         });
-    }
-
-    /**
-     * 回调渲染配置，要确保在surface新建或每次销毁重建后调用
-     */
-    private void renderingConfiguration() {
-        if (format != null) {
-            int width = format.getInteger(MediaFormat.KEY_WIDTH);
-            int height = format.getInteger(MediaFormat.KEY_HEIGHT);
-
-            surfaceTexture.setDefaultBufferSize(width, height);
-            //此方法涉及fbo纹理配置更新，每次surface销毁重建后（比如home退出）都必须调用此方法
-            playListener.confirmPlaySize(new Size(width, height));
-        }
     }
 
     private MediaCodec.Callback callback = new MediaCodec.Callback() {
@@ -113,7 +111,9 @@ public class VideoDecoder {
                 size = videoExtractor.readSampleData(inputBuffer);
             }
 
-            if (size > 0) {
+            if (size == -1) {
+                mMediaCodec.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+            } else {
                 mMediaCodec.queueInputBuffer(index, 0, size, videoExtractor.getSampleTime(), 0);
             }
         }
@@ -122,19 +122,28 @@ public class VideoDecoder {
         public void onOutputBufferAvailable(@NonNull MediaCodec codec, int index, @NonNull MediaCodec.BufferInfo info) {
             try {
                 look.lock();
-                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable " + info.presentationTimeUs);
-
-                avSyncTime();
-
-                //releaseOutputBuffer 在 checkPlayStatus 之前调用，保证release之前释放所有Buffer
-                //但这样会在播放开始之前先渲染一帧，正好用来做封面
-                mMediaCodec.releaseOutputBuffer(index, true);
+                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable time " + info.presentationTimeUs);
+                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable flags " + info.flags);
 
                 checkPlayStatus();
+
+                avSyncTime(info.presentationTimeUs);
+
+                if (status != STATUS_RELEASE) {
+                    mMediaCodec.releaseOutputBuffer(index, true);
+
+                    if (info.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
+                        playEnd();
+                    }
+                }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
+                LogUtil.INSTANCE.log(TAG, "finally");
+
+                needCoverPicture = false;
+
                 look.unlock();
             }
         }
@@ -151,27 +160,100 @@ public class VideoDecoder {
     };
 
     private void checkPlayStatus() throws InterruptedException {
-        if (status != STATUS_START && status != STATUS_RELEASE) {
-            LogUtil.INSTANCE.log(TAG, "await " + status);
+        if (status != STATUS_START && !needCoverPicture) {
+            LogUtil.INSTANCE.log(TAG, "checkPlayStatus await " + status);
             condition.await();
         }
     }
 
     /**
-     * 音视频同步控制方法
+     * 时间戳控制，音视频同步
+     * --控制方法
      */
-    private void avSyncTime() throws InterruptedException {
-        condition.await(30, TimeUnit.MILLISECONDS);
+    private void avSyncTime(long presentationTimeUs) throws InterruptedException {
+        if (status != STATUS_RELEASE && !needCoverPicture) {
+            if (isFirstFrame) {
+                systemTime = System.nanoTime() / 1000;
+                frameTime = presentationTimeUs;
+                isFirstFrame = false;
+            }
+
+            long ft = presentationTimeUs - frameTime;//帧间隔
+            long st = System.nanoTime() / 1000 - systemTime;//系统时间间隔
+
+            LogUtil.INSTANCE.log(TAG, "avSyncTime await time " + (ft - st) + " -- " + status);
+            LogUtil.INSTANCE.log(TAG, "avSyncTime await ft " + ft + " --st " + st);
+
+            if (ft > st) {
+                condition.await(ft - st, TimeUnit.MICROSECONDS);
+            }
+        }
+    }
+
+    /**
+     * 这个方法主要用于确保屏幕显示一帧，避免黑屏，和play方法基本相似，但不能修改状态
+     */
+    public void onResume() {
+        look.lock();
+
+        LogUtil.INSTANCE.log(TAG, "onResume");
+        needCoverPicture = true;
+
+        if (status == STATUS_READY) {
+            renderingConfiguration();
+            condition.signal();
+        } else if (status == STATUS_STOP) {
+            videoExtractor.reset();
+            start();
+            status = STATUS_READY;
+        }
+        look.unlock();
     }
 
     public void play() {
         look.lock();
         if (status == STATUS_READY) {
-            status = STATUS_START;
             renderingConfiguration();
             condition.signal();
+        } else if (status == STATUS_STOP) {
+            videoExtractor.reset();
+            start();
         }
+        status = STATUS_START;
+
+        isFirstFrame = true;
+
         look.unlock();
+    }
+
+    private void start() {
+        renderingConfiguration();
+        mMediaCodec.setCallback(callback, videoDecoderHandler);
+        mMediaCodec.configure(format, new Surface(surfaceTexture), null, 0);
+        mMediaCodec.start();
+        LogUtil.INSTANCE.log(TAG, "start");
+    }
+
+    private void playEnd() {
+        mMediaCodec.flush();
+        mMediaCodec.stop();
+        status = STATUS_STOP;
+
+        LogUtil.INSTANCE.log(TAG, "stop");
+    }
+
+    /**
+     * 回调渲染配置，要确保在surface新建或每次销毁重建后调用
+     */
+    private void renderingConfiguration() {
+        if (format != null) {
+            int width = format.getInteger(MediaFormat.KEY_WIDTH);
+            int height = format.getInteger(MediaFormat.KEY_HEIGHT);
+
+            surfaceTexture.setDefaultBufferSize(width, height);
+            //此方法涉及fbo纹理配置更新，每次surface销毁重建后（比如home退出）都必须调用此方法
+            playListener.confirmPlaySize(new Size(width, height));
+        }
     }
 
     public void pause() {
@@ -185,15 +267,18 @@ public class VideoDecoder {
 
     public void release() {
         look.lock();
-        if (status != STATUS_RELEASE) {
-            status = STATUS_RELEASE;
-            mMediaCodec.flush();
-            mMediaCodec.stop();
-            mMediaCodec.release();
-            LogUtil.INSTANCE.log(TAG, "release");
-            condition.signal();
-        }
+
+        mMediaCodec.flush();
+        mMediaCodec.stop();
+        mMediaCodec.release();
+        mMediaCodec = null;
+        status = STATUS_RELEASE;
+
+        LogUtil.INSTANCE.log(TAG, "release");
+
+        condition.signal();
         look.unlock();
+
         videoDecoderThread.quitSafely();
     }
 }

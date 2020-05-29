@@ -13,7 +13,7 @@ public abstract class Extractor {
     private MediaFormat format;
 
     /**
-     * 当前解封帧的时间戳
+     * 即将播放的解封帧的时间戳
      */
     private long currentTimestamp = 0;
 
@@ -72,10 +72,10 @@ public abstract class Extractor {
     }
 
     /**
-     * 用于暂停后
+     * 还原到第一帧
      */
-    public void goBack() {
-        extractor.seekTo(currentTimestamp, MediaExtractor.SEEK_TO_PREVIOUS_SYNC);
+    public void reset() {
+        extractor.seekTo(0, MediaExtractor.SEEK_TO_NEXT_SYNC);
     }
 
     public MediaFormat getFormat() {

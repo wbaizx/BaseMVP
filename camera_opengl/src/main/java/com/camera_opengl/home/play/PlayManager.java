@@ -27,6 +27,7 @@ public class PlayManager {
         videoDecoder.setPlayListener(playListener);
         videoDecoder.init(path, surfaceTexture);
 
+        audioDecoder.setPlayListener(playListener);
         audioDecoder.init(path);
 
         LogUtil.INSTANCE.log(TAG, "init X");
@@ -40,11 +41,17 @@ public class PlayManager {
     }
 
     public boolean isReady() {
-        return videoDecoder.getStatus() == VideoDecoder.STATUS_READY && audioDecoder.getStatus() == AudioDecoder.STATUS_READY;
+        return (videoDecoder.getStatus() == VideoDecoder.STATUS_READY || videoDecoder.getStatus() == VideoDecoder.STATUS_STOP) &&
+                (audioDecoder.getStatus() == AudioDecoder.STATUS_READY || audioDecoder.getStatus() == AudioDecoder.STATUS_STOP);
     }
 
     public void onPause() {
         pause();
+    }
+
+    public void onResume() {
+        videoDecoder.onResume();
+//        audioDecoder.onResume();
     }
 
     public void pause() {

@@ -12,11 +12,13 @@ import android.os.HandlerThread;
 import androidx.annotation.NonNull;
 
 import com.base.common.util.LogUtil;
+import com.camera_opengl.home.play.PlayListener;
 import com.camera_opengl.home.play.extractor.AudioExtractor;
 import com.camera_opengl.home.play.extractor.Extractor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -25,8 +27,9 @@ public class AudioDecoder {
 
     public static final int STATUS_READY = 0;
     public static final int STATUS_START = 1;
-    public static final int STATUS_RELEASE = 2;
-    private int status = STATUS_RELEASE;
+    public static final int STATUS_STOP = 2;
+    public static final int STATUS_RELEASE = 3;
+    private int status = -1;
 
     private MediaCodec mMediaCodec;
 
@@ -34,16 +37,34 @@ public class AudioDecoder {
     private Handler audioDecoderHandler;
 
     private MediaFormat format;
+    private PlayListener playListener;
     private Extractor audioExtractor = new AudioExtractor();
     private AudioTrack audioTrack;
 
     private ReentrantLock look = new ReentrantLock();
     private Condition condition = look.newCondition();
 
-    private byte[] bytes;
+    /**
+     * 系统时间线
+     */
+    private long systemTime = 0;
+
+    /**
+     * 基准帧时间
+     */
+    private long frameTime = 0;
+
+    /**
+     * 每次播放开始标识，用于重置时间线各变量
+     */
+    private boolean isFirstFrame = false;
 
     public int getStatus() {
         return status;
+    }
+
+    public void setPlayListener(PlayListener playListener) {
+        this.playListener = playListener;
     }
 
     public void init(String path) {
@@ -63,7 +84,6 @@ public class AudioDecoder {
                             AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
 
                     int bufferSizeInBytes = AudioTrack.getMinBufferSize(sampleHz, channel, AudioFormat.ENCODING_PCM_16BIT);
-                    bytes = new byte[bufferSizeInBytes];
                     audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleHz, channel,
                             AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes, AudioTrack.MODE_STREAM);
 
@@ -75,6 +95,8 @@ public class AudioDecoder {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    start();
                     status = STATUS_READY;
 
                     LogUtil.INSTANCE.log(TAG, "AudioDecoder init X");
@@ -94,26 +116,37 @@ public class AudioDecoder {
                 size = audioExtractor.readSampleData(inputBuffer);
             }
 
-            if (size > 0) {
+            if (size == -1) {
+                mMediaCodec.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+            } else {
                 mMediaCodec.queueInputBuffer(index, 0, size, audioExtractor.getSampleTime(), 0);
             }
         }
 
         @Override
         public void onOutputBufferAvailable(@NonNull MediaCodec codec, int index, @NonNull MediaCodec.BufferInfo info) {
-            if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
-            }
+            try {
+                look.lock();
+                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable time " + info.presentationTimeUs);
+                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable flags " + info.flags);
 
-            LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable " + info.presentationTimeUs);
-            avSyncTime();
+                checkPlayStatus();
 
-            mMediaCodec.getOutputBuffer(index).get(bytes, 0, info.size);
-            audioTrack.write(bytes, 0, info.size);
-            mMediaCodec.releaseOutputBuffer(index, false);
+                avSyncTime(info.presentationTimeUs);
 
-            if (MediaCodec.BUFFER_FLAG_END_OF_STREAM == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "end stream");
+                if (status != STATUS_RELEASE) {
+                    audioTrack.write(mMediaCodec.getOutputBuffer(index), info.size, AudioTrack.WRITE_NON_BLOCKING);
+                    mMediaCodec.releaseOutputBuffer(index, false);
+                    if (info.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
+                        playEnd();
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                LogUtil.INSTANCE.log(TAG, "finally");
+
+                look.unlock();
             }
         }
 
@@ -128,61 +161,98 @@ public class AudioDecoder {
         }
     };
 
+    private void checkPlayStatus() throws InterruptedException {
+        if (status != STATUS_START) {
+            LogUtil.INSTANCE.log(TAG, "checkPlayStatus await " + status);
+            condition.await();
+        }
+    }
+
     /**
-     * 音视频同步控制方法
+     * 时间戳控制，音视频同步
+     * --控制方法
      */
-    private void avSyncTime() {
-//        try {
-//            look.lock();
-//            condition.await(30, TimeUnit.MILLISECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } finally {
-//            look.unlock();
-//        }
+    private void avSyncTime(long presentationTimeUs) throws InterruptedException {
+        if (status != STATUS_RELEASE) {
+            if (isFirstFrame) {
+                systemTime = System.nanoTime() / 1000;
+                frameTime = presentationTimeUs;
+                isFirstFrame = false;
+            }
+
+            long ft = presentationTimeUs - frameTime;//帧间隔
+            long st = System.nanoTime() / 1000 - systemTime;//系统时间间隔
+
+            LogUtil.INSTANCE.log(TAG, "avSyncTime await time " + (ft - st) + " -- " + status);
+            LogUtil.INSTANCE.log(TAG, "avSyncTime await ft " + ft + " --st " + st);
+
+            if (ft > st) {
+                condition.await(ft - st, TimeUnit.MICROSECONDS);
+            }
+        }
     }
 
     public void play() {
-        audioDecoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status == STATUS_READY) {
-                    audioTrack.play();
-                    mMediaCodec.setCallback(callback, audioDecoderHandler);
-                    mMediaCodec.configure(format, null, null, 0);
-                    mMediaCodec.start();
-                    status = STATUS_START;
-                }
-            }
-        });
+        look.lock();
+        if (status == STATUS_READY) {
+            condition.signal();
+        } else if (status == STATUS_STOP) {
+            audioExtractor.reset();
+            start();
+        }
+        audioTrack.play();
+        status = STATUS_START;
+        isFirstFrame = true;
+
+        look.unlock();
+    }
+
+    private void start() {
+        mMediaCodec.setCallback(callback, audioDecoderHandler);
+        mMediaCodec.configure(format, null, null, 0);
+        mMediaCodec.start();
+        LogUtil.INSTANCE.log(TAG, "start");
+    }
+
+    private void playEnd() {
+        mMediaCodec.flush();
+        mMediaCodec.stop();
+        audioTrack.pause();
+        status = STATUS_STOP;
+
+        playListener.playEnd();
+        LogUtil.INSTANCE.log(TAG, "stop");
     }
 
     public void pause() {
-        audioDecoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status == STATUS_START) {
-                    mMediaCodec.stop();
-                    audioTrack.pause();
-                    audioExtractor.goBack();
-                    status = STATUS_READY;
-                }
-            }
-        });
+        look.lock();
+        if (status == STATUS_START) {
+            audioTrack.pause();
+
+            status = STATUS_READY;
+            condition.signal();
+        }
+        look.unlock();
     }
 
     public void release() {
-        audioDecoderHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (status != STATUS_RELEASE) {
-                    mMediaCodec.release();
-                    audioTrack.stop();
-                    audioTrack.release();
-                    status = STATUS_RELEASE;
-                }
-            }
-        });
+        look.lock();
+
+        mMediaCodec.flush();
+        mMediaCodec.stop();
+        mMediaCodec.release();
+        mMediaCodec = null;
+
+        audioTrack.stop();
+        audioTrack.release();
+
+        status = STATUS_RELEASE;
+
+        LogUtil.INSTANCE.log(TAG, "release");
+
+        condition.signal();
+        look.unlock();
+
         audioDecoderThread.quitSafely();
     }
 }
