@@ -49,6 +49,9 @@ class ScrollToRCDecoration(private val adapter: ScrollToRCAdapter) : RecyclerVie
         }
     }
 
+    /**
+     * 这个方法在绘制item之前调用，所以这里绘制的东西会被item覆盖，但这里可以覆盖recycleView背景色
+     */
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(c, parent, state)
         val left = parent.paddingLeft.toFloat()
@@ -67,6 +70,9 @@ class ScrollToRCDecoration(private val adapter: ScrollToRCAdapter) : RecyclerVie
         }
     }
 
+    /**
+     * 这个方法绘制顺序在最后，所以可以在这里做顶部悬浮、item之间有连接装饰等功能
+     */
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
         val position = (parent.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
