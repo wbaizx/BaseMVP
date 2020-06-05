@@ -161,76 +161,80 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
         var finallyDy = dy
         LogUtil.log(TAG, "scrollVerticallyBy start $finallyDy")
         if (!isFinalScroll) {
-            if (dy > 0) {  //向上滑动
-                val bottomOffset = bottomView!!.bottom - parentView.height
-                LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
-                if (bottomOffset - dy < 0) {//此次滚动将会超出，也可能已经超出
-                    if (itemSliding) {
-                        //判断屏幕中是否已经只剩下最后一项，如果是则不需要再计算距离和偏移量
-                        if (findFirstVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
-                            if (bottomOffset <= 0) {
-                                //已经超出
-                                finallyDy = calculationOffset(dy, bottomOffset, upOffset)
-                                //累加向上的偏移量
-                                upOffset += finallyDy
-                                LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
-                            } else {
-                                //滑动后将超出
-                                if (findLastVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
-                                    finallyDy = calculationOffset(dy, dy - bottomOffset, upOffset) + bottomOffset
+            if (dy > 0) {//向上滑动
+                if (bottomView != null) {//滚动状态可能不走1，导致view未赋值
+                    val bottomOffset = bottomView!!.bottom - parentView.height
+                    LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
+                    if (bottomOffset - dy < 0) {//此次滚动将会超出，也可能已经超出
+                        if (itemSliding) {
+                            //判断屏幕中是否已经只剩下最后一项，如果是则不需要再计算距离和偏移量
+                            if (findFirstVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
+                                if (bottomOffset <= 0) {
+                                    //已经超出
+                                    finallyDy = calculationOffset(dy, bottomOffset, upOffset)
                                     //累加向上的偏移量
-                                    upOffset += finallyDy - bottomOffset
-                                    LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                                    upOffset += finallyDy
+                                    LogUtil.log(TAG, "scrollVerticallyBy already  $upOffset")
                                 } else {
-                                    //屏幕最后一项已经是底部，此时不允许超出
-                                    finallyDy = dy - bottomOffset
-                                    LogUtil.log(TAG, "scrollVerticallyBy will stop $upOffset")
+                                    //滑动后将超出
+                                    if (findLastVisibleItemPosition() != parentView.adapter!!.itemCount - 1) {
+                                        finallyDy = calculationOffset(dy, dy - bottomOffset, upOffset) + bottomOffset
+                                        //累加向上的偏移量
+                                        upOffset += finallyDy - bottomOffset
+                                        LogUtil.log(TAG, "scrollVerticallyBy will $upOffset")
+                                    } else {
+                                        //屏幕最后一项已经是底部，此时不允许超出
+                                        finallyDy = dy - bottomOffset
+                                        LogUtil.log(TAG, "scrollVerticallyBy will stop $upOffset")
+                                    }
                                 }
                             }
+                        } else {
+                            finallyDy = 0
                         }
-                    } else {
-                        finallyDy = 0
                     }
-                }
 
-                //消除向下的偏移量
-                downOffset = max(downOffset - finallyDy, 0f)
-            } else { //向下滑动
-                val topOffset = topView!!.top
-                LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
-                //注意dy为负值
-                if (topOffset - dy > 0) {//此次滚动将会超出，也可能已经超出
-                    if (itemSliding) {
-                        //判断屏幕中是否已经只剩下第一项，如果是则不需要再计算距离和偏移量
-                        if (findLastVisibleItemPosition() != 0) {
-                            if (topOffset >= 0) {
-                                //已经超出
-                                finallyDy = -calculationOffset(dy, topOffset, downOffset)
-                                //注意 finallyDy 为负值
-                                downOffset -= finallyDy
-                                LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
-                            } else {
-                                //滑动后将超出
-                                //此时topOffset为负值
-                                if (findFirstVisibleItemPosition() != 0) {
-                                    finallyDy = -calculationOffset(dy, dy - topOffset, downOffset) + topOffset
-                                    //累加向下的偏移量
-                                    downOffset -= finallyDy - topOffset
-                                    LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                    //消除向下的偏移量
+                    downOffset = max(downOffset - finallyDy, 0f)
+                }
+            } else {//向下滑动
+                if (topView != null) {//滚动状态可能不走1，导致view未赋值
+                    val topOffset = topView!!.top
+                    LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
+                    //注意dy为负值
+                    if (topOffset - dy > 0) {//此次滚动将会超出，也可能已经超出
+                        if (itemSliding) {
+                            //判断屏幕中是否已经只剩下第一项，如果是则不需要再计算距离和偏移量
+                            if (findLastVisibleItemPosition() != 0) {
+                                if (topOffset >= 0) {
+                                    //已经超出
+                                    finallyDy = -calculationOffset(dy, topOffset, downOffset)
+                                    //注意 finallyDy 为负值
+                                    downOffset -= finallyDy
+                                    LogUtil.log(TAG, "scrollVerticallyBy already  $downOffset")
                                 } else {
-                                    //屏幕第一项已经是顶部，此时不允许超出
-                                    finallyDy = dy - topOffset
-                                    LogUtil.log(TAG, "scrollVerticallyBy will stop $downOffset")
+                                    //滑动后将超出
+                                    //此时topOffset为负值
+                                    if (findFirstVisibleItemPosition() != 0) {
+                                        finallyDy = -calculationOffset(dy, dy - topOffset, downOffset) + topOffset
+                                        //累加向下的偏移量
+                                        downOffset -= finallyDy - topOffset
+                                        LogUtil.log(TAG, "scrollVerticallyBy will $downOffset")
+                                    } else {
+                                        //屏幕第一项已经是顶部，此时不允许超出
+                                        finallyDy = dy - topOffset
+                                        LogUtil.log(TAG, "scrollVerticallyBy will stop $downOffset")
+                                    }
                                 }
                             }
+                        } else {
+                            finallyDy = 0
                         }
-                    } else {
-                        finallyDy = 0
                     }
-                }
 
-                //消除向上的偏移量
-                upOffset = max(upOffset + finallyDy, 0f)
+                    //消除向上的偏移量
+                    upOffset = max(upOffset + finallyDy, 0f)
+                }
             }
             //回调偏移量
             offsetListener?.invoke(upOffset, downOffset)

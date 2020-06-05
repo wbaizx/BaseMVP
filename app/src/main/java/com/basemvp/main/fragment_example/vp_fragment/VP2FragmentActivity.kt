@@ -28,6 +28,7 @@ class VP2FragmentActivity : BaseActivity() {
                 }
             }
 
+            //用这个
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 LogUtil.log(TAG, "$position")
