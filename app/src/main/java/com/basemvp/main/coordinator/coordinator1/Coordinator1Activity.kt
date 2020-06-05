@@ -14,6 +14,11 @@ import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_coordinator1.*
 import kotlin.math.abs
 
+/**
+ * 注意!
+ * 折叠布局下方的滚动子View如果是嵌套recyclerView，会影响折叠布局滚动顺序逻辑
+ * 后面研究下解决这个问题
+ */
 @Route(path = RouteString.COORDINATOR1, name = "折叠滚动布局第一种 coordinator1")
 class Coordinator1Activity : BaseActivity() {
     private val TAG = "Coordinator1Activity"
