@@ -20,7 +20,7 @@ import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
 
 class SimpleTabLayout(context: Context, attrs: AttributeSet) : HorizontalScrollView(context, attrs) {
-    private val TAG = "BillDetailsTabLayout"
+    private val TAG = "SimpleTabLayout"
     private val layout = LinearLayout(context)
 
     private val textViewList = arrayListOf<TextView>()
