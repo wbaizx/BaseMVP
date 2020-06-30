@@ -20,7 +20,7 @@ import javax.net.ssl.X509TrustManager
 
 
 object BaseHttp {
-    //网络连接时间
+    //网络连接时间秒
     private const val TIMEOUT = 10
     //缓存大小2Mb
     private const val CACHEMAXSIZE = 1024 * 1024 * 2
@@ -69,7 +69,7 @@ object BaseHttp {
      * HttpLoggingInterceptor拦截器如果level设置成Body，则下载不会实时回调
      * 改成其他即可
      *
-     * release 版本需要去掉
+     * release 版本可以去掉
      */
     private val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 

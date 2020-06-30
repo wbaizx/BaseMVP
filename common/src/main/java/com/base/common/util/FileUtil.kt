@@ -14,12 +14,13 @@ object FileUtil {
     fun getDiskFilePath(name: String): String {
         val path: String
 
+        //外部文件存储，能看
         if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() && !Environment.isExternalStorageRemovable()) {
             val externalFilesDir = BaseAPP.baseAppContext.getExternalFilesDir(name)
             if (externalFilesDir != null) {
                 //外部文件存储，能看
                 path = externalFilesDir.absolutePath
-                LogUtil.log(TAG, "getExternalFilesDir - $path")
+                LogUtil.log(TAG, "externalFilesDir - $path")
                 return path
             }
         }
@@ -31,7 +32,7 @@ object FileUtil {
         return path
     }
 
-    fun checkExists(file: File) {
+    private fun checkExists(file: File) {
         if (!file.exists()) {
             file.mkdirs()
         }

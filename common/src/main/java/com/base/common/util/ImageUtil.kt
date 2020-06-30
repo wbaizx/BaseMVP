@@ -54,24 +54,17 @@ object ImageUtil {
         return file
     }
 
-    fun savePicture(bytes: ByteArray, name: String): File {
-        val file = File(FileUtil.getDiskFilePath("IMG") + File.separator + name)
-        FileOutputStream(file).use {
-            it.write(bytes)
-            it.flush()
-        }
-        return file
-    }
-
     /**
      * 文件已经保存，插入到相册显示，一般需要 WRITE_EXTERNAL_STORAGE 权限
      */
-    fun updateGallery(file: File): Boolean {
+    fun updateGallery(file: File, width: Int, height: Int): Boolean {
         LogUtil.log(TAG, "updateGallery - ${file.length()} -- ${file.absolutePath}")
 
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, file.name)
         values.put(MediaStore.Images.Media.MIME_TYPE, MIME_TYPE_JPEG)
+        values.put(MediaStore.Images.Media.WIDTH, width)
+        values.put(MediaStore.Images.Media.HEIGHT, height)
         values.put(MediaStore.Images.Media.DESCRIPTION, "description")
         val uri = BaseAPP.baseAppContext.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 

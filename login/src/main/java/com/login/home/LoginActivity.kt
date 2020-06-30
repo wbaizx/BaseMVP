@@ -23,8 +23,7 @@ class LoginActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_login
 
     override fun initView() {
-        ARouter.getInstance().inject(this)
-        isGotoMain = intent.getBooleanExtra(GOTO_MAIN, false)
+//        isGotoMain = intent.getBooleanExtra(GOTO_MAIN, false)
         LogUtil.log(TAG, "isGotoMain $isGotoMain")
 
         val loginFragment = LoginFragment()

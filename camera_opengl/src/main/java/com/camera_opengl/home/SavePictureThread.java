@@ -72,26 +72,19 @@ public class SavePictureThread extends Thread {
                                 btm = BitmapFactory.decodeByteArray(picture.data, 0, picture.data.length)
                                         .copy(Bitmap.Config.ARGB_8888, true);
                                 saveBmp = flipBitmap(btm, picture.horizontalMirror, picture.verticalMirror);
-                                file = ImageUtil.INSTANCE.savePicture(saveBmp, "IMG_" + System.currentTimeMillis() + ".jpg");
                             } else {
-                                file = ImageUtil.INSTANCE.savePicture(picture.data, "IMG_" + System.currentTimeMillis() + ".jpg");
+                                saveBmp = BitmapFactory.decodeByteArray(picture.data, 0, picture.data.length);
                             }
                         } else if (picture.btm != null) {
                             btm = picture.btm;
                             saveBmp = flipBitmap(btm, picture.horizontalMirror, picture.verticalMirror);
-                            file = ImageUtil.INSTANCE.savePicture(saveBmp, "IMG_" + System.currentTimeMillis() + ".jpg");
                         } else {
                             throw new RuntimeException("data or btm must not null");
                         }
 
-                        if (btm != null) {
-                            btm.recycle();
-                        }
-                        if (saveBmp != null) {
-                            saveBmp.recycle();
-                        }
+                        file = ImageUtil.INSTANCE.savePicture(saveBmp, "IMG_" + System.currentTimeMillis() + ".jpg");
 
-                        if (ImageUtil.INSTANCE.updateGallery(file)) {
+                        if (ImageUtil.INSTANCE.updateGallery(file, saveBmp.getWidth(), saveBmp.getHeight())) {
                             mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -99,6 +92,12 @@ public class SavePictureThread extends Thread {
                                 }
                             });
                         }
+
+                        if (btm != null) {
+                            btm.recycle();
+                        }
+
+                        saveBmp.recycle();
                     }
                 } else {
                     LogUtil.INSTANCE.log(TAG, "run await");

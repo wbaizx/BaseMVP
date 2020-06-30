@@ -35,11 +35,12 @@ class MainActivity : BaseActivity() {
             GlobalScope.launch(Dispatchers.IO) {
                 val bitmap = ImageUtil.createBitmapFromView(mainImg)
                 val file = ImageUtil.savePicture(bitmap, "test.jpg")
-                if (ImageUtil.updateGallery(file)) {
+                if (ImageUtil.updateGallery(file, bitmap.width, bitmap.height)) {
                     withContext(Dispatchers.Main) {
                         AndroidUtil.showToast("保存成功")
                     }
                 }
+                bitmap.recycle()
             }
         }
 
