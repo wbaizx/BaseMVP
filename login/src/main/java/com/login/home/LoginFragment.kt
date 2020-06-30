@@ -43,8 +43,8 @@ class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInte
         (activity as? LoginActivity)?.loginSuccess()
     }
 
-    override fun loginSuccessResponseBody(responseBody: ResponseBody) {
-        LogUtil.log(TAG, "loginSuccessResponseBody -- ${responseBody.string()}")
+    override fun loginSuccessResponseBody(responseBody1: ResponseBody, responseBody2: ResponseBody) {
+        LogUtil.log(TAG, "loginSuccessResponseBody -- ${responseBody1.string()} -- ${responseBody2.string()}")
         (activity as? LoginActivity)?.loginSuccess()
     }
 }

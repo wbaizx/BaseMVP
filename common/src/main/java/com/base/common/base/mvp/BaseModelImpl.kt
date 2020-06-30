@@ -9,7 +9,7 @@ abstract class BaseModelImpl {
      * 根据需求将T替换成对应基类，判断code
      * 根据需求抛出不同的异常
      */
-    suspend fun <T> requestNetwork(call: suspend () -> T): T {
+    inline fun <T> requestNetwork(call: () -> T): T {
         if (AndroidUtil.isNetworkAvailable()) {
             return call.invoke()
         } else {

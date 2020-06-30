@@ -7,7 +7,7 @@ import okhttp3.ResponseBody
 
 interface LoginViewInterface {
     fun loginSuccessBean(bean: LoginBean)
-    fun loginSuccessResponseBody(responseBody: ResponseBody)
+    fun loginSuccessResponseBody(responseBody1: ResponseBody, responseBody2: ResponseBody)
 }
 
 interface LoginPresenterInterface {

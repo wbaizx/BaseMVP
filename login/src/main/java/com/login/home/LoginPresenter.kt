@@ -17,7 +17,9 @@ class LoginPresenter(view: LoginViewInterface?) : BasePresenterImpl<LoginViewInt
         val async2 = async(Dispatchers.IO) {
             model.loginResponseBody()
         }
-        async1.await()
-        async2.await()
-    }, { view?.loginSuccessResponseBody(it) })
+
+        //2元组 Pair
+        Pair(async1.await(), async2.await())
+        //3元组 Triple
+    }, { (one, two) -> view?.loginSuccessResponseBody(one, two) })
 }
