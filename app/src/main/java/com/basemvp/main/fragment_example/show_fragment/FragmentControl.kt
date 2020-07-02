@@ -36,14 +36,14 @@ class FragmentControl(private val supportFragmentManager: FragmentManager, priva
             }
             if (fragmentList[position].isAdded) {
                 beginTransaction.show(fragmentList[position])
-                beginTransaction.setMaxLifecycle(fragmentList[position], Lifecycle.State.RESUMED)
                 LogUtil.log(TAG, "show")
             } else {
                 beginTransaction.add(fragmentLayout, fragmentList[position])
-                beginTransaction.setMaxLifecycle(fragmentList[position], Lifecycle.State.RESUMED)
                 LogUtil.log(TAG, "add")
             }
+            beginTransaction.setMaxLifecycle(fragmentList[position], Lifecycle.State.RESUMED)
             beginTransaction.commit()
+
             currentPosition = position
             LogUtil.log(TAG, "currentPosition $currentPosition")
         }
@@ -59,15 +59,5 @@ class FragmentControl(private val supportFragmentManager: FragmentManager, priva
         }
         beginTransaction.commit()
         currentPosition = -1
-
-        fragmentList = arrayListOf(
-            TestFragment("1"),
-            TestFragment("2"),
-            TestFragment("3"),
-            TestFragment("4"),
-            TestViewFragment("MVP 5"),
-            TestViewFragment("MVP 6"),
-            TestViewFragment("MVP 7")
-        )
     }
 }

@@ -21,6 +21,7 @@ class ControlFragmentActivity : BaseActivity() {
 
         reset.setOnClickListener {
             fragmentControl.reset()
+            fragmentControl = FragmentControl(supportFragmentManager, R.id.frameLayout)
             fragmentControl.show(0)
             simpleTabLayout.setPosition(0)
         }

@@ -6,12 +6,15 @@ import android.content.pm.ApplicationInfo
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.util.LogUtil
 
+/**
+ * 基类 Application
+ */
 open class BaseAPP : Application() {
     companion object {
         private val TAG = "BaseAPP-Application"
 
         lateinit var baseAppContext: BaseAPP
-        private val allActivities = arrayListOf<Activity>()
+         val allActivities = arrayListOf<Activity>()
 
         fun registerActivity(activity: Activity) {
             allActivities.add(activity)
@@ -33,6 +36,12 @@ open class BaseAPP : Application() {
     override fun onCreate() {
         super.onCreate()
         baseAppContext = this
+
+        //初始化三方 sdk 可以使用 App Startup
+        initARouter()
+    }
+
+    private fun initARouter() {
         if (isDebug()) {
             LogUtil.log(TAG, "isDebug")
             ARouter.openLog()
@@ -41,6 +50,6 @@ open class BaseAPP : Application() {
         ARouter.init(baseAppContext)
     }
 
-    fun isDebug() =
+    private fun isDebug() =
         baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
 }
