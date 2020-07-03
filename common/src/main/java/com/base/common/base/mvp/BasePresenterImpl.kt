@@ -1,14 +1,11 @@
 package com.base.common.base.mvp
 
-import com.base.common.base.BaseActivity
-import com.base.common.base.BaseFragment
+import com.base.common.base.mvp.contract.BaseModel
+import com.base.common.base.mvp.contract.BasePresenter
+import com.base.common.base.mvp.contract.BaseView
 import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
-import com.base.common.util.http.NoNetworkException
-import com.google.gson.stream.MalformedJsonException
 import kotlinx.coroutines.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 /**
  * CoroutineScope
@@ -16,72 +13,84 @@ import java.net.UnknownHostException
  * Dispatchers  运行线程切换
  *
  * by CoroutineScope(Dispatchers.Main) 用这种方式async会有bug，所以用 by MainScope()方式
+ *
+ * 参数 view 和 model 需要被内联，只能是 public 权限
  */
-abstract class BasePresenterImpl<V, M>(protected var view: V?, protected var model: M) : CoroutineScope by MainScope() {
+abstract class BasePresenterImpl<V : BaseView, M : BaseModel>(var view: V?, var model: M) : BasePresenter,
+    CoroutineScope by MainScope() {
 
+    /**
+     * bgAction  执行方法，运行在IO线程
+     * uiAction  执行方法，运行在主线程
+     * error     手动捕获当次异常，运行在主线程
+     */
     protected inline fun <T> runTask(
         crossinline bgAction: suspend () -> T,
-        noinline uiAction: ((T) -> Unit)? = null
+        noinline uiAction: ((T) -> Unit)? = null,
+        noinline error: ((Exception) -> Unit)? = null
     ): Job {
         val job = launch {
             try {
                 val v = withContext(Dispatchers.IO) { bgAction() }
                 uiAction?.invoke(v)
             } catch (e: Exception) {
-                errorMessage(e)
+                if (error != null) {
+                    error(e)
+                } else {
+                    runTaskError(e)
+                }
             } finally {
             }
         }
         return job
     }
 
+    /**
+     * bgAction  执行方法，运行在IO线程
+     * uiAction  执行方法，运行在主线程
+     * error     手动捕获当次异常，运行在主线程
+     */
     protected inline fun <T> runTaskDialog(
         crossinline bgAction: suspend () -> T,
-        noinline uiAction: ((T) -> Unit)? = null
+        noinline uiAction: ((T) -> Unit)? = null,
+        noinline error: ((Exception) -> Unit)? = null
     ): Job {
         val job = launch {
-            val activity = getBaseActivity()
-            activity?.showLoadDialog()
+            view?.showLoad()
             try {
-                delay(1200)
+                delay(1000)
                 val v = withContext(Dispatchers.IO) { bgAction() }
                 uiAction?.invoke(v)
             } catch (e: Exception) {
-                errorMessage(e)
+                if (error != null) {
+                    error(e)
+                } else {
+                    runTaskError(e)
+                }
             } finally {
-                activity?.hideLoadDialog()
+                view?.hideLoad()
             }
         }
         return job
     }
 
     /**
-     * 这个方法必须 public ,否则无法内联会崩溃
+     * 此方法必须是public权限，否则无法内联
+     *
+     * 未手动捕获异常时，这里统一捕获，交给BaseView基类处理
      */
-    fun getBaseActivity(): BaseActivity? {
-        return if (view is BaseFragment) {
-            (view as BaseFragment).activity as? BaseActivity
+    fun runTaskError(e: Exception) {
+        LogUtil.log("BasePresenterImpl", "runTaskError $e")
+
+        //CancellationException 协程取消异常，由于detachView主动取消了协程，此时view为空，在基类中无法捕获
+        if (e is CancellationException) {
+            AndroidUtil.showToast("协程被取消")
         } else {
-            view as? BaseActivity
+            view?.runTaskError(e)
         }
     }
 
-    /**
-     * 这个方法必须 public ,否则无法内联会崩溃
-     */
-    fun errorMessage(e: Exception) {
-        LogUtil.log("BasePresenterImpl", "errorMessage $e")
-        when (e) {
-            is SocketTimeoutException -> AndroidUtil.showToast("连接超时")
-            is UnknownHostException -> AndroidUtil.showToast("网络错误")
-            is NoNetworkException -> AndroidUtil.showToast("无网络")
-            is MalformedJsonException -> AndroidUtil.showToast("json解析错误")
-            is CancellationException -> LogUtil.log("BasePresenterImpl", "errorMessage 协程被取消")
-            else -> AndroidUtil.showToast("未知错误")
-        }
-    }
-
-    fun detachView() {
+    override fun detachView() {
         cancel()
         view = null
         LogUtil.log("BasePresenterImpl", "detachView")

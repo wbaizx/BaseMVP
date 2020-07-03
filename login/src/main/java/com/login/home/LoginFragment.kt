@@ -13,7 +13,7 @@ import okhttp3.ResponseBody
 class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInterface {
     private val TAG = "LoginFragment"
 
-    override fun initBasePresenter() = LoginPresenter(this)
+    override var presenter: LoginPresenterInterface? = LoginPresenter(this)
 
     override fun getContentView() = R.layout.fragment_login
 

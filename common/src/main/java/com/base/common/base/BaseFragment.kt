@@ -79,6 +79,13 @@ abstract class BaseFragment : Fragment() {
      */
     protected abstract fun onHide()
 
+    fun showLoadDialog() {
+        (activity as? BaseActivity)?.showLoadDialog()
+    }
+
+    fun hideLoadDialog() {
+        (activity as? BaseActivity)?.hideLoadDialog()
+    }
 
     /**
      * 对应资源销毁在onDestroy中，有时也要根据情况在onDestroyView或者onDetach中
