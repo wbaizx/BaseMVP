@@ -10,19 +10,13 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 /**
- * 对于继承了 BaseViewFragment 但又不需要使用mvp功能，或者要复用其他的 Presenter 的。泛型直接传 BasePresenter ，实例赋空值就可以
+ * 对于继承了 BaseViewFragment 但又不需要使用mvp功能
+ * 或者只复用其他的 Presenter实例的。泛型直接传 BasePresenter ，presenter实例赋空值就可以
  */
 abstract class BaseViewFragment<P : BasePresenter> : BaseFragment(), BaseView {
     private val TAG = "BaseViewFragment"
 
     protected abstract var presenter: P?
-
-    override fun onDestroy() {
-        presenter?.detachView()
-        presenter = null
-
-        super.onDestroy()
-    }
 
     override fun showLoad() {
         showLoadDialog()
@@ -30,6 +24,13 @@ abstract class BaseViewFragment<P : BasePresenter> : BaseFragment(), BaseView {
 
     override fun hideLoad() {
         hideLoadDialog()
+    }
+
+    override fun onDestroy() {
+        presenter?.detachView()
+        presenter = null
+
+        super.onDestroy()
     }
 
     override fun runTaskError(e: Exception) {
