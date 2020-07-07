@@ -4,16 +4,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.base.common.util.AndroidUtil
+import com.base.common.view.SimpleItemDecoration
 
-class ScrollToRCDecoration(private val adapter: ScrollToRCAdapter) : RecyclerView.ItemDecoration() {
-    /**
-     * 标题栏和悬浮栏高度
-     */
-    val titleHeight: Int = AndroidUtil.dp2px(90f).toInt()
+class ScrollToRCDecoration(adapter: ScrollToRCAdapter) : SimpleItemDecoration<String, ScrollToRCAdapter>(adapter) {
+
+    override var decorationHeight: Int = AndroidUtil.dp2px(90f).toInt()
 
     private val bgColor: Int = Color.parseColor("#898989")
     private val bgColor2: Int = Color.parseColor("#FF9500")
@@ -23,93 +19,33 @@ class ScrollToRCDecoration(private val adapter: ScrollToRCAdapter) : RecyclerVie
     /**
      * 画笔
      */
-    private val mPaint: Paint
+    private val mPaint: Paint = Paint()
 
     init {
-        mPaint = Paint()
         mPaint.style = Paint.Style.FILL
         mPaint.isAntiAlias = true
         mPaint.strokeCap = Paint.Cap.ROUND
         mPaint.textAlign = Paint.Align.LEFT
-
         mPaint.textSize = AndroidUtil.sp2px(18f)
     }
 
-    private fun getTextOffset(): Float {
-        val fontMetrics = mPaint.fontMetrics
-        return fontMetrics.top / 2 + fontMetrics.bottom / 2
+    override fun offsets(outRect: Rect, dataPosition: Int, bean: String) {
+        outRect.set(0, decorationHeight, 0, 0)
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        super.getItemOffsets(outRect, view, parent, state)
-        val position = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
-        //判断是否是列表数据，需要考虑头尾部
-        if (position > (-1 + adapter.headerLayoutCount) && position < adapter.data.size + adapter.headerLayoutCount) {
-            outRect.set(0, titleHeight, 0, 0)
-        }
+    override fun drawDecoration(c: Canvas, left: Float, right: Float, top: Float, bottom: Float, dataPosition: Int, bean: String) {
+        drawTitleArea(c, left, right, top, bottom, dataPosition, bgColor)
     }
 
-    /**
-     * 这个方法在绘制item之前调用，所以这里绘制的东西会被item覆盖，但这里可以覆盖recycleView背景色
-     */
-    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        super.onDraw(c, parent, state)
-        val left = parent.paddingLeft.toFloat()
-        val right = parent.width - parent.paddingRight.toFloat()
-        val childCount = parent.childCount
-        for (i in 0 until childCount) {
-            val child = parent.getChildAt(i)
-            val params = child.layoutParams as RecyclerView.LayoutParams
-            val position = params.viewLayoutPosition
-            val top = child.top.toFloat() - params.topMargin - titleHeight
-            val bottom = top + titleHeight
-            //判断是否是列表数据，需要考虑头尾部
-            if (position > (-1 + adapter.headerLayoutCount) && position < adapter.data.size + adapter.headerLayoutCount) {
-                drawTitleArea(c, left, right, top, bottom, position - adapter.headerLayoutCount, bgColor)
-            }
-        }
+    override fun needEffects(dataPosition: Int, nextDataPosition: Int, bean: String, nextBean: String): Boolean {
+        return true
     }
 
-    /**
-     * 这个方法绘制顺序在最后，所以可以在这里做顶部悬浮、item之间有连接装饰等功能
-     */
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        super.onDrawOver(c, parent, state)
-        val position = (parent.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-        //判断是否是列表数据，需要考虑头尾部
-        if (position > (-1 + adapter.headerLayoutCount) && position < adapter.data.size + adapter.headerLayoutCount) {
-            //child = parent.getChildAt(i) 有时候child为空
-            val child = parent.findViewHolderForLayoutPosition(position)?.itemView
-            if (child != null) {
-                //定义一个flag，Canvas是否位移过的标志
-                var flag = false
-                //如果后面还有数据
-                if (adapter.data.size > position) {
-                    //如果前第一个可见的Item的tag，不等于其后一个item的tag，说明悬浮的View要切换了,如下判断
-                    //if (datas[position].title != datas[position + 1].title) {
+    override fun drawOverTop(c: Canvas, left: Float, right: Float, top: Float, bottom: Float, dataPosition: Int, bean: String) {
+        drawTitleArea(c, left, right, top, bottom, dataPosition, bgColor2)
+    }
 
-                    //当getTop开始变负，它的绝对值，是第一个可见的Item移出屏幕的距离，
-                    if (child.height + child.top < titleHeight) {
-                        //当第一个可见的item在屏幕中还剩的高度小于title区域的高度时，开始做悬浮Title的“交换动画”
-                        //每次绘制前 保存当前Canvas状态，
-                        c.save()
-                        flag = true
-
-                        //将canvas上移 （y为负数） ,所以后面canvas 画出来的Rect和Text都上移了，有种切换的“动画”感觉
-                        c.translate(0f, (child.height + child.top - titleHeight).toFloat())
-                    }
-                }
-                val left = parent.paddingLeft.toFloat()
-                val right = parent.width - parent.paddingRight.toFloat()
-                val top = parent.paddingTop.toFloat()
-                val bottom = top + titleHeight
-                drawTitleArea(c, left, right, top, bottom, position - adapter.headerLayoutCount, bgColor2)
-
-                if (flag) {
-                    c.restore()//恢复画布到之前保存的状态
-                }
-            }
-        }
+    override fun drawOverDecoration(c: Canvas, left: Float, right: Float, top: Float, bottom: Float, dataPosition: Int, bean: String) {
     }
 
     /**
@@ -122,6 +58,6 @@ class ScrollToRCDecoration(private val adapter: ScrollToRCAdapter) : RecyclerVie
 
         mPaint.color = textColor
         //画文本
-        c.drawText("no $position", left + 100, top + titleHeight / 2 - getTextOffset(), mPaint)
+        c.drawText("no $position", left + 100, top + decorationHeight / 2 - getTextOffset(mPaint), mPaint)
     }
 }

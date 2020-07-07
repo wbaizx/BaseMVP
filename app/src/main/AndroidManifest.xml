@@ -47,6 +47,7 @@
         <activity android:name=".main.special_rc.gallery.GalleryActivity" />
         <activity android:name=".main.special_rc.qq_album.QQAlbumActivity" />
         <activity android:name=".main.special_rc.scrollto_rc.ScrollToRCActivity" />
+        <activity android:name=".main.special_rc.connection_rc.ConnectionRCActivity" />
 
         <!-- 全面屏 -->
         <meta-data

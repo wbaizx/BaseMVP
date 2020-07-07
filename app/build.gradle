@@ -42,6 +42,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -55,12 +56,12 @@ dependencies {
     implementation project(path: ':common')
 
     //配置Login组件是否可以独立运行
-    if (!isLoginRunAlone.toBoolean()){
+    if (!isLoginRunAlone.toBoolean()) {
         implementation project(path: ':login')
     }
 
     //配置Camera组件是否可以独立运行
-    if (!isCameraRunAlone.toBoolean()){
+    if (!isCameraRunAlone.toBoolean()) {
         implementation project(path: ':camera_opengl')
     }
 

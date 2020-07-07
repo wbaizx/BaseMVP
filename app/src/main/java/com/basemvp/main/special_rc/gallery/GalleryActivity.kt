@@ -8,7 +8,7 @@ import com.base.common.config.RouteString
 import com.base.common.util.LogUtil
 import kotlinx.android.synthetic.main.activity_gallery.*
 
-@Route(path = RouteString.GALLERY, name = "recyclerView 仿Gallery效果")
+@Route(path = RouteString.GALLERY, name = "recyclerView 仿Gallery效果，也可以使用PagerSnapHelper+滚动监听改变view大小实现")
 class GalleryActivity : BaseActivity() {
     private val TAG = "GalleryActivity"
 

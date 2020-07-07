@@ -16,8 +16,8 @@ class ItemAnimation2Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.
         }
     }
 
-    override fun convert(helper: BaseViewHolder, item: String) {
-        val view = helper.getView<TextView>(R.id.sceneText)
+    override fun convert(holder: BaseViewHolder, item: String) {
+        val view = holder.getView<TextView>(R.id.sceneText)
         view.text = item
         if (isLine) {
             view.layoutParams.width = AndroidUtil.getScreenWidth() - AndroidUtil.dp2px(80f).toInt()

@@ -70,7 +70,7 @@ class ScrollToRCActivity : BaseActivity() {
 
                         move = false
                         //要置顶的项已经在屏幕上
-                        val top = manager.findViewByPosition(toPos)!!.top - decoration.titleHeight
+                        val top = manager.findViewByPosition(toPos)!!.top - decoration.decorationHeight
                         recyclerView.smoothScrollBy(0, top)
                     }
                 }
@@ -93,7 +93,7 @@ class ScrollToRCActivity : BaseActivity() {
                 recyclerView.smoothScrollToPosition(pos)
             } else {
                 //当要置顶的项已经在屏幕上显示时
-                val top = manager.findViewByPosition(pos)!!.top - decoration.titleHeight
+                val top = manager.findViewByPosition(pos)!!.top - decoration.decorationHeight
                 recyclerView.smoothScrollBy(0, top)
             }
         }

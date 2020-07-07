@@ -5,6 +5,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
+import com.base.common.config.loginNavigation
 import com.base.common.config.normalNavigation
 import kotlinx.android.synthetic.main.activity_special_rc.*
 
@@ -27,6 +28,10 @@ class SpecialRCActivity : BaseActivity() {
 
         qqAlbum.setOnClickListener {
             ARouter.getInstance().build(RouteString.QQ_ALBUM).normalNavigation()
+        }
+
+        connectionRecyclerView.setOnClickListener {
+            ARouter.getInstance().build(RouteString.CONNECTION_RC).loginNavigation()
         }
     }
 

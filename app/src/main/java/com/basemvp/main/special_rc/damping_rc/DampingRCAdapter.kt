@@ -16,18 +16,18 @@ class DampingRCAdapter(private val dampingRCActivity: DampingRCActivity) :
         data = arrayListOf("", "", "", "", "", "", "")
     }
 
-    override fun convert(helper: BaseViewHolder, item: String) {
-        helper.setText(R.id.item_text, "${helper.adapterPosition - headerLayoutCount}")
-        if (helper.adapterPosition - headerLayoutCount == 2 || helper.adapterPosition - headerLayoutCount == 3) {
+    override fun convert(holder: BaseViewHolder, item: String) {
+        holder.setText(R.id.item_text, "${holder.adapterPosition - headerLayoutCount}")
+        if (holder.adapterPosition - headerLayoutCount == 2 || holder.adapterPosition - headerLayoutCount == 3) {
             if (ImmersionBar.hasNotchScreen(dampingRCActivity)) {
-                helper.itemView.layoutParams.height =
+                holder.itemView.layoutParams.height =
                     AndroidUtil.getScreenHeight() + ImmersionBar.getNotchHeight(dampingRCActivity)
             } else {
-                helper.itemView.layoutParams.height = AndroidUtil.getScreenHeight()
+                holder.itemView.layoutParams.height = AndroidUtil.getScreenHeight()
             }
 
         } else {
-            helper.itemView.layoutParams.height = AndroidUtil.dp2px(900f).toInt()
+            holder.itemView.layoutParams.height = AndroidUtil.dp2px(900f).toInt()
         }
     }
 }
