@@ -16,8 +16,8 @@ import androidx.annotation.Nullable;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.base.common.base.BaseActivity;
-import com.base.common.config.ExtensionKt;
 import com.base.common.config.RouteString;
+import com.base.common.util.ARouterUtilKt;
 import com.base.common.util.LogUtil;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
@@ -89,7 +89,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         findViewById(R.id.goVideoList).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ExtensionKt.normalNavigation(ARouter.getInstance().build(RouteString.VIDEO_LIST), null);
+                ARouterUtilKt.normalNavigation(ARouter.getInstance().build(RouteString.VIDEO_LIST), null);
             }
         });
 

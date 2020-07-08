@@ -20,7 +20,8 @@ object RouteString {
     const val SPECIAL_RC = "/app/special_rc"
     const val DAMPING_RC = "/app/damping_rc"
     const val SCROLL_TO_RC = "/app/scrollTo_rc"
-    const val CONNECTION_RC = "/app/connection_RC"
+    const val CONNECTION_RC = "/app/connection_rc"
+    const val CIRCLE_RC = "/app/circle_rc"
     const val QQ_ALBUM = "/app/qq_album"
     const val GALLERY = "/app/recyclerViewGallery"
 

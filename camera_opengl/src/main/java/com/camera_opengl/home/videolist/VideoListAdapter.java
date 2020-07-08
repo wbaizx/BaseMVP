@@ -1,7 +1,7 @@
 package com.camera_opengl.home.videolist;
 
-import com.base.common.config.ExtensionKt;
 import com.base.common.config.GlideApp;
+import com.base.common.util.GlideUtilKt;
 import com.camera_opengl.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -35,7 +35,7 @@ public class VideoListAdapter extends BaseQuickAdapter<VideoListAdapter.FileBean
         holder.setGone(R.id.videoItemSelect, !bean.isSelect())
                 .setText(R.id.videoItemTitle, bean.file.getName());
 
-        ExtensionKt.normalInto(GlideApp.with(getContext()).load(bean.file), holder.getView(R.id.videoItemImg));
+        GlideUtilKt.normalInto(GlideApp.with(getContext()).load(bean.file), holder.getView(R.id.videoItemImg));
     }
 
     public void select(int position) {

@@ -56,4 +56,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qqAlbum" />
+
+    <Button
+        android:id="@+id/overlappingRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="重叠头像list"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connectionRecyclerView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

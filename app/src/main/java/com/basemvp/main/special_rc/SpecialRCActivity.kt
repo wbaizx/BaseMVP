@@ -5,8 +5,8 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.config.loginNavigation
-import com.base.common.config.normalNavigation
+import com.base.common.util.loginNavigation
+import com.base.common.util.normalNavigation
 import kotlinx.android.synthetic.main.activity_special_rc.*
 
 @Route(path = RouteString.SPECIAL_RC, name = "各种特殊效果的recycleView效果展示汇总")
@@ -32,6 +32,10 @@ class SpecialRCActivity : BaseActivity() {
 
         connectionRecyclerView.setOnClickListener {
             ARouter.getInstance().build(RouteString.CONNECTION_RC).loginNavigation()
+        }
+
+        overlappingRecyclerView.setOnClickListener {
+            ARouter.getInstance().build(RouteString.CIRCLE_RC).loginNavigation()
         }
     }
 

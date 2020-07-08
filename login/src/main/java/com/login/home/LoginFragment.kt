@@ -2,9 +2,9 @@ package com.login.home
 
 import com.base.common.base.mvp.BaseViewFragment
 import com.base.common.config.GlideApp
-import com.base.common.config.imgUrl
-import com.base.common.config.normalInto
 import com.base.common.util.LogUtil
+import com.base.common.util.imgUrl
+import com.base.common.util.normalInto
 import com.login.R
 import com.login.home.bean.LoginBean
 import kotlinx.android.synthetic.main.fragment_login.*

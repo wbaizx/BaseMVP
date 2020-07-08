@@ -10,12 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.base.common.config.ExtensionKt;
 import com.base.common.config.GlideApp;
+import com.base.common.util.GlideUtilKt;
 import com.camera_opengl.R;
 import com.camera_opengl.home.gl.renderer.filter.FilterType;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -38,7 +37,7 @@ public class FilterDialog {
             BaseQuickAdapter<FilterType, BaseViewHolder> adapter = new BaseQuickAdapter<FilterType, BaseViewHolder>(R.layout.bottom_filter_item) {
                 @Override
                 protected void convert(@NotNull BaseViewHolder holder, FilterType type) {
-                    ExtensionKt.simpleInto(GlideApp.with(getContext()).load(type.getPng()), holder.getView(R.id.filterItemImg));
+                    GlideUtilKt.simpleInto(GlideApp.with(getContext()).load(type.getPng()), holder.getView(R.id.filterItemImg));
                     holder.setText(R.id.name, type.getName());
                 }
             };
@@ -73,7 +72,7 @@ public class FilterDialog {
         bottomSheetDialog.show();
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(FilterType type);
     }
 }

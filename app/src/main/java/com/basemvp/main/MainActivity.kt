@@ -7,9 +7,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
 import com.base.common.config.*
-import com.base.common.util.AndroidUtil
-import com.base.common.util.ImageUtil
-import com.base.common.util.LogUtil
+import com.base.common.util.*
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers

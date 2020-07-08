@@ -4,7 +4,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.config.normalNavigation
+import com.base.common.util.normalNavigation
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_fragment_example.*
 

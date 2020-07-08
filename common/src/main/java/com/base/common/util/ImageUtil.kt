@@ -19,10 +19,7 @@ object ImageUtil {
     private val MIME_TYPE_GIF = "image/gif"
     private val MIME_TYPE_WEBP = "image/webp"
 
-    private val MIME_TYPE_3GP = "video/3gp"
     private val MIME_TYPE_MP4 = "video/mp4"
-    private val MIME_TYPE_MPEG = "video/mpeg"
-    private val MIME_TYPE_AVI = "video/avi"
 
     /**
      * 将view转换成bitmap
@@ -87,13 +84,5 @@ object ImageUtil {
         }
 
         return false
-
-//        MediaStore.Images.Media.insertImage(BaseAPP.baseAppContext.contentResolver, "", "", "")
-//
-//        MediaScannerConnection.scanFile(BaseAPP.baseAppContext, arrayOf(file.absolutePath), arrayOf(MIME_TYPE_JPEG))
-//        { path, uri ->
-//        }
-//
-//        BaseAPP.baseAppContext.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))
     }
 }

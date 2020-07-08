@@ -5,11 +5,11 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.base.BaseActivity
-import com.base.common.config.GOTO_MAIN
 import com.base.common.config.RouteString
-import com.base.common.config.normalNavigation
+import com.base.common.util.GOTO_MAIN
 import com.base.common.util.LogUtil
 import com.base.common.util.SharedPreferencesUtil
+import com.base.common.util.normalNavigation
 import com.login.R
 
 @Route(path = RouteString.LOGIN, name = "组件化登录模块首页", extras = -1)
