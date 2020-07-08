@@ -5,19 +5,29 @@ import android.widget.ImageView
 import com.base.common.R
 import com.base.common.config.GlideRequest
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 private const val TAG = "GlideUtil"
 
-const val imgUrl = "http://img1.imgtn.bdimg.com/it/u=1004510913,4114177496&fm=26&gp=0.jpg"
-//const val imgUrl = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583902813407&di=e5c444a2a80d5561d59d2866e3d2b8b8&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F68%2F61%2F300000839764127060614318218_950.jpg"
+//const val imgUrl = "http://img1.imgtn.bdimg.com/it/u=1004510913,4114177496&fm=26&gp=0.jpg"
+const val imgUrl =
+    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583902813407&di=e5c444a2a80d5561d59d2866e3d2b8b8&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F68%2F61%2F300000839764127060614318218_950.jpg"
 
 fun GlideRequest<Drawable>.normalInto(img: ImageView) {
     thumbnail(0.2f)
         .placeholder(R.mipmap.placeholder_icon)
         .error(R.mipmap.test_icon)
-//        .apply(RequestOptions.circleCropTransform()) //圆形
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(MyTarget(img))
+}
+
+fun GlideRequest<Drawable>.specialInto(img: ImageView) {
+    apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3))) //高斯模糊
+//        .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0))) //圆角
+//        .apply(RequestOptions.circleCropTransform()) //圆
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(MyTarget(img))
 }
@@ -30,11 +40,12 @@ fun GlideRequest<Drawable>.simpleInto(img: ImageView) {
 /**
  * 使用 CircleImageView + into(view) 可能导致第一次只加载显示 placeholder
  * 使用这个类来加载到view上可以解决
- * 或者直接使用 ImageView + glide (RequestOptions.circleCropTransform())自带圆图实现
+ * 或者直接使用 ImageView + glide圆图转换 实现
  */
 private class MyTarget(img: ImageView) : CustomViewTarget<ImageView, Drawable>(img) {
     override fun onLoadFailed(errorDrawable: Drawable?) {
         LogUtil.log(TAG, "onLoadFailed")
+        getView().setImageDrawable(errorDrawable)
     }
 
     override fun onResourceCleared(placeholder: Drawable?) {

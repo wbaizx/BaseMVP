@@ -63,8 +63,6 @@ dependencies {
 
     //状态栏
     api 'com.gyf.immersionbar:immersionbar:3.0.0'
-    // fragment状态栏快速实现（可选）
-//    api 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
     //recyclerview item动画
     api 'jp.wasabeef:recyclerview-animators:3.0.0'
@@ -89,4 +87,5 @@ dependencies {
     //图片加载框架
     api 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    api 'jp.wasabeef:glide-transformations:4.1.0'
 }

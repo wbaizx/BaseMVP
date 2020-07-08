@@ -62,7 +62,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    //路由跳转(每个Module中需分别添加处理器)
+    //路由跳转(每个需要的Module中需分别添加处理器)
     annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
 
     implementation project(path: ':common')

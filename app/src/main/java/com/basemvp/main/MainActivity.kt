@@ -27,7 +27,7 @@ class MainActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
-        GlideApp.with(this).load(imgUrl).normalInto(mainImg)
+        GlideApp.with(this).load(imgUrl).specialInto(mainImg)
 
         saveImg.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
