@@ -25,7 +25,10 @@ fun GlideRequest<Drawable>.normalInto(img: ImageView) {
 }
 
 fun GlideRequest<Drawable>.specialInto(img: ImageView) {
-    apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3))) //高斯模糊
+    //高斯模糊
+    //如果需要对图片部分，比如底部做模糊，可以在图片上再盖一张图，上面的imageView包裹一层父布局，限制高度
+    //上层imageView与下层imageView同高宽，同时与包裹的父布局底部对齐，达到只模糊底部的骚操作
+    apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
 //        .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0))) //圆角
 //        .apply(RequestOptions.circleCropTransform()) //圆
         .transition(DrawableTransitionOptions.withCrossFade())
