@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
 /**
- * RecyclerView 稍复杂分割线，可自行绘制分割线，连接器，顶部悬停（可带动效）等
+ * RecyclerView 稍复杂分割线，依赖BaseRecyclerViewAdapterHelper，可自行绘制分割线，连接器，顶部悬停（可带动效）等
  *
  * 根据 view 找 position
  * RecyclerView.LayoutParams.viewLayoutPosition

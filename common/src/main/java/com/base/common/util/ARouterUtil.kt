@@ -9,6 +9,9 @@ import com.base.common.config.RouteString
 private const val TAG = "ARouterUtil"
 
 const val GOTO_MAIN = "is_goto_main"
+const val SERIALIZABLE_BEAN = "serializable_bean"
+const val PARCELABLE_BEAN = "parcelable_bean"
+const val OBJECT_BEAN = "object_bean"
 
 /**
  * 使用登录判断模式跳转

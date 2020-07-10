@@ -9,14 +9,20 @@ import java.lang.reflect.Type
 /**
  * Kotlin类中的字段无法注入，简单解决可以在字段上添加 @JvmField
  */
-@Route(path = "/test/json")
+@Route(path = "/service/json")
 class JsonServiceImpl : SerializationService {
     override fun init(context: Context?) {
     }
 
-    override fun <T : Any?> json2Object(input: String?, clazz: Class<T>?): T = Gson().fromJson(input, clazz)
+    override fun <T : Any?> json2Object(input: String?, clazz: Class<T>?): T {
+        return Gson().fromJson(input, clazz)
+    }
 
-    override fun <T : Any?> parseObject(input: String?, clazz: Type?): T = Gson().fromJson(input, clazz)
+    override fun <T : Any?> parseObject(input: String?, clazz: Type?): T {
+        return Gson().fromJson(input, clazz)
+    }
 
-    override fun object2Json(instance: Any?): String = Gson().toJson(instance)
+    override fun object2Json(instance: Any?): String {
+        return Gson().toJson(instance)
+    }
 }

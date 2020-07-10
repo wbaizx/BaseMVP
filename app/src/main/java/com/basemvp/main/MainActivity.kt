@@ -6,8 +6,13 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
-import com.base.common.config.*
+import com.base.common.config.GlideApp
+import com.base.common.config.RouteString
 import com.base.common.util.*
+import com.base.common.util.http.ObjectBean
+import com.base.common.util.http.ParcelableBean
+import com.base.common.util.http.ParcelableBean2
+import com.base.common.util.http.SerializableBean
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +48,13 @@ class MainActivity : BaseActivity() {
         }
 
         login.setOnClickListener {
-            ARouter.getInstance().build(RouteString.LOGIN).normalNavigation()
+            //测试 ARouter 带参数跳转
+            ARouter.getInstance().build(RouteString.LOGIN)
+                .withBoolean(GOTO_MAIN, true)
+                .withSerializable(SERIALIZABLE_BEAN, SerializableBean("1", "2", arrayListOf("3", "4")))
+                .withParcelable(PARCELABLE_BEAN, ParcelableBean("1", "2", arrayListOf("3", "4"), ParcelableBean2("5", "6")))
+                .withObject(OBJECT_BEAN, ObjectBean("1", "2", arrayListOf("3", "4")))
+                .normalNavigation()
         }
 
         fragmentExample.setOnClickListener {

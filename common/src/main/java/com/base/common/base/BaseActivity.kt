@@ -2,6 +2,7 @@ package com.base.common.base
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
@@ -45,6 +46,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
+     * 解决singleTask模式，第二次启动Activity A onNewIntent（Intent intent）被@Autowired注解的字段没有更新
+     */
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        ARouter.getInstance().inject(this)
+        resetView()
+    }
+
+    /**
      * 有些操作需要在此位置实现的，可以根据需求覆写
      */
     protected open fun configure() {
@@ -63,6 +74,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     protected abstract fun initView()
 
     protected abstract fun initData()
+
+    /**
+     * 在例如singleTask模式下重启activity，可能需要子类在这里做一些view和presenter的刷新重置清理等操作
+     */
+    protected open fun resetView(){
+    }
 
     override fun onDestroy() {
         super.onDestroy()
