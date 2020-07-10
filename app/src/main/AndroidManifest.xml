@@ -31,6 +31,7 @@
 
         <activity android:name=".main.show_dialog.ShowDialogActivity" />
         <activity android:name=".main.mvp_room.MvpRoomActivity" />
+        <activity android:name=".main.shape_btn.ShowShapeBtnActivity" />
 
         <activity android:name=".main.coordinator.CoordinatorActivity" />
         <activity android:name=".main.coordinator.coordinator1.Coordinator1Activity" />

@@ -46,76 +46,78 @@
         app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="@+id/cardView" />
 
-    <Button
-        android:id="@+id/fragmentExample"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="fragment展示(Lifecycle) *"
-        android:textAllCaps="false"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/exit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-    <Button
-        android:id="@+id/coordinator"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="折叠滚动布局 *"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentExample" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/recyclerViewItemAnimation"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="recyclerView item动画 *"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coordinator" />
+            <Button
+                android:id="@+id/fragmentExample"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="fragment展示(Lifecycle) *"
+                android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/specialRc"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="特殊recycleView效果 *"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerViewItemAnimation" />
+            <Button
+                android:id="@+id/coordinator"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="折叠滚动布局 *"
+                android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/showDialog"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="展示FragmentDialog"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/specialRc" />
+            <Button
+                android:id="@+id/recyclerViewItemAnimation"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="recyclerView item动画 *"
+                android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/mvpRoom"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="展示mvp + room"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showDialog" />
+            <Button
+                android:id="@+id/specialRc"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="特殊recycleView效果 *"
+                android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/camera"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="相机、图片、视频模块"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mvpRoom" />
+            <Button
+                android:id="@+id/showDialog"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="展示FragmentDialog"
+                android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/mvpRoom"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="展示mvp + room"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/shapeBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="展示shapeBtn"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/camera"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="相机、图片、视频模块"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <Button
         android:id="@+id/exit"

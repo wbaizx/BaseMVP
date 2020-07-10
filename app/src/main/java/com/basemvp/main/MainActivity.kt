@@ -81,6 +81,10 @@ class MainActivity : BaseActivity() {
             ARouter.getInstance().build(RouteString.MVP_ROOM).loginNavigation()
         }
 
+        shapeBtn.setOnClickListener {
+            ARouter.getInstance().build(RouteString.SHAPE_BTN).loginNavigation()
+        }
+
         camera.setOnClickListener {
             ARouter.getInstance().build(RouteString.CAMERA_HOME).loginNavigation()
         }
