@@ -21,4 +21,9 @@ class ShowShapeBtnActivity : BaseActivity() {
 
     override fun initData() {
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LogUtil.log(TAG, "onDestroy")
+    }
 }

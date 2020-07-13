@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShapeButton">
+        <!--填充色-->
+        <attr name="solidColor" format="color" />
+        <!--边框色-->
+        <attr name="strokeColor" format="color" />
+        <!--边框宽度-->
+        <attr name="strokeWith" format="dimension" />
+        <!--圆角度数-->
+        <attr name="radius" format="dimension" />
+        <!--圆角度数 左上 右上 左下 右下-->
+        <attr name="topLeftRadius" format="dimension" />
+        <attr name="topRightRadius" format="dimension" />
+        <attr name="bottomLeftRadius" format="dimension" />
+        <attr name="bottomRightRadius" format="dimension" />
+        <!--渐变色角度 -->
+        <attr name="colorAngle">
+            <enum name="TOP_BOTTOM" value="0" />
+            <enum name="TR_BL" value="1" />
+            <enum name="RIGHT_LEFT" value="2" />
+            <enum name="BR_TL" value="3" />
+            <enum name="BOTTOM_TOP" value="4" />
+            <enum name="BL_TR" value="5" />
+            <enum name="LEFT_RIGHT" value="6" />
+            <enum name="TL_BR" value="7" />
+        </attr>
+        <attr name="startColor" format="color" />
+        <attr name="centerColor" format="color" />
+        <attr name="endColor" format="color" />
+        <!--形状-->
+        <attr name="shapeType">
+            <enum name="rectangle" value="0" />
+            <enum name="oval" value="1" />
+            <enum name="line" value="2" />
+        </attr>
+        <!--虚线的间隙-->
+        <attr name="dashGap" format="dimension" />
+        <!--虚线的宽度-->
+        <attr name="dashWidth" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ShapeDrawableButton">
+        <!--按下时背景-->
+        <attr name="pressedDrawable" format="reference" />
+        <!--禁用时背景-->
+        <attr name="disableDrawable" format="reference" />
+        <!--正常背景-->
+        <attr name="normalDrawable" format="reference" />
+    </declare-styleable>
+
+</resources>

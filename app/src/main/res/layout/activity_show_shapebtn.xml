@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <com.base.common.view.ShapeButton
+    <com.base.common.view.btn.ShapeButton
         android:id="@+id/shapeButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="1" />
+        android:text="AFWAFaa"
+        app:colorAngle="RIGHT_LEFT"
+        app:endColor="@color/color_9500"
+        app:radius="10dp"
+        app:startColor="@color/color_336" />
+
+    <com.base.common.view.btn.ShapeDrawableButton
+        android:id="@+id/shapeImgButton"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="AFWAFaa"
+        app:disableDrawable="@drawable/ic_launcher_background"
+        app:normalDrawable="@drawable/rounded_corners_shape"
+        app:pressedDrawable="@drawable/ic_launcher_background" />
 
 </LinearLayout>
