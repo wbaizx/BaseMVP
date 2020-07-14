@@ -17,6 +17,7 @@ class ShowShapeBtnActivity : BaseActivity() {
         shapeButton.setOnClickListener {
             LogUtil.log(TAG, "shapeButton OnClick")
         }
+//        shapeDrawableButton.isEnabled = false
     }
 
     override fun initData() {

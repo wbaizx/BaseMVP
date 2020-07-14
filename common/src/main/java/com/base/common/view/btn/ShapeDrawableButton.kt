@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import com.base.common.R
 
 /**
- * 主要用于 按下、禁用和正常状态都为图片的情况
+ * 主要用于 按下、禁用和正常状态都为 Drawable 的情况
  */
 class ShapeDrawableButton(context: Context, attrs: AttributeSet?) : CommonButton(context, attrs) {
 

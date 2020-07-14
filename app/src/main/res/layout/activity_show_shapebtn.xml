@@ -13,11 +13,11 @@
         android:text="AFWAFaa"
         app:colorAngle="RIGHT_LEFT"
         app:endColor="@color/color_9500"
-        app:radius="10dp"
+        app:radius="20dp"
         app:startColor="@color/color_336" />
 
     <com.base.common.view.btn.ShapeDrawableButton
-        android:id="@+id/shapeImgButton"
+        android:id="@+id/shapeDrawableButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:text="AFWAFaa"

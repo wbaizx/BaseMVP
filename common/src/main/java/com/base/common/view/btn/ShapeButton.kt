@@ -7,20 +7,18 @@ import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import com.base.common.R
 import com.base.common.util.LogUtil
-import com.base.common.view.btn.CommonButton
 
 /**
  * 主要用于需要自定义 drawable 的 button，使用这个类可以避免为每个 button 配一个xml背景
- * 如果代码中动态改变了 background ，需要手动还原
  *
  * 目前这个 button 没有适配合适的按下状态和禁用状态背景，后面有好的方案在弄下
  */
 class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context, attrs) {
     private val TAG = "ShapeButton"
 
-    private val  stalistDrawable = StateListDrawable()
-
     constructor(context: Context) : this(context, null)
+
+    private val stalistDrawable = StateListDrawable()
 
     init {
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeButton)
@@ -83,7 +81,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             6 -> shape.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT)
             7 -> shape.setOrientation(GradientDrawable.Orientation.TL_BR)
         }
-        //设置渐变颜色，至少需要startColor和endColor才生效
+        //设置渐变颜色，至少需要startColor和endColor才生效，这里最多支持3种颜色
         val startColor = t.getColor(R.styleable.ShapeButton_startColor, -1)
         val centerColor = t.getColor(R.styleable.ShapeButton_centerColor, -1)
         val endColor = t.getColor(R.styleable.ShapeButton_endColor, -1)
@@ -101,5 +99,12 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         }
 
 //        shape.setAlpha(20)
+    }
+
+    /**
+     * 如果代码中动态改变了 background ，需要手动还原
+     */
+    fun revert() {
+        background = stalistDrawable
     }
 }
