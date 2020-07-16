@@ -1,12 +1,11 @@
 package com.basemvp.main.item_animation.item_animation2
 
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
+import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_item_animation2.*
 
 
@@ -21,20 +20,26 @@ class ItemAnimation2Activity : BaseActivity() {
         val layoutManager = GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-        recyclerView.itemAnimator = DefaultItemAnimator().apply { changeDuration = 2000 }
+        recyclerView.itemAnimator = MyDefaultItemAnimator().apply {
+            changeDuration = 600
+            addDuration = 600
+        }
+
 
         change.setOnClickListener {
             if (isLine) {
                 adapter.setLine(false)
                 layoutManager.orientation = GridLayoutManager.VERTICAL
                 layoutManager.spanCount = 2
+                adapter.notifyItemRangeChanged(0, adapter.itemCount)
             } else {
                 adapter.setLine(true)
                 layoutManager.orientation = GridLayoutManager.HORIZONTAL
                 layoutManager.spanCount = 1
+                adapter.notifyItemRangeChanged(0, adapter.itemCount)
             }
             isLine = !isLine
-            adapter.notifyItemRangeChanged(0, adapter.itemCount)
+
         }
     }
 
