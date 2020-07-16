@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:text="AAAAaaaa"
+        app:centerColor="@color/color_4FF_a"
         app:colorAngle="RIGHT_LEFT"
         app:endColor="@color/color_9500"
         app:radius="20dp"
@@ -36,6 +37,10 @@
         android:layout_height="80dp"
         android:text="AAAAaaaa" />
 
+    <!--
+    android:background="?android:attr/selectableItemBackground"  有边界波纹
+    android:background="?android:attr/selectableItemBackgroundBorderless" 超出边界波纹
+     -->
     <com.base.common.view.btn.CommonButton
         android:id="@+id/commonButton"
         android:layout_width="match_parent"
