@@ -1,35 +1,50 @@
 package com.base.common.view.btn
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.TypedArray
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.StateListDrawable
+import android.graphics.drawable.RippleDrawable
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
 import com.base.common.R
+import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
 
 /**
  * 主要用于需要自定义 drawable 的 button，使用这个类可以避免为每个 button 配一个xml背景
- *
- * 目前这个 button 没有适配合适的按下状态和禁用状态背景，后面有好的方案在弄下
  */
 class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context, attrs) {
     private val TAG = "ShapeButton"
 
     constructor(context: Context) : this(context, null)
 
-    private val stalistDrawable = StateListDrawable()
+    private var bgrawable: Drawable? = null
 
     init {
+        LogUtil.log(TAG, "init")
+
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeButton)
 
+        //普通背景
         val bgShape = GradientDrawable()
         initShape(t, bgShape)
 
-        stalistDrawable.addState(intArrayOf(), bgShape)
+        //水波纹效果颜色
+        val rippleColor = t.getColor(R.styleable.ShapeButton_rippleColor, -1)
+        if (rippleColor != -1) {
+            val colorStateList = ColorStateList.valueOf(rippleColor)
 
-        background = stalistDrawable
+            //参数2：content:普通背景
+            //参数3：mask是不会被draw的，但是它会限制波纹的边界，如果为null，默认为content的边界，同上，当content为null就没有边界了
+            val rippleDrawable = RippleDrawable(colorStateList, bgShape, null)
+            bgrawable = rippleDrawable
+        } else {
+            bgrawable = bgShape
+        }
 
+        background = bgrawable
         t.recycle()
     }
 
@@ -43,14 +58,16 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             2 -> shape.setShape(GradientDrawable.LINE)
         }
         //边框
-        val strokeColor = t.getColor(R.styleable.ShapeButton_strokeColor, 0xb2898989.toInt())
+        val strokeColor = t.getColor(R.styleable.ShapeButton_strokeColor, ContextCompat.getColor(context, R.color.color_8B8))
         val strokeWith = t.getDimension(R.styleable.ShapeButton_strokeWith, 0f)
         val dashGap = t.getDimension(R.styleable.ShapeButton_dashGap, 0f)
         val dashWidth = t.getDimension(R.styleable.ShapeButton_dashWidth, 0f)
         LogUtil.log(TAG, "strokeColor $strokeColor  strokeWith $strokeWith")
-        shape.setStroke(strokeWith.toInt(), strokeColor, dashWidth, dashGap)
+        if (strokeWith > 0f) {
+            shape.setStroke(strokeWith.toInt(), strokeColor, dashWidth, dashGap)
+        }
         //圆角
-        val radius = t.getDimension(R.styleable.ShapeButton_radius, 0f)
+        val radius = t.getDimension(R.styleable.ShapeButton_radius, AndroidUtil.dp2px(4f))
         LogUtil.log(TAG, "radius $radius")
         val topLeftRadius = t.getDimension(R.styleable.ShapeButton_topLeftRadius, radius)
         val topRightRadius = t.getDimension(R.styleable.ShapeButton_topRightRadius, radius)
@@ -93,7 +110,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             }
         } else {
             //背景色
-            val solidColor = t.getColor(R.styleable.ShapeButton_solidColor, 0xffffffff.toInt())
+            val solidColor = t.getColor(R.styleable.ShapeButton_solidColor, ContextCompat.getColor(context, R.color.color_DCD))
             LogUtil.log(TAG, "shapeType $solidColor")
             shape.setColor(solidColor)
         }
@@ -105,6 +122,6 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
      * 如果代码中动态改变了 background ，需要手动还原
      */
     fun revert() {
-        background = stalistDrawable
+        background = bgrawable
     }
 }

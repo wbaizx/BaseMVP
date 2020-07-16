@@ -8,13 +8,15 @@ import com.base.common.util.LogUtil
 
 /**
  * 基类 Application
+ *
+ * 记录一个翻翻工具 蚂蚁  https://pp.lanshuapi.com/
  */
 open class BaseAPP : Application() {
     companion object {
         private val TAG = "BaseAPP-Application"
 
         lateinit var baseAppContext: BaseAPP
-         val allActivities = arrayListOf<Activity>()
+        val allActivities = arrayListOf<Activity>()
 
         fun registerActivity(activity: Activity) {
             allActivities.add(activity)

@@ -29,7 +29,7 @@ object AndroidUtil {
     }
 
     /**
-     * 获取屏幕高度
+     * 获取屏幕高度，注意全面屏和刘海屏获取到的高度可能不对
      */
     fun getScreenHeight(): Int {
         return BaseAPP.baseAppContext.resources.displayMetrics.heightPixels

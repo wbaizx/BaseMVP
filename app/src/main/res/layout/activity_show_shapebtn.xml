@@ -10,19 +10,37 @@
         android:id="@+id/shapeButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="AFWAFaa"
+        android:text="AAAAaaaa"
         app:colorAngle="RIGHT_LEFT"
         app:endColor="@color/color_9500"
         app:radius="20dp"
+        app:rippleColor="#ff000000"
         app:startColor="@color/color_336" />
+
+    <com.base.common.view.btn.ShapeButton
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="AAAAaaaa" />
 
     <com.base.common.view.btn.ShapeDrawableButton
         android:id="@+id/shapeDrawableButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="AFWAFaa"
+        android:text="AAAAaaaa"
         app:disableDrawable="@drawable/ic_launcher_background"
         app:normalDrawable="@drawable/rounded_corners_shape"
         app:pressedDrawable="@drawable/ic_launcher_background" />
+
+    <com.base.common.view.btn.ShapeDrawableButton
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="AAAAaaaa" />
+
+    <com.base.common.view.btn.CommonButton
+        android:id="@+id/commonButton"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:text="AAAAaaaa" />
 
 </LinearLayout>

@@ -3,6 +3,8 @@
     <declare-styleable name="ShapeButton">
         <!--填充色-->
         <attr name="solidColor" format="color" />
+        <!--水波纹色-->
+        <attr name="rippleColor" format="color" />
         <!--边框色-->
         <attr name="strokeColor" format="color" />
         <!--边框宽度-->

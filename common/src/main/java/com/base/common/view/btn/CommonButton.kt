@@ -31,6 +31,8 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     var allowPressEffect = true
 
     init {
+        LogUtil.log(TAG, "init")
+
         //允许小写
         isAllCaps = false
     }
@@ -39,17 +41,15 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
      * 防止重复点击
      */
     override fun performClick(): Boolean {
-        if (allowRepeatedClick) {
-            return super.performClick()
-        } else {
-            if (System.currentTimeMillis() - lastTime > clickInterval) {
-                lastTime = System.currentTimeMillis()
-                return super.performClick()
-            } else {
+        if (!allowRepeatedClick) {
+            if (System.currentTimeMillis() - lastTime < clickInterval) {
                 LogUtil.log(TAG, "performClick false")
+                return false
+            } else {
+                lastTime = System.currentTimeMillis()
             }
-            return false
         }
+        return super.performClick()
     }
 
     /**
@@ -62,10 +62,10 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
         if (isEnabled && allowPressEffect) {
             if (event?.action == MotionEvent.ACTION_DOWN) {
                 LogUtil.log(TAG, "onTouchEvent ACTION_DOWN $isEnabled")
-                animate().setDuration(80).scaleX(0.9f).scaleY(0.9f).alpha(0.8f).start()
+                animate().setDuration(60).scaleX(0.93f).scaleY(0.93f).alpha(0.8f).start()
             } else if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_CANCEL) {
                 LogUtil.log(TAG, "onTouchEvent ACTION_DOWN $isEnabled")
-                animate().setDuration(80).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).start()
+                animate().setDuration(60).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).start()
             }
         }
         return super.onTouchEvent(event)
