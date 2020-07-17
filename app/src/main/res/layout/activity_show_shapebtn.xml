@@ -10,7 +10,9 @@
         android:id="@+id/shapeButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="AAAAaaaa"
+        android:shadowColor="@color/color_black"
+        android:shadowRadius="10"
+        android:text="shapeButton"
         app:centerColor="@color/color_4FF_a"
         app:colorAngle="RIGHT_LEFT"
         app:endColor="@color/color_9500"
@@ -21,13 +23,13 @@
     <com.base.common.view.btn.ShapeButton
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="AAAAaaaa" />
+        android:text="ShapeButton" />
 
     <com.base.common.view.btn.ShapeDrawableButton
         android:id="@+id/shapeDrawableButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="AAAAaaaa"
+        android:text="ShapeDrawableButton"
         app:disableDrawable="@drawable/ic_launcher_background"
         app:normalDrawable="@drawable/rounded_corners_shape"
         app:pressedDrawable="@drawable/ic_launcher_background" />
@@ -35,7 +37,7 @@
     <com.base.common.view.btn.ShapeDrawableButton
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="AAAAaaaa" />
+        android:text="ShapeDrawableButton" />
 
     <!--
     android:background="?android:attr/selectableItemBackground"  有边界波纹
@@ -46,6 +48,16 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:text="AAAAaaaa" />
+        android:text="CommonButton" />
+
+    <com.base.common.view.btn.CommonButton
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="CommonButton" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="Button" />
 
 </LinearLayout>

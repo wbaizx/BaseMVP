@@ -3,6 +3,7 @@ package com.base.common.view.btn
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
@@ -24,6 +25,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
 
     init {
         LogUtil.log(TAG, "init")
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
 
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeButton)
 
@@ -43,7 +45,6 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         } else {
             bgrawable = bgShape
         }
-
         background = bgrawable
         t.recycle()
     }
@@ -83,26 +84,26 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             bottomLeftRadius,
             bottomLeftRadius
         )
-        //设置线性渐变，除此之外还有：GradientDrawable.SWEEP_GRADIENT（扫描式渐变），GradientDrawable.RADIAL_GRADIENT（圆形渐变）
-        shape.setGradientType(GradientDrawable.LINEAR_GRADIENT)
-        //设置渐变方向
-        val colorAngle = t.getInt(R.styleable.ShapeButton_colorAngle, 6)
-        LogUtil.log(TAG, "colorAngle $colorAngle")
-        when (colorAngle) {
-            0 -> shape.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM)
-            1 -> shape.setOrientation(GradientDrawable.Orientation.TR_BL)
-            2 -> shape.setOrientation(GradientDrawable.Orientation.RIGHT_LEFT)
-            3 -> shape.setOrientation(GradientDrawable.Orientation.BR_TL)
-            4 -> shape.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP)
-            5 -> shape.setOrientation(GradientDrawable.Orientation.BL_TR)
-            6 -> shape.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT)
-            7 -> shape.setOrientation(GradientDrawable.Orientation.TL_BR)
-        }
         //设置渐变颜色，至少需要startColor和endColor才生效，这里最多支持3种颜色
         val startColor = t.getColor(R.styleable.ShapeButton_startColor, -1)
         val centerColor = t.getColor(R.styleable.ShapeButton_centerColor, -1)
         val endColor = t.getColor(R.styleable.ShapeButton_endColor, -1)
         if (startColor != -1 && endColor != -1) {
+            //设置线性渐变，除此之外还有：GradientDrawable.SWEEP_GRADIENT（扫描式渐变），GradientDrawable.RADIAL_GRADIENT（圆形渐变）
+            shape.setGradientType(GradientDrawable.LINEAR_GRADIENT)
+            //设置渐变方向
+            val colorAngle = t.getInt(R.styleable.ShapeButton_colorAngle, 6)
+            LogUtil.log(TAG, "colorAngle $colorAngle")
+            when (colorAngle) {
+                0 -> shape.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM)
+                1 -> shape.setOrientation(GradientDrawable.Orientation.TR_BL)
+                2 -> shape.setOrientation(GradientDrawable.Orientation.RIGHT_LEFT)
+                3 -> shape.setOrientation(GradientDrawable.Orientation.BR_TL)
+                4 -> shape.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP)
+                5 -> shape.setOrientation(GradientDrawable.Orientation.BL_TR)
+                6 -> shape.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT)
+                7 -> shape.setOrientation(GradientDrawable.Orientation.TL_BR)
+            }
             if (centerColor != -1) {
                 shape.setColors(intArrayOf(startColor, centerColor, endColor))
             } else {
@@ -116,6 +117,20 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         }
 
 //        shape.setAlpha(20)
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        //View.resolveSize() //模板方法
+        //setMeasuredDimension
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
     }
 
     /**
