@@ -13,6 +13,7 @@
     <color name="color_DCD">#CFCDCD</color>
     <color name="color_D1D">#58A9FF</color>
     <color name="color_black">#000000</color>
+    <color name="color_shadow">#393939</color>
     <color name="color_transparent">#00000000</color>
     <color name="color_white">#FFFFFF</color>
 </resources>

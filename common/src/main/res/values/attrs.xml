@@ -8,7 +8,7 @@
         <!--边框色-->
         <attr name="strokeColor" format="color" />
         <!--边框宽度-->
-        <attr name="strokeWith" format="dimension" />
+        <attr name="strokeWith" format="dimension" />       
         <!--圆角度数-->
         <attr name="radius" format="dimension" />
         <!--圆角度数 左上 右上 左下 右下-->
@@ -40,6 +40,15 @@
         <attr name="dashGap" format="dimension" />
         <!--虚线的宽度-->
         <attr name="dashWidth" format="dimension" />
+
+        <!--背景阴影半径-->
+        <attr name="bgShadowRadius" format="dimension" />
+        <!--背景阴影Y偏移量-->
+        <attr name="bgShadowOffsetY" format="dimension" />   
+        <!--背景阴影X偏移量-->
+        <attr name="bgShadowOffsetX" format="dimension" />       
+        <!--背景阴影颜色-->
+        <attr name="bgShadowColor" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ShapeDrawableButton">

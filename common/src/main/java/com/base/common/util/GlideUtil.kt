@@ -21,23 +21,24 @@ fun GlideRequest<Drawable>.normalInto(img: ImageView) {
         .placeholder(R.mipmap.placeholder_icon)
         .error(R.mipmap.test_icon)
         .transition(DrawableTransitionOptions.withCrossFade())
-        .into(MyTarget(img))
+        .into(BaseTarget(img))
 }
 
 fun GlideRequest<Drawable>.specialInto(img: ImageView) {
     //高斯模糊
     //如果需要对图片部分，比如底部做模糊，可以在图片上再盖一张图，上面的imageView包裹一层父布局，限制高度
-    //上层imageView与下层imageView同高宽，同时与包裹的父布局底部对齐，达到只模糊底部的骚操作
+    //然后上层imageView与下层imageView同高宽，同时与包裹的父布局底部对齐，达到只模糊底部的骚操作
     apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
 //        .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0))) //圆角
-//        .apply(RequestOptions.circleCropTransform()) //圆
+        //圆图实现，尽量用下面这种，还有 CircleImageView 和 cardView 也能实现
+//        .apply(RequestOptions.circleCropTransform())
         .transition(DrawableTransitionOptions.withCrossFade())
-        .into(MyTarget(img))
+        .into(BaseTarget(img))
 }
 
 fun GlideRequest<Drawable>.simpleInto(img: ImageView) {
     transition(DrawableTransitionOptions.withCrossFade())
-        .into(MyTarget(img))
+        .into(BaseTarget(img))
 }
 
 /**
@@ -45,7 +46,7 @@ fun GlideRequest<Drawable>.simpleInto(img: ImageView) {
  * 使用这个类来加载到view上可以解决
  * 或者直接使用 ImageView + glide圆图转换 实现
  */
-private class MyTarget(img: ImageView) : CustomViewTarget<ImageView, Drawable>(img) {
+private class BaseTarget(img: ImageView) : CustomViewTarget<ImageView, Drawable>(img) {
     override fun onLoadFailed(errorDrawable: Drawable?) {
         LogUtil.log(TAG, "onLoadFailed")
         getView().setImageDrawable(errorDrawable)

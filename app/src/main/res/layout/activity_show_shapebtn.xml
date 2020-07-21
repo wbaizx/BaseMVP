@@ -10,11 +10,13 @@
         android:id="@+id/shapeButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:elevation="10dp"
         android:shadowColor="@color/color_black"
         android:shadowRadius="10"
         android:text="shapeButton"
         app:centerColor="@color/color_4FF_a"
         app:colorAngle="RIGHT_LEFT"
+        app:bgShadowRadius="4dp"
         app:endColor="@color/color_9500"
         app:radius="20dp"
         app:rippleColor="#ff000000"
@@ -59,5 +61,12 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:text="Button" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:elevation="10dp"
+        android:text="FloatingActionButton" />
 
 </LinearLayout>
