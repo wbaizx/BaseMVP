@@ -10,7 +10,6 @@
         android:id="@+id/shapeButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:elevation="10dp"
         android:shadowColor="@color/color_black"
         android:shadowRadius="10"
         android:text="shapeButton"
