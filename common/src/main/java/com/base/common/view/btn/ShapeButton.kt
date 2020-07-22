@@ -22,6 +22,7 @@ import kotlin.math.min
 /**
  * 主要用于需要自定义 drawable 的 button，使用这个类可以避免为每个 button 配一个xml背景
  * 背景阴影需要占中view本身宽高， 字体阴影可以使用自带属性 android:shadowColor="" android:shadowRadius=""
+ * 设置了阴影会自动开启硬件加速
  */
 class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context, attrs) {
     private val TAG = "ShapeButton"
@@ -65,8 +66,6 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
 
     init {
         LogUtil.log(TAG, "init")
-        //硬件加速，主要用于阴影绘制
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeButton)
 
@@ -144,6 +143,10 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         //----------需要阴影背景---------------
         bgShadowRadius = t.getDimension(R.styleable.ShapeButton_bgShadowRadius, 0f)
         if (bgShadowRadius != 0f) {
+            //硬件加速，主要用于阴影绘制
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+
+            //偏移量最大不超过 bgShadowRadius
             bgShadowOffsetY = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetY, min(0f, bgShadowRadius))
             bgShadowOffsetX = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetX, min(0f, bgShadowRadius))
             val bgShadowColor = t.getColor(R.styleable.ShapeButton_bgShadowColor, ContextCompat.getColor(context, R.color.color_shadow))
@@ -183,6 +186,9 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         t.recycle()
     }
 
+    /**
+     * 此方法在 onDraw 之前，在这里绘制背景
+     */
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
 

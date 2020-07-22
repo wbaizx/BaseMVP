@@ -13,6 +13,7 @@
         android:shadowColor="@color/color_black"
         android:shadowRadius="10"
         android:text="shapeButton"
+        app:bgShadowColor="@color/color_4FF_a"
         app:bgShadowRadius="5dp"
         app:centerColor="@color/color_4FF_a"
         app:colorAngle="RIGHT_LEFT"
