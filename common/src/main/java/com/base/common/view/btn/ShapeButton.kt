@@ -2,10 +2,7 @@ package com.base.common.view.btn
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Region
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -45,7 +42,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
     private var shadowPaint: Paint? = null
 
     /**
-     * 画阴影需要裁减画布的路径
+     * 画指定阴影色的阴影需要裁剪画布的路径
      */
     private var shadowClipPath: Path? = null
 
@@ -149,13 +146,26 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             //偏移量最大不超过 bgShadowRadius
             bgShadowOffsetY = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetY, min(0f, bgShadowRadius))
             bgShadowOffsetX = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetX, min(0f, bgShadowRadius))
-            val bgShadowColor = t.getColor(R.styleable.ShapeButton_bgShadowColor, ContextCompat.getColor(context, R.color.color_shadow))
+            val bgShadowColor = t.getColor(R.styleable.ShapeButton_bgShadowColor, 0)
 
-            shadowPaint = Paint()
-            shadowPaint?.isAntiAlias = true
-            shadowPaint?.setShadowLayer(bgShadowRadius, bgShadowOffsetX, bgShadowOffsetY, bgShadowColor)
+            //如果设置了阴影宽度而没设置阴影颜色，则通过反射获取背景填充色画笔设置阴影，此阴影效果会跟随背景色而变化
+            if (bgShadowColor == 0) {
+                val bgShapeClass = bgShape.javaClass
+                val mFillPaintField = bgShapeClass.getDeclaredField("mFillPaint")
+                mFillPaintField.isAccessible = true
+                val mFillPaint = mFillPaintField.get(bgShape) as? Paint
+                //这个模糊颜色几乎不影响阴影颜色，因为它会根据填充色而变化
+                mFillPaint?.setShadowLayer(bgShadowRadius, bgShadowOffsetX, bgShadowOffsetY, Color.BLACK)
+            } else {
+                shadowPaint = Paint()
+                shadowPaint?.isAntiAlias = true
+                shadowPaint?.color = bgShadowColor
+                shadowPaint?.setShadowLayer(bgShadowRadius, bgShadowOffsetX, bgShadowOffsetY, bgShadowColor)
+                //设置模糊实现阴影效果，OUTER 为只显示发光部分，这个效果实现阴影在draw中可以不用裁剪画布，缺点是无法设置阴影偏移量
+//                shadowPaint?.maskFilter = BlurMaskFilter(bgShadowRadius, BlurMaskFilter.Blur.OUTER)
 
-            shadowClipPath = Path()
+                shadowClipPath = Path()
+            }
 
             val layerDrawable = LayerDrawable(arrayOf(bgDrawable))
             //为将要画的背景阴影腾出地方
@@ -192,8 +202,8 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
 
-        //绘制背景阴影
-        if (shadowClipPath != null && shadowPaint != null && cornerArray != null) {
+        //如果需要绘制指定背景色的阴影，并且当前背景是初始化生成的背景是同一个 Drawable
+        if (shadowClipPath != null && shadowPaint != null && cornerArray != null && bgDrawable == background) {
             canvas?.save()
 
             shadowClipPath!!.reset()
@@ -206,12 +216,14 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
                 Path.Direction.CW
             )
 
+            //对画布进行裁剪，将原背景区域裁掉，只绘制阴影部分
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 canvas?.clipOutPath(shadowClipPath!!)
             } else {
                 canvas?.clipPath(shadowClipPath!!, Region.Op.DIFFERENCE)
             }
 
+            //画阴影
             canvas?.drawPath(shadowClipPath!!, shadowPaint!!)
 
             canvas?.restore()

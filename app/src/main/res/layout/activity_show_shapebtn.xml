@@ -14,18 +14,28 @@
         android:shadowRadius="10"
         android:text="shapeButton"
         app:bgShadowColor="@color/color_4FF_a"
+        app:bgShadowOffsetX="4dp"
+        app:bgShadowOffsetY="4dp"
         app:bgShadowRadius="5dp"
         app:centerColor="@color/color_4FF_a"
         app:colorAngle="RIGHT_LEFT"
         app:endColor="@color/color_9500"
         app:radius="20dp"
-        app:rippleColor="#ff000000"
+        app:rippleColor="@color/color_black"
         app:startColor="@color/color_336" />
 
     <com.base.common.view.btn.ShapeButton
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:text="ShapeButton" />
+        android:text="shapeButton"
+        app:bgShadowOffsetX="4dp"
+        app:bgShadowOffsetY="4dp"
+        app:bgShadowRadius="5dp"
+        app:centerColor="@color/color_4FF_a"
+        app:colorAngle="RIGHT_LEFT"
+        app:endColor="@color/color_9500"
+        app:radius="20dp"
+        app:startColor="@color/color_336" />
 
     <com.base.common.view.btn.ShapeDrawableButton
         android:id="@+id/shapeDrawableButton"
