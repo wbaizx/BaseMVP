@@ -52,6 +52,10 @@ open class BaseAPP : Application() {
         ARouter.init(baseAppContext)
     }
 
+    /**
+     * 判断是否是 Debug 模式
+     * 也可以使用 BuildConfig.DEBUG 判断（有些情况不准，具体什么情况百度）
+     */
     private fun isDebug() =
         baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
 }
