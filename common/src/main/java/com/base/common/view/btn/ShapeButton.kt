@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.base.common.R
 import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -139,14 +140,18 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
 
         //----------需要阴影背景---------------
         bgShadowRadius = t.getDimension(R.styleable.ShapeButton_bgShadowRadius, 0f)
-        if (bgShadowRadius != 0f) {
+        if (bgShadowRadius > 0f) {
             //硬件加速，主要用于阴影绘制
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
-            //偏移量最大不超过 bgShadowRadius
-            bgShadowOffsetY = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetY, min(0f, bgShadowRadius))
-            bgShadowOffsetX = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetX, min(0f, bgShadowRadius))
+            //偏移量在 bgShadowRadius 到 -bgShadowRadius 之间
+            val offsetY = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetY, 0f)
+            bgShadowOffsetY = min(max(offsetY, -bgShadowRadius), bgShadowRadius)
+            val offsetX = t.getDimension(R.styleable.ShapeButton_bgShadowOffsetX, 0f)
+            bgShadowOffsetX = min(max(offsetX, -bgShadowRadius), bgShadowRadius)
             val bgShadowColor = t.getColor(R.styleable.ShapeButton_bgShadowColor, 0)
+
+            LogUtil.log(TAG, "offset $bgShadowOffsetY  $bgShadowOffsetX")
 
             //如果设置了阴影宽度而没设置阴影颜色，则通过反射获取背景填充色画笔设置阴影，此阴影效果会跟随背景色而变化
             if (bgShadowColor == 0) {
@@ -196,6 +201,14 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         t.recycle()
     }
 
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        //设置 padding 是为了控制字体在阴影有偏移的情况下居中，偏移量可以为负
+        if (bgShadowRadius > 0f) {
+            setPadding(0, 0, bgShadowOffsetX.toInt() * 2, bgShadowOffsetY.toInt() * 2)
+        }
+    }
+
     /**
      * 此方法在 onDraw 之前，在这里绘制背景
      */
@@ -217,6 +230,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             )
 
             //对画布进行裁剪，将原背景区域裁掉，只绘制阴影部分
+            //关于view的裁剪还有 clipChildren ，clipToOutline 怎么用可以百度
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 canvas?.clipOutPath(shadowClipPath!!)
             } else {
