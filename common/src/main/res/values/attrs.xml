@@ -60,4 +60,11 @@
         <attr name="normalDrawable" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="CommonButton">
+        <!--是否允许重复快速点击-->
+        <attr name="allowRepeatedClick" format="boolean" />
+        <!--是否允默认按下动画效果-->
+        <attr name="allowPressEffect" format="boolean" />
+    </declare-styleable>
+
 </resources>

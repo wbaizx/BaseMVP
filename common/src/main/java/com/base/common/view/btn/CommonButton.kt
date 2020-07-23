@@ -3,6 +3,7 @@ package com.base.common.view.btn
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import com.base.common.R
 import com.base.common.util.LogUtil
 
 /**
@@ -26,7 +27,7 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     var clickInterval = 800L
 
     /**
-     * 是否允默认按下效果
+     * 是否允默认按下动画效果
      */
     var allowPressEffect = true
 
@@ -35,6 +36,11 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
 
         //允许小写
         isAllCaps = false
+
+        val t = context.obtainStyledAttributes(attrs, R.styleable.CommonButton)
+        allowRepeatedClick = t.getBoolean(R.styleable.CommonButton_allowRepeatedClick, false)
+        allowPressEffect = t.getBoolean(R.styleable.CommonButton_allowPressEffect, true)
+        t.recycle()
     }
 
     /**
