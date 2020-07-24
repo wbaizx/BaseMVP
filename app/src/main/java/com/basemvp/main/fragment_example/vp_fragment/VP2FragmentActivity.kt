@@ -2,10 +2,10 @@ package com.basemvp.main.fragment_example.vp_fragment
 
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
 import com.base.common.util.LogUtil
+import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_vpfragment.*
 
 @Route(path = RouteString.VP_FRAGMENT, name = "viewPager2 + Fragment + Lifecycle 测试懒加载base类的生命周期")
@@ -23,15 +23,13 @@ class VP2FragmentActivity : BaseActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 LogUtil.log(TAG, "$position -- $positionOffset -- $positionOffsetPixels")
-                if (positionOffset == 0f) {
-                    simpleTabLayout.setPosition(position)
-                }
             }
 
             //用这个
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                LogUtil.log(TAG, "$position")
+                simpleTabLayout.setPosition(position)
+                LogUtil.log(TAG, "onPageSelected $position")
             }
 
             override fun onPageScrollStateChanged(state: Int) {
