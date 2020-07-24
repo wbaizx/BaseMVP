@@ -21,6 +21,7 @@ object RouteString {
     const val CIRCLE_RC = "/app/circle_rc"
     const val QQ_ALBUM = "/app/qq_album"
     const val GALLERY = "/app/recyclerViewGallery"
+    const val PICTURE_INDICATOR = "/app/picture_indicator"
 
     const val LOGIN = "/login/loginMain"
 

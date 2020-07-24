@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 //RouteString.VIDEO_LIST
-@Route(path = "/camera/video_list", name = "组件化camera 视频列表查看页", extras = -1)
+@Route(path = "/camera/video_list", name = "组件化camera 视频列表查看页")
 public class VideoListActivity extends BaseActivity {
 
     private VideoListAdapter videoListAdapter = new VideoListAdapter();

@@ -66,4 +66,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/connectionRecyclerView" />
+
+    <com.base.common.view.btn.ShapeButton
+        android:id="@+id/pictureIndicator"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="下标指示器"
+        app:endColor="@color/color_9500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlappingRecyclerView"
+        app:radius="8dp"
+        app:rippleColor="@color/color_black"
+        app:startColor="@color/color_336" />
 </androidx.constraintlayout.widget.ConstraintLayout>

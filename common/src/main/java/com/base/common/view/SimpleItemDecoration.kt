@@ -74,6 +74,7 @@ abstract class SimpleItemDecoration<B, D : BaseQuickAdapter<B, BaseViewHolder>>(
 
     /**
      * 根据需求绘制分割线
+     * 一次绘制会多次调用
      * 不需要的项不做操作
      */
     abstract fun drawDecoration(c: Canvas, left: Float, right: Float, top: Float, bottom: Float, dataPosition: Int, bean: B)
@@ -142,16 +143,19 @@ abstract class SimpleItemDecoration<B, D : BaseQuickAdapter<B, BaseViewHolder>>(
 
     /**
      * 是否需要顶出效果的切换动画
+     * 一次绘制只调用一次
      */
     abstract fun needEffects(dataPosition: Int, nextDataPosition: Int, bean: B, nextBean: B): Boolean
 
     /**
      * 根据需求绘制顶部悬停 ,可通过 needEffects 设置动画开关
+     * 一次绘制只调用一次
      */
     abstract fun drawOverTop(c: Canvas, left: Float, right: Float, top: Float, bottom: Float, dataPosition: Int, bean: B)
 
     /**
      * 根据需求绘制最上层分割线，可在这里面超出坐标限制绘制，达到盖在上面的效果
+     * 一次绘制会多次调用
      * 不需要的项不做操作
      */
     abstract fun drawOverDecoration(c: Canvas, left: Float, right: Float, top: Float, bottom: Float, dataPosition: Int, bean: B)

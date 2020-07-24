@@ -14,7 +14,7 @@ import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 //RouteString.VIDEO_PLAY
-@Route(path = "/camera/video_play", name = "组件化camera 视频播放页", extras = -1)
+@Route(path = "/camera/video_play", name = "组件化camera 视频播放页")
 public class PlayActivity extends BaseActivity implements GLSurfaceListener, PlayListener {
     private static final String TAG = "PlayActivity";
 

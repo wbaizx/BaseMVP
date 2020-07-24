@@ -37,6 +37,10 @@ class SpecialRCActivity : BaseActivity() {
         overlappingRecyclerView.setOnClickListener {
             ARouter.getInstance().build(RouteString.CIRCLE_RC).loginNavigation()
         }
+
+        pictureIndicator.setOnClickListener {
+            ARouter.getInstance().build(RouteString.PICTURE_INDICATOR).loginNavigation()
+        }
     }
 
     override fun initData() {
