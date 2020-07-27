@@ -12,7 +12,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.base.common.R
-import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
 import kotlin.math.max
 import kotlin.math.min
@@ -88,7 +87,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             bgShape.setStroke(strokeWith.toInt(), strokeColor, dashWidth, dashGap)
         }
         //圆角
-        val radius = t.getDimension(R.styleable.ShapeButton_radius, AndroidUtil.dp2px(4f))
+        val radius = t.getDimension(R.styleable.ShapeButton_radius, 20f)
         LogUtil.log(TAG, "radius $radius")
         val topLeftRadius = t.getDimension(R.styleable.ShapeButton_topLeftRadius, radius)
         val topRightRadius = t.getDimension(R.styleable.ShapeButton_topRightRadius, radius)
