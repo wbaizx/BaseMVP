@@ -1,5 +1,6 @@
 package com.login.http
 
+import com.base.common.util.http.BaseBean
 import com.login.home.bean.LoginBean
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -21,7 +22,7 @@ interface LoginAPI {
 //    @QueryMap   get方式使用map提交参数，用于参数较多或不固定的情况
 
     @GET("mock/5e6208aeb261f976d93ed585/example/aaaa")
-    suspend fun loginBean(): LoginBean
+    suspend fun loginBean(): BaseBean<LoginBean>
 
     @GET("http://www.baidu.com/")
     suspend fun loginResponseBody(): ResponseBody

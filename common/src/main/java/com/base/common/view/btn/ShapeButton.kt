@@ -20,7 +20,7 @@ import kotlin.math.min
  * 主要用于需要自定义 drawable 的 button，使用这个类可以避免为每个 button 配一个xml背景
  * 背景阴影需要占中view本身宽高， 字体阴影可以使用自带属性 android:shadowColor="" android:shadowRadius=""
  * 设置了阴影会自动开启硬件加速
- * 并未覆盖原生 button 阴影和按下效果，在view周围空间足够并且未设置centerColor时，仔细观察能看到
+ * 并未覆盖原生 button 阴影和按下效果，可通过style="?android:attr/borderlessButtonStyle"去掉原生阴影
  */
 class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context, attrs) {
     private val TAG = "ShapeButton"

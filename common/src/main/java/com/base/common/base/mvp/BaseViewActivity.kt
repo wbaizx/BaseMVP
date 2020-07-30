@@ -4,6 +4,7 @@ import com.base.common.base.BaseActivity
 import com.base.common.base.mvp.contract.BasePresenter
 import com.base.common.base.mvp.contract.BaseView
 import com.base.common.util.AndroidUtil
+import com.base.common.util.http.CodeException
 import com.base.common.util.http.NoNetworkException
 import com.google.gson.stream.MalformedJsonException
 import java.net.SocketTimeoutException
@@ -33,12 +34,16 @@ abstract class BaseViewActivity<P : BasePresenter> : BaseActivity(), BaseView {
         super.onDestroy()
     }
 
+    /**
+     * 修改了这里记得修改 BaseViewFragment 对应地方
+     */
     override fun runTaskError(e: Exception) {
         when (e) {
             is SocketTimeoutException -> AndroidUtil.showToast("连接超时")
             is UnknownHostException -> AndroidUtil.showToast("网络错误")
             is NoNetworkException -> AndroidUtil.showToast("无网络")
             is MalformedJsonException -> AndroidUtil.showToast("json解析错误")
+            is CodeException -> AndroidUtil.showToast("服务器code码错误 + code=${e.message}")
             else -> AndroidUtil.showToast("未知错误")
         }
     }
