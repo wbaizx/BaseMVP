@@ -19,7 +19,7 @@ class ItemAnimation2Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.
         val view = holder.getView<TextView>(R.id.sceneText)
         view.text = item
         if (isLine) {
-            view.layoutParams.height = AndroidUtil.getScreenHeight() - AndroidUtil.dp2px(160f).toInt()
+            view.layoutParams.height = AndroidUtil.getScreenHeight() - AndroidUtil.dp2px(200f).toInt()
         } else {
             view.layoutParams.height = AndroidUtil.dp2px(160f).toInt()
         }

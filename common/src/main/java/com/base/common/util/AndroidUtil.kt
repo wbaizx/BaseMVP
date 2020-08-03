@@ -7,8 +7,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.base.common.BaseAPP
@@ -29,10 +31,16 @@ object AndroidUtil {
     }
 
     /**
-     * 获取屏幕高度，注意全面屏和刘海屏获取到的高度可能不对
+     * 获取屏幕高度
+     * 包含刘海屏高度
+     * 包含导航栏高度（不管虚拟按键是否隐藏都包含，实际操作时根据需求再减掉导航栏高度）
      */
     fun getScreenHeight(): Int {
-        return BaseAPP.baseAppContext.resources.displayMetrics.heightPixels
+        val windowManager: WindowManager = BaseAPP.baseAppContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val outMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getRealMetrics(outMetrics)
+        LogUtil.log(TAG, "getScreenHeight ${outMetrics.heightPixels}")
+        return outMetrics.heightPixels
     }
 
     fun sp2px(f: Float) =

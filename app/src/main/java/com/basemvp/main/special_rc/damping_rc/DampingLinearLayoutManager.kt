@@ -161,7 +161,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
         var finallyDy = dy
         LogUtil.log(TAG, "scrollVerticallyBy start $finallyDy")
         if (!isFinalScroll) {
-            if (dy > 0) {//向上滑动
+            if (dy > 0) {//手指向上滑动
                 if (bottomView != null) {//滚动状态可能不走1，导致view未赋值
                     val bottomOffset = bottomView!!.bottom - parentView.height
                     LogUtil.log(TAG, "scrollVerticallyBy up  $bottomOffset")
@@ -197,7 +197,7 @@ class DampingLinearLayoutManager(context: Context?) : LinearLayoutManager(contex
                     //消除向下的偏移量
                     downOffset = max(downOffset - finallyDy, 0f)
                 }
-            } else {//向下滑动
+            } else {//手指向下滑动
                 if (topView != null) {//滚动状态可能不走1，导致view未赋值
                     val topOffset = topView!!.top
                     LogUtil.log(TAG, "scrollVerticallyBy down  $topOffset")
