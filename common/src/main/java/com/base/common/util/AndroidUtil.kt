@@ -1,5 +1,6 @@
 package com.base.common.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,6 +15,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.base.common.BaseAPP
+import com.gyf.immersionbar.ImmersionBar
 import java.io.File
 
 /**
@@ -31,16 +33,36 @@ object AndroidUtil {
     }
 
     /**
+     * 获取屏幕显示高度
+     * 可能不包含导航栏和刘海屏高度
+     */
+    fun getScreenShowHeight(): Int {
+        return BaseAPP.baseAppContext.resources.displayMetrics.heightPixels
+    }
+
+    /**
      * 获取屏幕高度
      * 包含刘海屏高度
-     * 包含导航栏高度（不管虚拟按键是否隐藏都包含，实际操作时根据需求再减掉导航栏高度）
+     * 如果有导航栏，不包含导航栏高度
      */
-    fun getScreenHeight(): Int {
-        val windowManager: WindowManager = BaseAPP.baseAppContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    fun getScreenRealHeight(activity: Activity): Int {
+        val windowManager: WindowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val outMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getRealMetrics(outMetrics)
-        LogUtil.log(TAG, "getScreenHeight ${outMetrics.heightPixels}")
-        return outMetrics.heightPixels
+        var screenHeight = outMetrics.heightPixels
+        LogUtil.log(TAG, "getScreenHeight $screenHeight")
+
+        if (ImmersionBar.hasNavigationBar(activity)) {
+            //部分手机将导航栏变成小小的一条，并配合上手势操作，此时的导航栏高度不对，所以加上如下判断
+            //如果导航栏高度 + 屏幕显示高度 大于 屏幕高度，也认为没有导航栏
+            val navigationBarHeight = ImmersionBar.getNavigationBarHeight(activity)
+            if ((navigationBarHeight + getScreenShowHeight()) <= screenHeight) {
+                //如果有导航栏减去导航栏高度
+                screenHeight -= navigationBarHeight
+            }
+        }
+        LogUtil.log(TAG, "getScreenHeight $screenHeight")
+        return screenHeight
     }
 
     fun sp2px(f: Float) =

@@ -12,9 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.R
+import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
+import com.base.common.util.http.CodeException
+import com.base.common.util.http.NoNetworkException
+import com.google.gson.stream.MalformedJsonException
 import com.gyf.immersionbar.ImmersionBar
 import pub.devrel.easypermissions.EasyPermissions
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 
 /**
@@ -78,7 +84,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 在例如singleTask模式下重启activity，可能需要子类在这里做一些view和presenter的刷新重置清理等操作
      */
-    protected open fun resetView(){
+    protected open fun resetView() {
     }
 
     override fun onDestroy() {
@@ -114,6 +120,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (loadDialog.isShow) {
             LogUtil.log(TAG, "hideLoadDialog")
             loadDialog.dismiss()
+        }
+    }
+
+    fun runError(e: Exception) {
+        when (e) {
+            is SocketTimeoutException -> AndroidUtil.showToast("连接超时")
+            is UnknownHostException -> AndroidUtil.showToast("网络错误")
+            is NoNetworkException -> AndroidUtil.showToast("无网络")
+            is MalformedJsonException -> AndroidUtil.showToast("json解析错误")
+            is CodeException -> AndroidUtil.showToast("服务器code码错误 + code=${e.message}")
+            else -> AndroidUtil.showToast("未知错误")
         }
     }
 

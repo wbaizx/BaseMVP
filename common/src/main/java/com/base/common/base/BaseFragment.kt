@@ -87,6 +87,10 @@ abstract class BaseFragment : Fragment() {
         (activity as? BaseActivity)?.hideLoadDialog()
     }
 
+    fun runError(e: Exception) {
+        (activity as? BaseActivity)?.runError(e)
+    }
+
     /**
      * 对应资源销毁在onDestroy中，有时也要根据情况在onDestroyView或者onDetach中
      */

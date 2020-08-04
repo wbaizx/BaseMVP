@@ -55,7 +55,7 @@ public class CameraControl {
     private float aspectRatio = RATIO_16_9;
 
     //期望预览宽，宽高需要对调
-    private int expectWidth = AndroidUtil.INSTANCE.getScreenHeight();
+    private int expectWidth = AndroidUtil.INSTANCE.getScreenShowHeight();
     //期望预览高，宽高需要对调
     private int expectHeight = AndroidUtil.INSTANCE.getScreenWidth();
     //最终确定的尺寸
