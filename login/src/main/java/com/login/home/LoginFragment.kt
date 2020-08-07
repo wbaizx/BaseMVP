@@ -1,6 +1,6 @@
 package com.login.home
 
-import com.base.common.base.mvp.BaseViewFragment
+import com.base.common.base.mvp.BaseMVPFragment
 import com.base.common.config.GlideApp
 import com.base.common.util.LogUtil
 import com.base.common.util.imgUrl
@@ -10,7 +10,7 @@ import com.login.home.bean.LoginBean
 import kotlinx.android.synthetic.main.fragment_login.*
 import okhttp3.ResponseBody
 
-class LoginFragment : BaseViewFragment<LoginPresenterInterface>(), LoginViewInterface {
+class LoginFragment : BaseMVPFragment<LoginPresenterInterface>(), LoginViewInterface {
     private val TAG = "LoginFragment"
 
     override var presenter: LoginPresenterInterface? = LoginPresenter(this)

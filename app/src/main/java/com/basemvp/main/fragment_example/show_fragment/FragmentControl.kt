@@ -3,7 +3,7 @@ package com.basemvp.main.fragment_example.show_fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import com.basemvp.main.fragment_example.fm.TestFragment
-import com.basemvp.main.fragment_example.fm.TestViewFragment
+import com.basemvp.main.fragment_example.fm.TestMVPFragment
 import com.base.common.util.LogUtil
 
 /**
@@ -17,9 +17,9 @@ class FragmentControl(private val supportFragmentManager: FragmentManager, priva
         TestFragment("2"),
         TestFragment("3"),
         TestFragment("4"),
-        TestViewFragment("MVP 5"),
-        TestViewFragment("MVP 6"),
-        TestViewFragment("MVP 7")
+        TestMVPFragment("MVP 5"),
+        TestMVPFragment("MVP 6"),
+        TestMVPFragment("MVP 7")
     )
 
     private var currentPosition = -1

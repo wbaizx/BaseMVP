@@ -1,8 +1,8 @@
 package com.base.common.base.mvp
 
-import com.base.common.base.mvp.contract.BaseModel
-import com.base.common.base.mvp.contract.BasePresenter
-import com.base.common.base.mvp.contract.BaseView
+import com.base.common.base.mvp.contract.BaseMVPModelI
+import com.base.common.base.mvp.contract.BaseMVPPresenterI
+import com.base.common.base.mvp.contract.BaseMVPViewI
 import com.base.common.util.AndroidUtil
 import com.base.common.util.LogUtil
 import kotlinx.coroutines.*
@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
  * 对于presenter复用，直接在需要的地方创建需要的 presenter实例，同时V层继承对应的 Contract接口（注意presenter实例的回收 detachView）
  * 对于presenter共用（多个V层同时使用同一个 presenter实例），暂无方法
  */
-abstract class BasePresenterImpl<V : BaseView, M : BaseModel>(var view: V?, var model: M) : BasePresenter,
+abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V?, var model: M) : BaseMVPPresenterI,
     CoroutineScope by MainScope() {
 
     /**
@@ -83,7 +83,7 @@ abstract class BasePresenterImpl<V : BaseView, M : BaseModel>(var view: V?, var 
      * 未手动捕获异常时，这里统一捕获，交给BaseView基类处理
      */
     fun runTaskError(e: Exception) {
-        LogUtil.log("BasePresenterImpl", "runTaskError $e")
+        LogUtil.log("BaseMVPPresenter", "runTaskError $e")
 
         //CancellationException 协程取消异常，由于detachView主动取消了协程，此时view为空，无法在基类中捕获
         if (e is CancellationException) {
@@ -96,6 +96,6 @@ abstract class BasePresenterImpl<V : BaseView, M : BaseModel>(var view: V?, var 
     override fun detachView() {
         cancel()
         view = null
-        LogUtil.log("BasePresenterImpl", "detachView")
+        LogUtil.log("BaseMVPPresenter", "detachView")
     }
 }

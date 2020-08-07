@@ -3,7 +3,7 @@ package com.basemvp.main.fragment_example.vp_fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.basemvp.main.fragment_example.fm.TestFragment
-import com.basemvp.main.fragment_example.fm.TestViewFragment
+import com.basemvp.main.fragment_example.fm.TestMVPFragment
 
 /**
  * FragmentStateAdapter内部本身就使用了 setMaxLifecycle 控制
@@ -16,9 +16,9 @@ class ViewPager2Adapter(fragmentActivity: FragmentActivity) :
         TestFragment("2"),
         TestFragment("3"),
         TestFragment("4"),
-        TestViewFragment("MVP 5"),
-        TestViewFragment("MVP 6"),
-        TestViewFragment("MVP 7")
+        TestMVPFragment("MVP 5"),
+        TestMVPFragment("MVP 6"),
+        TestMVPFragment("MVP 7")
     )
 
     override fun getItemCount() = fragmentList.size

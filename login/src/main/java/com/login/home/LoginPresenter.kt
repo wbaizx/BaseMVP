@@ -1,10 +1,10 @@
 package com.login.home
 
-import com.base.common.base.mvp.BasePresenterImpl
+import com.base.common.base.mvp.BaseMVPPresenter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class LoginPresenter(view: LoginViewInterface?) : BasePresenterImpl<LoginViewInterface, LoginModelInterface>(view, LoginModel()),
+class LoginPresenter(view: LoginViewInterface?) : BaseMVPPresenter<LoginViewInterface, LoginModelInterface>(view, LoginModel()),
     LoginPresenterInterface {
     private val TAG = "LoginPresenter"
 
