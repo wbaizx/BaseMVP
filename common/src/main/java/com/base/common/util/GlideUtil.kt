@@ -36,11 +36,6 @@ fun GlideRequest<Drawable>.specialInto(img: ImageView) {
         .into(BaseTarget(img))
 }
 
-fun GlideRequest<Drawable>.simpleInto(img: ImageView) {
-    transition(DrawableTransitionOptions.withCrossFade())
-        .into(BaseTarget(img))
-}
-
 /**
  * 使用 CircleImageView + into(view) 可能导致第一次只加载显示 placeholder
  * 使用这个类来加载到view上可以解决
@@ -48,17 +43,17 @@ fun GlideRequest<Drawable>.simpleInto(img: ImageView) {
  */
 private class BaseTarget(img: ImageView) : CustomViewTarget<ImageView, Drawable>(img) {
     override fun onLoadFailed(errorDrawable: Drawable?) {
-        LogUtil.log(TAG, "onLoadFailed")
+        LogUtil.log(TAG, "onLoadFailed $errorDrawable")
         getView().setImageDrawable(errorDrawable)
     }
 
     override fun onResourceCleared(placeholder: Drawable?) {
         //这个方法在drawable被回收时调用，如果在除了imageView以外的地方引用了imageView中的bitmap，在这里清除引用以避免崩溃
-        LogUtil.log(TAG, "onResourceCleared")
+        LogUtil.log(TAG, "onResourceCleared $placeholder")
     }
 
     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-        LogUtil.log(TAG, "onResourceReady$resource")
+        LogUtil.log(TAG, "onResourceReady $resource")
         getView().setImageDrawable(resource)
     }
 }

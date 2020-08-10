@@ -1,11 +1,11 @@
-package com.basemvp.main.mvp_room
+package com.basemvp.main.mvp
 
 import com.base.common.base.mvp.BaseMVPPresenter
 import com.base.common.util.LogUtil
 import com.basemvp.util.room.User
 
-class MvpRoomPresenter(view: MvpRoomViewInterface?) :
-    BaseMVPPresenter<MvpRoomViewInterface, MvpRoomModelInterface>(view, MvpRoomModel()), MvpRoomPresenterInterface {
+class MVPDemoPresenter(view: MVPDemoViewInterface?) :
+    BaseMVPPresenter<MVPDemoViewInterface, MVPDemoModelInterface>(view, MVPDemoModel()), MVPDemoPresenterInterface {
     private val TAG = "MvpRoomPresenter"
 
     override fun saveData() {

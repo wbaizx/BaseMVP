@@ -17,7 +17,7 @@ import kotlinx.coroutines.*
  * 参数 view 和 model 需要被内联，只能是 public 权限
  *
  * 对于presenter复用，直接在需要的地方创建需要的 presenter实例，同时V层继承对应的 Contract接口（注意presenter实例的回收 detachView）
- * 对于presenter共用（多个V层同时使用同一个 presenter实例），暂无方法
+ * 对于presenter共用（多个V层同时使用同一个 presenter实例，一般为fragment和activity共用），暂无方法
  */
 abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V?, var model: M) : BaseMVPPresenterI,
     CoroutineScope by MainScope() {

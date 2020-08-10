@@ -1,19 +1,19 @@
-package com.basemvp.main.mvp_room
+package com.basemvp.main.mvp
 
 import com.base.common.base.mvp.contract.BaseMVPModelI
 import com.base.common.base.mvp.contract.BaseMVPPresenterI
 import com.base.common.base.mvp.contract.BaseMVPViewI
 import com.basemvp.util.room.User
 
-interface MvpRoomViewInterface : BaseMVPViewI {
+interface MVPDemoViewInterface : BaseMVPViewI {
 }
 
-interface MvpRoomPresenterInterface : BaseMVPPresenterI {
+interface MVPDemoPresenterInterface : BaseMVPPresenterI {
     fun saveData()
     fun queryData()
 }
 
-interface MvpRoomModelInterface : BaseMVPModelI {
+interface MVPDemoModelInterface : BaseMVPModelI {
     suspend fun insertUsers(user: User): Long
     suspend fun getAllUsers(): List<User>
 }

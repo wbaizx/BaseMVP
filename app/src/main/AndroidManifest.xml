@@ -29,7 +29,8 @@
         </activity>
 
         <activity android:name=".main.show_dialog.ShowDialogActivity" />
-        <activity android:name=".main.mvp_room.MvpRoomActivity" />
+        <activity android:name=".main.mvp.MVPDemoActivity" />
+        <activity android:name=".main.mvvm.MVVMDemoActivity" />
         <activity android:name=".main.shape_btn.ShowShapeBtnActivity" />
 
         <activity android:name=".main.coordinator.CoordinatorActivity" />

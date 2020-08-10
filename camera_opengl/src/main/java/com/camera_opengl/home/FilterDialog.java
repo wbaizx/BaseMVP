@@ -37,7 +37,7 @@ public class FilterDialog {
             BaseQuickAdapter<FilterType, BaseViewHolder> adapter = new BaseQuickAdapter<FilterType, BaseViewHolder>(R.layout.bottom_filter_item) {
                 @Override
                 protected void convert(@NotNull BaseViewHolder holder, FilterType type) {
-                    GlideUtilKt.simpleInto(GlideApp.with(getContext()).load(type.getPng()), holder.getView(R.id.filterItemImg));
+                    GlideUtilKt.normalInto(GlideApp.with(getContext()).load(type.getPng()), holder.getView(R.id.filterItemImg));
                     holder.setText(R.id.name, type.getName());
                 }
             };

@@ -4,6 +4,7 @@ object RouteString {
     const val MAIN = "/app/main"
     const val DIALOG = "/app/show_dialog"
     const val MVP_ROOM = "/app/mvp_room"
+    const val MVVM_ROOM = "/app/mvvm_room"
     const val SHAPE_BTN = "/app/shape_btn"
     const val COORDINATOR = "/app/coordinator"
     const val COORDINATOR1 = "/app/coordinator1"
