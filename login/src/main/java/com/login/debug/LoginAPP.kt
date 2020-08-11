@@ -16,4 +16,7 @@ class LoginAPP : BaseAPP() {
         super.onCreate()
         LogUtil.log("LoginAPP", "$baseAppContext")
     }
+
+    override fun initKoin() {
+    }
 }

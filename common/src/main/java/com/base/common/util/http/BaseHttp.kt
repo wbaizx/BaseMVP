@@ -11,22 +11,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.net.URLEncoder
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.X509TrustManager
 
 
 object BaseHttp {
     //网络连接时间秒
     private const val TIMEOUT = 10
+
     //缓存大小2Mb
     private const val CACHEMAXSIZE = 1024 * 1024 * 2
+
     //缓存时间5秒
     private const val CACHETIME = 5
 
+    //基础ip
     private const val BASE_URL = "https://easy-mock.com/"
 
     /**
@@ -75,54 +73,25 @@ object BaseHttp {
 
 
     /**
-     * https忽略所有相关
-     */
-    private fun getSSLSocketFactory(): SSLSocketFactory {
-        val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, trustAllCerts, SecureRandom())
-        return sslContext.socketFactory
-    }
-
-    /**
-     * https忽略所有相关
-     */
-    private val trustAllCerts = arrayOf(object : X509TrustManager {
-        override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-        }
-
-        override fun getAcceptedIssuers(): Array<X509Certificate> {
-            return arrayOf<X509Certificate>()
-        }
-
-        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-
-        }
-    })
-
-
-    private fun getBaseClient(): OkHttpClient {
-        LogUtil.log("BaseHttp", "client")
-        val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "BaseHttpCache")
-        val cache = Cache(cacheFile, CACHEMAXSIZE.toLong())
-        return OkHttpClient.Builder()
-            .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .addInterceptor(baseInterceptor)
-            .addNetworkInterceptor(cacheInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-//            .sslSocketFactory(getSSLSocketFactory(),trustAllCerts[0])
-//            .hostnameVerifier(HostnameVerifier { hostname, session -> true })
-            .cache(cache)
-            .build()
-    }
-
-    /**
      * 带各种拦截器的普通Retrofit，主要用于普通网络请求
      */
     val normalRetrofit: Retrofit by lazy {
         LogUtil.log("BaseHttp", "retrofit")
+        val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "BaseHttpCache")
+        val cache = Cache(cacheFile, CACHEMAXSIZE.toLong())
         Retrofit.Builder()
-            .client(getBaseClient())
+            .client(
+                OkHttpClient.Builder()
+                    .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
+                    .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
+                    .addInterceptor(baseInterceptor)
+                    .addNetworkInterceptor(cacheInterceptor)
+                    .addInterceptor(httpLoggingInterceptor)
+                    .sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
+                    .hostnameVerifier(SSLSocketClient.hostnameVerifier)
+                    .cache(cache)
+                    .build()
+            )
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -138,8 +107,8 @@ object BaseHttp {
                 OkHttpClient.Builder()
                     .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
                     .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-//                    .sslSocketFactory(getSSLSocketFactory(), trustAllCerts[0])
-//                    .hostnameVerifier(HostnameVerifier { hostname, session -> true })
+                    .sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
+                    .hostnameVerifier(SSLSocketClient.hostnameVerifier)
                     .build()
             )
             .baseUrl(BASE_URL)

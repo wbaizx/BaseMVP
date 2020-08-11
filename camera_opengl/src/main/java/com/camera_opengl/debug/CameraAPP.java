@@ -17,4 +17,9 @@ public class CameraAPP extends BaseAPP {
         super.onCreate();
         LogUtil.INSTANCE.log("CameraAPP", baseAppContext);
     }
+
+    @Override
+    public void initKoin() {
+
+    }
 }

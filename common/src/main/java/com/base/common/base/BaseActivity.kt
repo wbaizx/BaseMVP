@@ -43,12 +43,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
         configure()
 
-        setContentView(getContentView())
+        bindView()
 
         setImmersionBar()
 
         initView()
         initData()
+    }
+
+    protected open fun bindView() {
+        setContentView(getContentView())
     }
 
     /**

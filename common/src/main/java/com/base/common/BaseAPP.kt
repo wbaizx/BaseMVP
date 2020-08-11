@@ -10,8 +10,10 @@ import com.base.common.util.LogUtil
  * 基类 Application
  *
  * 记录一个翻翻工具 蚂蚁  https://pp.lanshuapi.com/
+ *
+ * 初始化三方 sdk 还可以可以使用 App Startup 方案
  */
-open class BaseAPP : Application() {
+abstract class BaseAPP : Application() {
     companion object {
         private val TAG = "BaseAPP-Application"
 
@@ -39,8 +41,9 @@ open class BaseAPP : Application() {
         super.onCreate()
         baseAppContext = this
 
-        //初始化三方 sdk 可以使用 App Startup
         initARouter()
+
+        initKoin()
     }
 
     private fun initARouter() {
@@ -51,6 +54,11 @@ open class BaseAPP : Application() {
         }
         ARouter.init(baseAppContext)
     }
+
+    /**
+     * 初始化koin注入框架
+     */
+    abstract fun initKoin()
 
     /**
      * 判断是否是 Debug 模式

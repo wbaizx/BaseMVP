@@ -31,21 +31,18 @@ abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V
         crossinline bgAction: suspend () -> T,
         noinline uiAction: ((T) -> Unit)? = null,
         noinline error: ((Exception) -> Unit)? = null
-    ): Job {
-        val job = launch {
-            try {
-                val v = withContext(Dispatchers.IO) { bgAction() }
-                uiAction?.invoke(v)
-            } catch (e: Exception) {
-                if (error != null) {
-                    error(e)
-                } else {
-                    runTaskError(e)
-                }
-            } finally {
+    ) = launch {
+        try {
+            val v = withContext(Dispatchers.IO) { bgAction() }
+            uiAction?.invoke(v)
+        } catch (e: Exception) {
+            if (error != null) {
+                error(e)
+            } else {
+                runTaskError(e)
             }
+        } finally {
         }
-        return job
     }
 
     /**
@@ -57,24 +54,21 @@ abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V
         crossinline bgAction: suspend () -> T,
         noinline uiAction: ((T) -> Unit)? = null,
         noinline error: ((Exception) -> Unit)? = null
-    ): Job {
-        val job = launch {
-            view?.showLoad()
-            try {
-                delay(1000)
-                val v = withContext(Dispatchers.IO) { bgAction() }
-                uiAction?.invoke(v)
-            } catch (e: Exception) {
-                if (error != null) {
-                    error(e)
-                } else {
-                    runTaskError(e)
-                }
-            } finally {
-                view?.hideLoad()
+    ) = launch {
+        view?.showLoad()
+        try {
+            delay(1000)
+            val v = withContext(Dispatchers.IO) { bgAction() }
+            uiAction?.invoke(v)
+        } catch (e: Exception) {
+            if (error != null) {
+                error(e)
+            } else {
+                runTaskError(e)
             }
+        } finally {
+            view?.hideLoad()
         }
-        return job
     }
 
     /**

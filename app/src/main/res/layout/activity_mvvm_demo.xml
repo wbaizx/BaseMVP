@@ -15,11 +15,24 @@
         android:orientation="vertical"
         tools:context=".main.mvvm.MVVMDemoActivity">
 
-<!--        <TextView-->
-<!--            android:gravity="center"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="100dp"-->
-<!--            android:text="@{viewModel.name}"-->
-<!--            />-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center"
+            android:text="@{viewModel.name}" />
+
+        <com.base.common.view.btn.ShapeButton
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:text="存" />
+
+        <com.base.common.view.btn.ShapeButton
+            android:id="@+id/query"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:text="查" />
     </LinearLayout>
 </layout>
