@@ -47,6 +47,7 @@ abstract class BaseMVVMViewModel : ViewModel() {
                 runTaskError(e)
             }
         } finally {
+            LogUtil.log("BaseMVVMViewModel", "runTaskDialog finally")
             showLoad.postValue(false)
         }
     }

@@ -109,6 +109,7 @@
                 android:text="展示mvvm + room"
                 app:endColor="@color/color_9500"
                 app:radius="8dp"
+                app:allowRepeatedClick="true"
                 app:rippleColor="@color/color_black"
                 app:startColor="@color/color_336" />
 
