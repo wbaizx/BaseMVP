@@ -4,7 +4,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import com.base.common.base.BaseActivity
-import com.base.common.util.LogUtil
 
 abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
     private val TAG = "BaseMVVMActivity"
@@ -26,7 +25,6 @@ abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
         })
 
         viewModel.showLoad.observe(this, Observer {
-            LogUtil.log(TAG, "showLoad $it  ${this.hashCode()}  ${this.javaClass.simpleName}")
             if (it) {
                 showLoadDialog()
             } else {

@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import com.base.common.base.BaseFragment
-import com.base.common.util.LogUtil
 
 abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
     private val TAG = "BaseMVVMFragment"
@@ -35,7 +34,6 @@ abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
         })
 
         viewModel.showLoad.observe(this, Observer {
-            LogUtil.log(TAG, "showLoad $it  ${this.hashCode()}  ${this.javaClass.simpleName}")
             if (it) {
                 showLoadDialog()
             } else {
