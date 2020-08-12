@@ -37,6 +37,10 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
         }
 
         viewPager2.adapter = MVVMViewPager2Adapter(this)
+        //viewPager2禁用手动滑动
+        viewPager2.isUserInputEnabled = false
+        //模拟拖拽
+//        viewPager2.fakeDragBy()
     }
 
     override fun initData() {
