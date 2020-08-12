@@ -8,6 +8,7 @@ import com.base.common.util.LogUtil
 import com.basemvp.BR
 import com.basemvp.R
 import com.basemvp.databinding.ActivityMvvmDemoBinding
+import com.basemvp.main.mvvm.fm.MVVMViewPager2Adapter
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,6 +26,8 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
     override fun getBindModelId() = BR.viewModel
 
     override fun initView() {
+        LogUtil.log(TAG, "viewModel ${viewModel.hashCode()}")
+
         save.setOnClickListener {
             viewModel.saveData()
         }
@@ -32,6 +35,8 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
         query.setOnClickListener {
             viewModel.queryData()
         }
+
+        viewPager2.adapter = MVVMViewPager2Adapter(this)
     }
 
     override fun initData() {

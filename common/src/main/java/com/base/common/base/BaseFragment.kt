@@ -22,9 +22,13 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (mView == null) {
-            mView = inflater.inflate(getContentView(), container, false)
+            mView = bindView(inflater, container)
         }
         return mView
+    }
+
+    protected open fun bindView(inflater: LayoutInflater, container: ViewGroup?): View {
+        return inflater.inflate(getContentView(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

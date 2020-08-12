@@ -56,7 +56,9 @@ abstract class BaseAPP : Application() {
     }
 
     /**
-     * 初始化koin注入框架
+     * 初始化koin注入框架，在主module或者需要单独运行的module的application中配置
+     * 需要添加所有运行需要的module的di配置文件
+     * 参考MainApp
      */
     abstract fun initKoin()
 
