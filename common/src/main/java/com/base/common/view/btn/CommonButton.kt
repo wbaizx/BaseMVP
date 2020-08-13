@@ -48,11 +48,11 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
      */
     override fun performClick(): Boolean {
         if (!allowRepeatedClick) {
-            if (System.currentTimeMillis() - lastTime < clickInterval) {
+            if (System.currentTimeMillis() - lastTime > clickInterval) {
+                lastTime = System.currentTimeMillis()
+            } else {
                 LogUtil.log(TAG, "performClick false")
                 return false
-            } else {
-                lastTime = System.currentTimeMillis()
             }
         }
         return super.performClick()
