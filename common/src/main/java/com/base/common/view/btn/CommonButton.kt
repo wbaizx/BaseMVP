@@ -3,6 +3,7 @@ package com.base.common.view.btn
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.animation.LinearInterpolator
 import com.base.common.R
 import com.base.common.util.LogUtil
 
@@ -14,6 +15,8 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     private val TAG = "CommonButton"
 
     constructor(context: Context) : this(context, null)
+
+    private val interpolator by lazy { LinearInterpolator() }
 
     /**
      * 是否允许重复快速点击
@@ -68,10 +71,10 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
         if (isEnabled && allowPressEffect) {
             if (event?.action == MotionEvent.ACTION_DOWN) {
                 LogUtil.log(TAG, "onTouchEvent ACTION_DOWN $isEnabled")
-                animate().setDuration(60).scaleX(0.93f).scaleY(0.93f).alpha(0.8f).start()
+                animate().setDuration(60).scaleX(0.95f).scaleY(0.95f).alpha(0.8f).setInterpolator(interpolator).start()
             } else if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_CANCEL) {
                 LogUtil.log(TAG, "onTouchEvent ACTION_DOWN $isEnabled")
-                animate().setDuration(60).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).start()
+                animate().setDuration(60).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setInterpolator(interpolator).start()
             }
         }
         return super.onTouchEvent(event)

@@ -4,6 +4,7 @@ import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.mvvm.BaseMVVMActivity
 import com.base.common.config.RouteString
+import com.base.common.extension.setOnAvoidRepeatedClickListener
 import com.base.common.util.LogUtil
 import com.basemvp.BR
 import com.basemvp.R
@@ -32,7 +33,7 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
             viewModel.saveData()
         }
 
-        query.setOnClickListener {
+        query.setOnAvoidRepeatedClickListener {
             viewModel.queryData()
         }
 

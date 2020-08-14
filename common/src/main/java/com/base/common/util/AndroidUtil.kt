@@ -65,6 +65,7 @@ object AndroidUtil {
         return screenHeight
     }
 
+    //如果不想要BaseAPP实例（自定义view布局预览会无效），可以换成Resources.getSystem().displayMetrics
     fun sp2px(f: Float) =
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, f, BaseAPP.baseAppContext.resources.displayMetrics)
 
