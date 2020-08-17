@@ -3,7 +3,6 @@ package com.basemvp.main.mvvm.fm
 import androidx.lifecycle.Observer
 import com.base.common.base.mvvm.BaseMVVMFragment
 import com.base.common.util.LogUtil
-import com.basemvp.BR
 import com.basemvp.R
 import com.basemvp.databinding.FragmentMvvmDemoFBinding
 import com.basemvp.main.mvvm.MVVMDemoViewModel
@@ -20,7 +19,9 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
 
     override fun getContentView() = R.layout.fragment_mvvm_demo_f
 
-    override fun getBindModelId() = BR.viewModel
+    override fun bindModelId(binding: FragmentMvvmDemoFBinding) {
+        binding.viewModel = viewModel
+    }
 
     override fun createView() {
         LogUtil.log(TAG, "viewModel ${viewModel.hashCode()}")

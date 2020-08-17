@@ -14,10 +14,15 @@ abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
     override fun bindView() {
         binding = DataBindingUtil.setContentView(this, getContentView())
         binding.lifecycleOwner = this
-        binding.setVariable(getBindModelId(), viewModel)
+        bindModelId(binding)
 
         initBaseObserve()
     }
+
+    /**
+     * 绑定viewModel到UI
+     */
+    abstract fun bindModelId(binding: B)
 
     private fun initBaseObserve() {
         viewModel.error.observe(this, Observer {
@@ -33,7 +38,6 @@ abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
         })
     }
 
-    abstract fun getBindModelId(): Int
 
     override fun onDestroy() {
         binding.unbind()

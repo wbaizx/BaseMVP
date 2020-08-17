@@ -6,7 +6,6 @@ import com.base.common.base.mvvm.BaseMVVMActivity
 import com.base.common.config.RouteString
 import com.base.common.extension.setOnAvoidRepeatedClickListener
 import com.base.common.util.LogUtil
-import com.basemvp.BR
 import com.basemvp.R
 import com.basemvp.databinding.ActivityMvvmDemoBinding
 import com.basemvp.main.mvvm.fm.MVVMViewPager2Adapter
@@ -24,7 +23,9 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
 
     override fun getContentView() = R.layout.activity_mvvm_demo
 
-    override fun getBindModelId() = BR.viewModel
+    override fun bindModelId(binding: ActivityMvvmDemoBinding) {
+        binding.viewModel = viewModel
+    }
 
     override fun initView() {
         LogUtil.log(TAG, "viewModel ${viewModel.hashCode()}")
@@ -39,7 +40,7 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
 
         viewPager2.adapter = MVVMViewPager2Adapter(this)
         //viewPager2禁用手动滑动
-        viewPager2.isUserInputEnabled = false
+//        viewPager2.isUserInputEnabled = false
         //模拟拖拽
 //        viewPager2.fakeDragBy()
     }

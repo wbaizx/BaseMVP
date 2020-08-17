@@ -17,7 +17,7 @@ abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
     override fun bindView(inflater: LayoutInflater, container: ViewGroup?): View {
         binding = DataBindingUtil.inflate(inflater, getContentView(), container, false)
         binding.lifecycleOwner = this
-        binding.setVariable(getBindModelId(), viewModel)
+        bindModelId(binding)
 
         //如果采用sharedViewModel共用viewModel,在fragment中不需要注册基本监听,以免重复接收
         //统一交给activity注册的基本监听接收
@@ -27,6 +27,11 @@ abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
 
         return binding.root
     }
+
+    /**
+     * 绑定viewModel到UI
+     */
+    abstract fun bindModelId(binding: B)
 
     private fun initBaseObserve() {
         viewModel.error.observe(this, Observer {
@@ -41,8 +46,6 @@ abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
             }
         })
     }
-
-    abstract fun getBindModelId(): Int
 
     override fun onDestroy() {
         binding.unbind()
