@@ -16,6 +16,7 @@ abstract class BaseMVVMViewModel : ViewModel() {
     val showLoad: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val error: MutableLiveData<Exception> by lazy { MutableLiveData<Exception>() }
 
+    //crossinline action: suspend CoroutineScope.() -> Unit, 带接收者参数形式 T.()->Unit
     inline fun runTask(
         crossinline action: suspend () -> Unit,
         noinline error: ((Exception) -> Unit)? = null

@@ -4,11 +4,10 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.base.common.R
 import com.base.common.util.AndroidUtil
+import kotlinx.android.synthetic.main.normal_dialog_view.*
 
 object DialogFactory {
     fun createNormalDialog(
@@ -19,7 +18,7 @@ object DialogFactory {
         yesClick: () -> Unit,
         noName: String,
         noClick: (() -> Unit)? = null
-    ) {
+    ): NormalDialog {
         val dialog = NormalDialog()
         dialog.setContext(activity)
         dialog.title = title
@@ -29,6 +28,7 @@ object DialogFactory {
         dialog.noName = noName
         dialog.noClick = noClick
         dialog.showDialog()
+        return dialog
     }
 }
 
@@ -38,7 +38,7 @@ class NormalDialog : BaseFragmentDialog() {
     var content: String = "内容"
     var yesName: String = "确定"
     var noName: String = "取消"
-    var yesClick: (() -> Unit)? = null
+    var yesClick: (() -> Unit) = {}
     var noClick: (() -> Unit)? = null
 
     override fun setDialogConfigure() {
@@ -58,17 +58,15 @@ class NormalDialog : BaseFragmentDialog() {
 
 
     override fun initView(view: View) {
-        view.findViewById<TextView>(R.id.title).text = title
-        view.findViewById<TextView>(R.id.content).text = content
+        titleTex.text = title
+        contentTex.text = content
 
-        val yes = view.findViewById<Button>(R.id.yes)
         yes.text = yesName
         yes.setOnClickListener {
             dismiss()
-            yesClick?.invoke()
+            yesClick.invoke()
         }
 
-        val no = view.findViewById<Button>(R.id.no)
         no.text = noName
         no.setOnClickListener {
             dismiss()
