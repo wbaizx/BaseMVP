@@ -21,18 +21,18 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     /**
      * 是否允许重复快速点击
      */
-    var allowRepeatedClick = false
+    private var allowRepeatedClick = false
     private var lastTime = 0L
 
     /**
      * 点击时间间隔
      */
-    var clickInterval = 800L
+    private var clickInterval = 800L
 
     /**
      * 是否允默认按下动画效果
      */
-    var allowPressEffect = true
+    private var allowPressEffect = true
 
     init {
         LogUtil.log(TAG, "init")
@@ -70,10 +70,10 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (isEnabled && allowPressEffect) {
             if (event?.action == MotionEvent.ACTION_DOWN) {
-                LogUtil.log(TAG, "onTouchEvent ACTION_DOWN $isEnabled")
+                LogUtil.log(TAG, "onTouchEvent ${event.action} $isEnabled")
                 animate().setDuration(60).scaleX(0.95f).scaleY(0.95f).alpha(0.8f).setInterpolator(interpolator).start()
             } else if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_CANCEL) {
-                LogUtil.log(TAG, "onTouchEvent ACTION_DOWN $isEnabled")
+                LogUtil.log(TAG, "onTouchEvent ${event.action} $isEnabled")
                 animate().setDuration(60).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setInterpolator(interpolator).start()
             }
         }

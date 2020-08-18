@@ -11,6 +11,8 @@ import com.base.common.util.LogUtil
 
 /**
  * 屏幕旋转后 会重建 Fragment ，可能导致字段，变量重置，需要注意！
+ *
+ * 还可以尝试 BottomSheetDialogFragment
  */
 abstract class BaseFragmentDialog : DialogFragment() {
     private val TAG = "BaseFragmentDialog"
@@ -59,15 +61,14 @@ abstract class BaseFragmentDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         LogUtil.log(TAG, "onCreateView")
-        if (dialog != null) {
-            LogUtil.log(TAG, "onCreateView dialog")
-            dialog!!.setOnKeyListener { dialog, keyCode, event ->
-                //点击返回键也不关闭
-                (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN
-                        && !backCancel)
-            }
-            setDialogConfigure()
+
+        dialog?.setOnKeyListener { dialog, keyCode, event ->
+            //点击返回键也不关闭
+            (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN && !backCancel)
         }
+
+        setDialogConfigure()
+
         return inflater.inflate(getLayout(), container, false)
     }
 
@@ -136,7 +137,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
     protected open fun getStyleAnimations() = 0
 
     /**
-     * 初始化布局
+     * 初始化布局，每次调用showDialog都会走，只要关闭了再次show就会重走生命周期，不管页面中是不是同一个fragmentDialog
      */
     protected abstract fun initView(view: View)
 
@@ -183,6 +184,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
      * 点击外部或者返回键是会回调该方法
      */
     override fun onCancel(dialog: DialogInterface) {
+        LogUtil.log(TAG, "onCancel")
         isShow = false
         super.onCancel(dialog)
         onDismissListener?.invoke()
@@ -202,6 +204,16 @@ abstract class BaseFragmentDialog : DialogFragment() {
                 onDismissListener?.invoke()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        LogUtil.log(TAG, "onDestroyView")
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        LogUtil.log(TAG, "onDestroy")
+        super.onDestroy()
     }
 
     /**
