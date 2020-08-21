@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.base.common.base.mvvm.BaseMVVMViewModel
 import com.basemvp.util.room.User
 
-class MVVMDemoViewModel(val repository: MVVMDemoRepository) : BaseMVVMViewModel() {
+class MVVMDemoViewModel(private val repository: MVVMDemoRepository) : BaseMVVMViewModel() {
 
     val name: MutableLiveData<String> by lazy { MutableLiveData<String>() }
 

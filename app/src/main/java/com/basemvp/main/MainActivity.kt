@@ -44,7 +44,8 @@ class MainActivity : BaseActivity() {
                         AndroidUtil.showToast("保存成功")
                     }
                 }
-                bitmap.recycle()
+                //注意如果是 ImageView 直接返回的 bitmap，用完后不要 recycle
+//                bitmap.recycle()
             }
         }
 

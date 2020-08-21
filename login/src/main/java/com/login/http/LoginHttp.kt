@@ -1,11 +1,10 @@
 package com.login.http
 
-import com.base.common.util.LogUtil
 import com.base.common.util.http.BaseHttp
 
-object LoginHttp {
-    val loginRequest: LoginAPI by lazy {
-        LogUtil.log("LoginHttp", "loginRequest")
-        BaseHttp.normalRetrofit.create(LoginAPI::class.java)
-    }
+object LoginHttp : BaseHttp() {
+
+    override val BASE_URL: String = "https://easy-mock.com/"
+
+    val api by lazy { getApi(LoginAPI::class.java) }
 }

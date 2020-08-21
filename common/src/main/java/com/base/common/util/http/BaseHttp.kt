@@ -13,19 +13,20 @@ import java.io.File
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
+abstract class BaseHttp {
+    private val TAG = "BaseHttp"
 
-object BaseHttp {
     //网络连接时间秒
-    private const val TIMEOUT = 10
+    private val TIMEOUT = 10
 
     //缓存大小2Mb
-    private const val CACHEMAXSIZE = 1024 * 1024 * 2
+    private val CACHEMAXSIZE = 1024 * 1024 * 2
 
     //缓存时间5秒
-    private const val CACHETIME = 5
+    private val CACHETIME = 5
 
     //基础ip
-    private const val BASE_URL = "https://easy-mock.com/"
+    abstract val BASE_URL: String
 
     /**
      * 拦截器，设置头部，解析头部等
@@ -37,10 +38,11 @@ object BaseHttp {
                 .header("token", "token")
                 .header("test", URLEncoder.encode("中文编码", "UTF-8"))
                 .build()
-            LogUtil.log("BaseHttp", "baseInterceptor  request")
+            LogUtil.log(TAG, "baseInterceptor  request")
 
             val proceed = chain.proceed(finalRequest)
-            LogUtil.log("BaseHttp", "baseInterceptor  response")
+            LogUtil.log(TAG, "baseInterceptor  response")
+            LogUtil.log(TAG, "baseInterceptor  ${proceed.header("Date", "111")}")
 
             return proceed
         }
@@ -51,12 +53,12 @@ object BaseHttp {
      */
     private val cacheInterceptor = object : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
-            LogUtil.log("BaseHttp", "cacheInterceptor  request")
+            LogUtil.log(TAG, "cacheInterceptor  request")
             val response = chain.proceed(chain.request())
             val finalResponse = response.newBuilder().removeHeader("pragma")
                 .header("Cache-Control", "max-age=$CACHETIME").build()
 
-            LogUtil.log("BaseHttp", "cacheInterceptor  response")
+            LogUtil.log(TAG, "cacheInterceptor  response")
 
             return finalResponse
         }
@@ -71,48 +73,32 @@ object BaseHttp {
      */
     private val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
-
     /**
      * 带各种拦截器的普通Retrofit，主要用于普通网络请求
      */
-    val normalRetrofit: Retrofit by lazy {
-        LogUtil.log("BaseHttp", "retrofit")
-        val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "BaseHttpCache")
-        val cache = Cache(cacheFile, CACHEMAXSIZE.toLong())
-        Retrofit.Builder()
-            .client(
-                OkHttpClient.Builder()
-                    .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-                    .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-                    .addInterceptor(baseInterceptor)
-                    .addNetworkInterceptor(cacheInterceptor)
-                    .addInterceptor(httpLoggingInterceptor)
-                    .sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
-                    .hostnameVerifier(SSLSocketClient.hostnameVerifier)
-                    .cache(cache)
-                    .build()
-            )
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+    protected fun <T> getApi(api: Class<T>, baseUrl: String = BASE_URL, needCache: Boolean = false): T {
+        LogUtil.log(TAG, "getApi $baseUrl")
 
-    /**
-     * 最简单的Retrofit，不带拦截器，主要用于下载
-     */
-    val simpleRetrofit: Retrofit by lazy {
-        LogUtil.log("BaseHttp", "retrofit")
-        Retrofit.Builder()
-            .client(
-                OkHttpClient.Builder()
-                    .readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-                    .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
-                    .sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
-                    .hostnameVerifier(SSLSocketClient.hostnameVerifier)
-                    .build()
-            )
-            .baseUrl(BASE_URL)
+        val clientBuilder = OkHttpClient.Builder()
+        clientBuilder.readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(baseInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
+            .hostnameVerifier(SSLSocketClient.hostnameVerifier)
+
+        if (needCache) {
+            val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "${api.simpleName}Cache")
+            val cache = Cache(cacheFile, CACHEMAXSIZE.toLong())
+            clientBuilder.addNetworkInterceptor(cacheInterceptor)
+                .cache(cache)
+        }
+
+        val retrofitBuilder = Retrofit.Builder().client(clientBuilder.build())
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        return retrofitBuilder.create(api)
     }
 }

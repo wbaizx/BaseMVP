@@ -23,6 +23,7 @@ object ImageUtil {
 
     /**
      * 将view转换成bitmap
+     * 注意如果是 ImageView 直接返回的 bitmap，用完后不要 recycle
      */
     fun createBitmapFromView(view: View): Bitmap {
         //是ImageView直接获取
