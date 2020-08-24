@@ -132,7 +132,7 @@ class MainActivity : BaseActivity() {
      * 权限拒绝后回调
      */
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsDenied")
+        LogUtil.log(TAG, "onPermissionsDenied $requestCode")
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             LogUtil.log(TAG, "Denied and not prompted")
             AppSettingsDialog.Builder(this)

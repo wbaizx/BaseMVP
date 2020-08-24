@@ -142,28 +142,28 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 权限允许后回调
      */
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsGranted")
+        LogUtil.log(TAG, "onPermissionsGranted $requestCode")
     }
 
     /**
      * 权限拒绝后回调
      */
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsDenied")
+        LogUtil.log(TAG, "onPermissionsDenied $requestCode")
     }
 
     /**
      * 权限拒绝过一次后的提示框被拒绝
      */
     override fun onRationaleDenied(requestCode: Int) {
-        LogUtil.log(TAG, "onRationaleDenied")
+        LogUtil.log(TAG, "onRationaleDenied $requestCode")
     }
 
     /**
      * 权限拒绝过一次后的提示框被允许
      */
     override fun onRationaleAccepted(requestCode: Int) {
-        LogUtil.log(TAG, "onRationaleAccepted")
+        LogUtil.log(TAG, "onRationaleAccepted $requestCode")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

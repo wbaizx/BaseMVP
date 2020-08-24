@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.base.common">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -6,7 +7,22 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application>
+    <!--
+      访问相册或读取照片时，报EACCES (Permission denied)
+      android:requestLegacyExternalStorage="true"
+      Android Q 默认开启沙箱模式 导致出现文件读写失败
+
+      android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
+      解决办法:
+      1. 将http请求改为https请求
+      2. 添加usesCleartextTraffic属性
+
+      运行时，此manifest会和当前运行的主manifest合并
+     -->
+    <application
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="q">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

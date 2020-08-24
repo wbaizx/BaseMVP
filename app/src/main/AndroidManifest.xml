@@ -2,11 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.basemvp">
 
-    <!--   android9.0系统默认禁止http协议，即禁止明文传输，必须使用https来通讯
-    解决办法:
-    1. 将http请求改为https请求
-    2. 添加usesCleartextTraffic属性
-    -->
     <application
         android:name=".MainApp"
         android:allowBackup="true"
@@ -15,8 +10,7 @@
         android:label="MVP总结工具集合"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/AppTheme">
 
         <!-- 如果 LAUNCHER主页面的 launchMode="singleTask" 只要切换后台重进都会退回到 LAUNCHER主页面-->
         <activity android:name=".main.MainActivity">
