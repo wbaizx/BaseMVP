@@ -3,9 +3,12 @@ package com.basemvp.main.fragment_example.vp_fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
+import com.base.common.base.adapter.BaseViewPagerAdapter
 import com.base.common.config.RouteString
 import com.base.common.util.LogUtil
 import com.basemvp.R
+import com.basemvp.main.fragment_example.fm.TestFragment
+import com.basemvp.main.fragment_example.fm.TestMVPFragment
 import kotlinx.android.synthetic.main.activity_vpfragment.*
 
 @Route(path = RouteString.VP_FRAGMENT, name = "viewPager2 + Fragment + Lifecycle 测试懒加载base类的生命周期")
@@ -15,9 +18,18 @@ class VP2FragmentActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_vpfragment
 
     override fun initView() {
-        //根据需求设置缓存数量
         viewPager2.offscreenPageLimit = 1
-        viewPager2.adapter = ViewPager2Adapter(this)
+        viewPager2.adapter = BaseViewPagerAdapter(
+            this, arrayListOf(
+                TestFragment("1"),
+                TestFragment("2"),
+                TestFragment("3"),
+                TestFragment("4"),
+                TestMVPFragment("MVP 5"),
+                TestMVPFragment("MVP 6"),
+                TestMVPFragment("MVP 7")
+            )
+        )
 
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {

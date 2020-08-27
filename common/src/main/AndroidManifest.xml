@@ -17,6 +17,9 @@
       1. 将http请求改为https请求
       2. 添加usesCleartextTraffic属性
 
+      Intent addFlags Intent.FLAG_ACTIVITY_CLEAR_TOP + FLAG_ACTIVITY_NEW_TASK  效果和 android:launchMode="singleTask" 不同
+      前者会销毁重建 activity , 后者只会回调 onNewIntent
+
       运行时，此manifest会和当前运行的主manifest合并
      -->
     <application

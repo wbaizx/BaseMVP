@@ -3,7 +3,7 @@ package com.base.common.base
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.base.common.R
-import com.base.common.util.dialog.BaseFragmentDialog
+import com.base.common.base.dialog.BaseFragmentDialog
 
 class LoadDialog : BaseFragmentDialog {
     constructor() : super()

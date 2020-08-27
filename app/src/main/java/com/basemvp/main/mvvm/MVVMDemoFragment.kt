@@ -1,11 +1,10 @@
-package com.basemvp.main.mvvm.fm
+package com.basemvp.main.mvvm
 
 import androidx.lifecycle.Observer
 import com.base.common.base.mvvm.BaseMVVMFragment
 import com.base.common.util.LogUtil
 import com.basemvp.R
 import com.basemvp.databinding.FragmentMvvmDemoFBinding
-import com.basemvp.main.mvvm.MVVMDemoViewModel
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 

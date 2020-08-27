@@ -1,4 +1,4 @@
-package com.base.common.util.dialog
+package com.base.common.base.dialog
 
 import android.app.Dialog
 import android.content.DialogInterface

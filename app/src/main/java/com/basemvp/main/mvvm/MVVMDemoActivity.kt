@@ -2,13 +2,13 @@ package com.basemvp.main.mvvm
 
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.base.common.base.adapter.BaseViewPagerAdapter
 import com.base.common.base.mvvm.BaseMVVMActivity
 import com.base.common.config.RouteString
 import com.base.common.extension.setOnAvoidRepeatedClickListener
 import com.base.common.util.LogUtil
 import com.basemvp.R
 import com.basemvp.databinding.ActivityMvvmDemoBinding
-import com.basemvp.main.mvvm.fm.MVVMViewPager2Adapter
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -38,11 +38,12 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
             viewModel.queryData()
         }
 
-        viewPager2.adapter = MVVMViewPager2Adapter(this)
-        //viewPager2禁用手动滑动
-//        viewPager2.isUserInputEnabled = false
-        //模拟拖拽
-//        viewPager2.fakeDragBy()
+        viewPager2.adapter = BaseViewPagerAdapter(
+            this, arrayListOf(
+                MVVMDemoFragment(),
+                MVVMDemoFragment()
+            )
+        )
     }
 
     override fun initData() {

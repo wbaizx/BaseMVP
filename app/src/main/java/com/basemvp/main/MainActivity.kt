@@ -9,7 +9,7 @@ import com.base.common.base.BaseActivity
 import com.base.common.config.GlideApp
 import com.base.common.config.RouteString
 import com.base.common.util.*
-import com.base.common.util.dialog.DialogFactory
+import com.base.common.base.dialog.DialogFactory
 import com.base.common.util.http.ObjectBean
 import com.base.common.util.http.ParcelableBean
 import com.base.common.util.http.ParcelableBean2
