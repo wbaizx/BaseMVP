@@ -1,5 +1,6 @@
 package com.base.common.base
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -18,6 +19,7 @@ import com.base.common.util.http.CodeException
 import com.base.common.util.http.NoNetworkException
 import com.google.gson.stream.MalformedJsonException
 import com.gyf.immersionbar.ImmersionBar
+import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -150,6 +152,22 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      */
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         LogUtil.log(TAG, "onPermissionsDenied $requestCode")
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            //如果用户选择了拒绝并不在提示，默认指引到手动打开
+            LogUtil.log(TAG, "Denied and not prompted")
+            AppSettingsDialog.Builder(this)
+                .setTitle("跳转到手动打开")
+                .setRationale("跳转到手动打开")
+                .build().show()
+        } else {
+            deniedPermission(requestCode, perms)
+        }
+    }
+
+    /**
+     * 权限拒绝并且拒绝手动打开
+     */
+    protected open fun deniedPermission(requestCode: Int, perms: MutableList<String>) {
     }
 
     /**
@@ -169,5 +187,23 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    /**
+     * 跳转系统打开权限页面返回，或者关闭跳转系统打开权限的指引弹窗被关闭后回调
+     * 此时不会再次调用AfterPermissionGranted注解方法，所以这里要再次检查权限
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            resultCheckPermissions()
+        }
+    }
+
+    /**
+     * 跳转系统打开权限页面返回，或者跳转系统打开权限的指引弹窗被关闭后回调
+     * 此时不会再次调用AfterPermissionGranted注解方法，所以这里要再次检查权限
+     */
+    protected open  fun resultCheckPermissions() {
     }
 }

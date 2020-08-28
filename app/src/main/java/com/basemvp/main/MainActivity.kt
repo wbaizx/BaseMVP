@@ -6,10 +6,10 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
+import com.base.common.base.dialog.DialogFactory
 import com.base.common.config.GlideApp
 import com.base.common.config.RouteString
 import com.base.common.util.*
-import com.base.common.base.dialog.DialogFactory
 import com.base.common.util.http.ObjectBean
 import com.base.common.util.http.ParcelableBean
 import com.base.common.util.http.ParcelableBean2
@@ -131,28 +131,17 @@ class MainActivity : BaseActivity() {
     /**
      * 权限拒绝后回调
      */
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsDenied $requestCode")
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            LogUtil.log(TAG, "Denied and not prompted")
-            AppSettingsDialog.Builder(this)
-                .setTitle("跳转到手动打开")
-                .setRationale("跳转到手动打开")
-                .build().show()
-        } else {
-            finish()
-        }
+    override fun deniedPermission(requestCode: Int, perms: MutableList<String>) {
+        finish()
     }
 
     /**
-     * 跳转手动打开权限后回调，不论是否打开权限都会回调，所以这里要再次检查权限
+     * 跳转系统打开权限页面返回，或者跳转系统打开权限的指引弹窗被关闭后回调
+     * 此时不会再次调用AfterPermissionGranted注解方法，所以这里要再次检查权限
      */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                finish()
-            }
+    override fun resultCheckPermissions() {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            finish()
         }
     }
 }

@@ -8,16 +8,14 @@ class MVVMDemoViewModel(private val repository: MVVMDemoRepository) : BaseMVVMVi
 
     val name: MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    fun saveData() {
-        runTaskDialog({
-            repository.insertUsers(User(9, "4", 6))
-            name.postValue("存入成功")
-        })
-    }
+    fun saveData() = runTaskDialog({
+        repository.insertUsers(User(9, "4", 6))
+        name.postValue("存入成功")
+    })
 
-    fun queryData() {
-        runTask({
-            name.postValue("${repository.getAllUsers().size}")
-        })
-    }
+
+    fun queryData() = runTask({
+        name.postValue("${repository.getAllUsers().size}")
+    })
+
 }

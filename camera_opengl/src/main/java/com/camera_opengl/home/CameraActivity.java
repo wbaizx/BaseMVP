@@ -3,15 +3,12 @@ package com.camera_opengl.home;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -36,7 +33,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 //RouteString.CAMERA_HOME
@@ -154,44 +150,27 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         filterDialog.show();
     }
 
-    /**
-     * 添加 AfterPermissionGranted 注解，在所有权限申请成功后会再次调用此方法，手动打开除外
-     */
     @AfterPermissionGranted(CAMERA_PERMISSION_CODE)
     private void getPermissions() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)) {
-            LogUtil.INSTANCE.log(TAG, "hasPermissions");
             begin();
         } else {
-            EasyPermissions.requestPermissions(
-                    this, "为了正常使用，需要获取以下权限",
+            EasyPermissions.requestPermissions(this, "为了正常使用，需要获取以下权限",
                     CAMERA_PERMISSION_CODE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
         }
     }
 
     @Override
-    public void onPermissionsDenied(int requestCode, @NotNull List<String> perms) {
-        LogUtil.INSTANCE.log(TAG, "onPermissionsDenied");
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            LogUtil.INSTANCE.log(TAG, "Denied and not prompted");
-            new AppSettingsDialog.Builder(this)
-                    .setTitle("跳转到手动打开")
-                    .setRationale("跳转到手动打开")
-                    .build().show();
-        } else {
-            finish();
-        }
+    protected void deniedPermission(int requestCode, @NotNull List<String> perms) {
+        finish();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)) {
-                finish();
-            } else {
-                begin();
-            }
+    protected void resultCheckPermissions() {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)) {
+            finish();
+        } else {
+            begin();
         }
     }
 
