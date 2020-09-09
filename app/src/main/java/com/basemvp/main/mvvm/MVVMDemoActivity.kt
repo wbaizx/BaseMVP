@@ -1,6 +1,5 @@
 package com.basemvp.main.mvvm
 
-import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.adapter.BaseViewPagerAdapter
 import com.base.common.base.mvvm.BaseMVVMActivity
@@ -47,7 +46,7 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
     }
 
     override fun initData() {
-        viewModel.name.observe(this, Observer {
+        viewModel.name.observe(this, {
             LogUtil.log(TAG, "name ${this.hashCode()}")
             finish()
         })

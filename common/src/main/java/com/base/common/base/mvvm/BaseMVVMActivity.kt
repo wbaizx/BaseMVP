@@ -2,7 +2,6 @@ package com.base.common.base.mvvm
 
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.Observer
 import com.base.common.base.BaseActivity
 
 abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
@@ -25,11 +24,11 @@ abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
     abstract fun bindModelId(binding: B)
 
     private fun initBaseObserve() {
-        viewModel.error.observe(this, Observer {
+        viewModel.error.observe(this, {
             runError(it)
         })
 
-        viewModel.showLoad.observe(this, Observer {
+        viewModel.showLoad.observe(this, {
             if (it) {
                 showLoadDialog()
             } else {
@@ -37,7 +36,6 @@ abstract class BaseMVVMActivity<B : ViewDataBinding> : BaseActivity() {
             }
         })
     }
-
 
     override fun onDestroy() {
         binding.unbind()

@@ -1,6 +1,5 @@
 package com.basemvp.main.mvvm
 
-import androidx.lifecycle.Observer
 import com.base.common.base.mvvm.BaseMVVMFragment
 import com.base.common.util.LogUtil
 import com.basemvp.R
@@ -24,7 +23,7 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
 
     override fun createView() {
         LogUtil.log(TAG, "viewModel ${viewModel.hashCode()}")
-        viewModel.name.observe(this, Observer {
+        viewModel.name.observe(this, {
             LogUtil.log(TAG, "name ${this.hashCode()}")
         })
     }

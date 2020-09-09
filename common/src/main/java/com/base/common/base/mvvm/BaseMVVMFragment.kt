@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.Observer
 import com.base.common.base.BaseFragment
 
 abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
@@ -34,11 +33,11 @@ abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
     abstract fun bindModelId(binding: B)
 
     private fun initBaseObserve() {
-        viewModel.error.observe(this, Observer {
+        viewModel.error.observe(this, {
             runError(it)
         })
 
-        viewModel.showLoad.observe(this, Observer {
+        viewModel.showLoad.observe(this, {
             if (it) {
                 showLoadDialog()
             } else {

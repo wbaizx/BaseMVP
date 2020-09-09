@@ -1,6 +1,5 @@
 package com.base.common.base
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -204,6 +203,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 跳转系统打开权限页面返回，或者跳转系统打开权限的指引弹窗被关闭后回调
      * 此时不会再次调用AfterPermissionGranted注解方法，所以这里要再次检查权限
      */
-    protected open  fun resultCheckPermissions() {
+    protected open fun resultCheckPermissions() {
     }
 }
