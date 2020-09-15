@@ -10,7 +10,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
 /**
- * RecyclerView 稍复杂分割线，依赖BaseRecyclerViewAdapterHelper，可自行绘制分割线，连接器，顶部悬停（可带动效）等
+ * 简单分割线可直接使用 DividerItemDecoration
+ *
+ * SimpleItemDecoration 是 RecyclerView 稍复杂分割线，依赖BaseRecyclerViewAdapterHelper，可自行绘制分割线，连接器，顶部悬停（可带动效）等
  *
  * 根据 view 找 position
  * RecyclerView.LayoutParams.viewLayoutPosition
@@ -19,7 +21,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
  * LinearLayoutManager.findViewByPosition()
  * RecyclerView.findViewHolderForLayoutPosition()
  */
-abstract class SimpleItemDecoration<B, D : BaseQuickAdapter<B, BaseViewHolder>>(protected val adapter: D) : RecyclerView.ItemDecoration() {
+abstract class SimpleItemDecoration<B>(protected val adapter: BaseQuickAdapter<B, BaseViewHolder>) : RecyclerView.ItemDecoration() {
 
     /**
      * 标题栏和悬浮栏高度

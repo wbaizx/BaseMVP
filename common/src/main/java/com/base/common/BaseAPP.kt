@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.alibaba.android.arouter.launcher.ARouter
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 
 /**
  * 基类 Application
@@ -33,7 +33,7 @@ abstract class BaseAPP : Application() {
                 it.finish()
             }
             allActivities.clear()
-            LogUtil.log(TAG, allActivities.size.toString())
+            log(TAG, allActivities.size.toString())
         }
     }
 
@@ -48,7 +48,7 @@ abstract class BaseAPP : Application() {
 
     private fun initARouter() {
         if (isDebug()) {
-            LogUtil.log(TAG, "isDebug")
+            log(TAG, "isDebug")
             ARouter.openLog()
             ARouter.openDebug()
         }

@@ -1,12 +1,12 @@
 package com.basemvp.main.special_rc
 
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
-import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
+import com.base.common.util.launchARouter
 import com.base.common.util.loginNavigation
 import com.base.common.util.normalNavigation
+import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_special_rc.*
 
 @Route(path = RouteString.SPECIAL_RC, name = "各种特殊效果的recycleView效果展示汇总")
@@ -15,31 +15,31 @@ class SpecialRCActivity : BaseActivity() {
 
     override fun initView() {
         dampingRc.setOnClickListener {
-            ARouter.getInstance().build(RouteString.DAMPING_RC).normalNavigation()
+            launchARouter(RouteString.DAMPING_RC).normalNavigation(this)
         }
 
         recyclerViewGallery.setOnClickListener {
-            ARouter.getInstance().build(RouteString.GALLERY).normalNavigation()
+            launchARouter(RouteString.GALLERY).normalNavigation(this)
         }
 
         scrollToRecyclerView.setOnClickListener {
-            ARouter.getInstance().build(RouteString.SCROLL_TO_RC).normalNavigation()
+            launchARouter(RouteString.SCROLL_TO_RC).normalNavigation(this)
         }
 
         qqAlbum.setOnClickListener {
-            ARouter.getInstance().build(RouteString.QQ_ALBUM).normalNavigation()
+            launchARouter(RouteString.QQ_ALBUM).normalNavigation(this)
         }
 
         connectionRecyclerView.setOnClickListener {
-            ARouter.getInstance().build(RouteString.CONNECTION_RC).loginNavigation()
+            launchARouter(RouteString.CONNECTION_RC).loginNavigation(this)
         }
 
         overlappingRecyclerView.setOnClickListener {
-            ARouter.getInstance().build(RouteString.CIRCLE_RC).loginNavigation()
+            launchARouter(RouteString.CIRCLE_RC).loginNavigation(this)
         }
 
         pictureIndicator.setOnClickListener {
-            ARouter.getInstance().build(RouteString.PICTURE_INDICATOR).loginNavigation()
+            launchARouter(RouteString.PICTURE_INDICATOR).loginNavigation(this)
         }
     }
 

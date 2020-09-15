@@ -1,7 +1,7 @@
 package com.camera_opengl.debug;
 
 import com.base.common.BaseAPP;
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 
 /**
  * 对应模块的Application只有在配置Camera组件是否可以独立运行时才生效
@@ -15,7 +15,7 @@ public class CameraAPP extends BaseAPP {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtil.INSTANCE.log("CameraAPP", baseAppContext);
+        LogUtilKt.log("CameraAPP", baseAppContext);
     }
 
     @Override

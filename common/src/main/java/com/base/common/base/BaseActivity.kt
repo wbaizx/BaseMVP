@@ -13,9 +13,9 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.R
 import com.base.common.util.AndroidUtil
-import com.base.common.util.LogUtil
 import com.base.common.util.http.CodeException
 import com.base.common.util.http.NoNetworkException
+import com.base.common.util.log
 import com.google.gson.stream.MalformedJsonException
 import com.gyf.immersionbar.ImmersionBar
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -116,14 +116,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     fun showLoadDialog() {
         if (!loadDialog.isShow) {
-            LogUtil.log(TAG, "showLoadDialog")
+            log(TAG, "showLoadDialog")
             loadDialog.showDialog()
         }
     }
 
     fun hideLoadDialog() {
         if (loadDialog.isShow) {
-            LogUtil.log(TAG, "hideLoadDialog")
+            log(TAG, "hideLoadDialog")
             loadDialog.dismiss()
         }
     }
@@ -143,17 +143,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 权限允许后回调
      */
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsGranted $requestCode")
+        log(TAG, "onPermissionsGranted $requestCode")
     }
 
     /**
      * 权限拒绝后回调
      */
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        LogUtil.log(TAG, "onPermissionsDenied $requestCode")
+        log(TAG, "onPermissionsDenied $requestCode")
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             //如果用户选择了拒绝并不在提示，默认指引到手动打开
-            LogUtil.log(TAG, "Denied and not prompted")
+            log(TAG, "Denied and not prompted")
             AppSettingsDialog.Builder(this)
                 .setTitle("跳转到手动打开")
                 .setRationale("跳转到手动打开")
@@ -173,14 +173,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 权限拒绝过一次后的提示框被拒绝
      */
     override fun onRationaleDenied(requestCode: Int) {
-        LogUtil.log(TAG, "onRationaleDenied $requestCode")
+        log(TAG, "onRationaleDenied $requestCode")
     }
 
     /**
      * 权限拒绝过一次后的提示框被允许
      */
     override fun onRationaleAccepted(requestCode: Int) {
-        LogUtil.log(TAG, "onRationaleAccepted $requestCode")
+        log(TAG, "onRationaleAccepted $requestCode")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

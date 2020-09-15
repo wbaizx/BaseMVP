@@ -5,7 +5,7 @@ import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
 import com.base.common.util.AndroidUtil
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_damping_rc.*
 
@@ -36,7 +36,7 @@ class DampingRCActivity : BaseActivity() {
         manager.setOffsetListener { upOffset, downOffset ->
             //upOffset 控制脚部偏移
             //downOffset 控制头部偏移
-            LogUtil.log(TAG, "Offset  $upOffset --- $downOffset")
+            log(TAG, "Offset  $upOffset --- $downOffset")
             footer.translationY = -upOffset
             header.translationY = downOffset
         }
@@ -44,7 +44,7 @@ class DampingRCActivity : BaseActivity() {
         manager.setPageListener { page ->
             footer.text = "$page footer"
             header.text = "$page header"
-            LogUtil.log(TAG, "Page  $page")
+            log(TAG, "Page  $page")
         }
     }
 

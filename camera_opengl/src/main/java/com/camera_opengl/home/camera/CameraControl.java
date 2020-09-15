@@ -29,7 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.base.common.util.AndroidUtil;
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -114,7 +114,7 @@ public class CameraControl {
 
     public void startCameraThread() {
         if (mCameraThread == null) {
-            LogUtil.INSTANCE.log(TAG, "startCameraThread");
+            LogUtilKt.log(TAG, "startCameraThread");
             mCameraThread = new HandlerThread("CameraBackground");
             mCameraThread.start();
             mCameraHandler = new Handler(mCameraThread.getLooper());
@@ -123,13 +123,13 @@ public class CameraControl {
 
     public void stopCameraThread() {
         if (mCameraThread != null) {
-            LogUtil.INSTANCE.log(TAG, "stopCameraThread");
+            LogUtilKt.log(TAG, "stopCameraThread");
             mCameraThread.quitSafely();
             try {
                 mCameraHandler = null;
                 mCameraThread.join();
                 mCameraThread = null;
-                LogUtil.INSTANCE.log(TAG, "stopCameraThread X");
+                LogUtilKt.log(TAG, "stopCameraThread X");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -140,21 +140,21 @@ public class CameraControl {
 
         @Override
         public void onOpened(@NonNull CameraDevice cameraDevice) {
-            LogUtil.INSTANCE.log(TAG, "camera onOpened");
+            LogUtilKt.log(TAG, "camera onOpened");
             mCameraDevice = cameraDevice;
             startPreview();
         }
 
         @Override
         public void onDisconnected(@NonNull CameraDevice cameraDevice) {
-            LogUtil.INSTANCE.log(TAG, "onDisconnected");
+            LogUtilKt.log(TAG, "onDisconnected");
             cameraDevice.close();
             mCameraDevice = null;
         }
 
         @Override
         public void onError(@NonNull CameraDevice cameraDevice, int error) {
-            LogUtil.INSTANCE.log(TAG, "onError");
+            LogUtilKt.log(TAG, "onError");
             cameraDevice.close();
             mCameraDevice = null;
             activity.finish();
@@ -172,7 +172,7 @@ public class CameraControl {
             if (mState == AFLOCK) {
                 Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
                 Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
-                LogUtil.INSTANCE.log(TAG, "previewCallback af onCaptureCompleted afState " + afState + " aeState " + aeState);
+                LogUtilKt.log(TAG, "previewCallback af onCaptureCompleted afState " + afState + " aeState " + aeState);
 
                 if (afState == null) {
                     captureStillPicture();
@@ -204,7 +204,7 @@ public class CameraControl {
     private ImageReader.OnImageAvailableListener mOnImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-            LogUtil.INSTANCE.log(TAG, "onImageAvailable");
+            LogUtilKt.log(TAG, "onImageAvailable");
             Image image = reader.acquireNextImage();
             ByteBuffer byteBuffer = image.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[byteBuffer.remaining()];
@@ -214,7 +214,7 @@ public class CameraControl {
                     cameraOrientation == CameraCharacteristics.LENS_FACING_FRONT, false);
 
             image.close();
-            LogUtil.INSTANCE.log(TAG, "onImageAvailable X");
+            LogUtilKt.log(TAG, "onImageAvailable X");
         }
     };
 
@@ -225,7 +225,7 @@ public class CameraControl {
      * @param height
      */
     public void setExpectPreviewSize(int width, int height) {
-        LogUtil.INSTANCE.log(TAG, "设置期望预览大小 setPreviewSize " + width + "-" + height);
+        LogUtilKt.log(TAG, "设置期望预览大小 setPreviewSize " + width + "-" + height);
         expectWidth = width;
         expectHeight = height;
     }
@@ -246,7 +246,7 @@ public class CameraControl {
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                LogUtil.INSTANCE.log(TAG, "openCamera");
+                LogUtilKt.log(TAG, "openCamera");
                 try {
                     for (String cameraId : manager.getCameraIdList()) {
                         CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -269,7 +269,7 @@ public class CameraControl {
 
                             createSurface();
 
-                            LogUtil.INSTANCE.log(TAG, "real openCamera");
+                            LogUtilKt.log(TAG, "real openCamera");
                             manager.openCamera(cameraId, mStateCallback, mCameraHandler);
                             break;
                         }
@@ -282,7 +282,7 @@ public class CameraControl {
     }
 
     private void chooseSize(StreamConfigurationMap map) {
-        LogUtil.INSTANCE.log(TAG, "expectPreviewSize " + expectWidth + " -- " + expectHeight + " -- " +
+        LogUtilKt.log(TAG, "expectPreviewSize " + expectWidth + " -- " + expectHeight + " -- " +
                 ((float) expectWidth / expectHeight));
 
         Size[] outputSizes = map.getOutputSizes(MediaRecorder.class);
@@ -290,7 +290,7 @@ public class CameraControl {
         for (Size size : outputSizes) {
             if (size.getWidth() == size.getHeight() * aspectRatio) {
                 sizeList.add(size);
-                LogUtil.INSTANCE.log(TAG, "outputSizes " + size.getWidth() + " -- " + size.getHeight() + " -- " +
+                LogUtilKt.log(TAG, "outputSizes " + size.getWidth() + " -- " + size.getHeight() + " -- " +
                         ((float) size.getWidth() / size.getHeight()));
             }
         }
@@ -301,7 +301,7 @@ public class CameraControl {
 
         mfinalSize = Collections.min(sizeList, new CompareSize(expectWidth, expectHeight));
 
-        LogUtil.INSTANCE.log(TAG, "finalSize " +
+        LogUtilKt.log(TAG, "finalSize " +
                 mfinalSize.getWidth() + " -- " + mfinalSize.getHeight() + " -- " +
                 ((float) mfinalSize.getWidth() / mfinalSize.getHeight()));
 
@@ -336,7 +336,7 @@ public class CameraControl {
     }
 
     private void startPreview() {
-        LogUtil.INSTANCE.log(TAG, "startPreview");
+        LogUtilKt.log(TAG, "startPreview");
         if (null == mCameraDevice || null == mfinalSize) {
             return;
         }
@@ -377,7 +377,7 @@ public class CameraControl {
             //自动控制模式
             mPreviewBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             mPreviewSession.setRepeatingRequest(mPreviewBuilder.build(), previewCallback, mCameraHandler);
-            LogUtil.INSTANCE.log(TAG, "setRepeatingPreview");
+            LogUtilKt.log(TAG, "setRepeatingPreview");
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -391,14 +391,14 @@ public class CameraControl {
                 captureStillPicture();
             } else {
                 try {
-                    LogUtil.INSTANCE.log(TAG, "takePicture");
+                    LogUtilKt.log(TAG, "takePicture");
 
                     CaptureRequest.Builder afBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
                     afBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
                     afBuilder.addTarget(previewSurface);
 
                     mState = AFLOCK;
-                    LogUtil.INSTANCE.log(TAG, "mState " + mState + "-> AFLOCK");
+                    LogUtilKt.log(TAG, "mState " + mState + "-> AFLOCK");
                     mPreviewSession.capture(afBuilder.build(), previewCallback, mCameraHandler);
                 } catch (CameraAccessException e) {
                     e.printStackTrace();
@@ -408,7 +408,7 @@ public class CameraControl {
     }
 
     private void captureStillPicture() {
-        LogUtil.INSTANCE.log(TAG, "captureStillPicture");
+        LogUtilKt.log(TAG, "captureStillPicture");
         try {
             if (null == mCameraDevice) {
                 return;
@@ -418,7 +418,7 @@ public class CameraControl {
             mPreviewSession.stopRepeating();
 
             mState = TAKE_PICTURE;
-            LogUtil.INSTANCE.log(TAG, "mState " + mState + "-> TAKEPICTURE");
+            LogUtilKt.log(TAG, "mState " + mState + "-> TAKEPICTURE");
 
             // 这是用来拍摄照片的CaptureRequest.Builder。
             final CaptureRequest.Builder captureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
@@ -441,7 +441,7 @@ public class CameraControl {
 
     private void takePictureCompleted() {
         try {
-            LogUtil.INSTANCE.log(TAG, "takePictureCompleted");
+            LogUtilKt.log(TAG, "takePictureCompleted");
             CaptureRequest.Builder completedBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             //取消手动聚焦操作
             completedBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
@@ -451,7 +451,7 @@ public class CameraControl {
             setRepeatingPreview();
 
             mState = PREVIEW;
-            LogUtil.INSTANCE.log(TAG, "mState " + mState + "-> PREVIEW");
+            LogUtilKt.log(TAG, "mState " + mState + "-> PREVIEW");
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -468,10 +468,10 @@ public class CameraControl {
 
     private void closePreviewSession() {
         if (mPreviewSession != null) {
-            LogUtil.INSTANCE.log(TAG, "closePreviewSession");
+            LogUtilKt.log(TAG, "closePreviewSession");
             mPreviewSession.close();
             mPreviewSession = null;
-            LogUtil.INSTANCE.log(TAG, "closePreviewSession X");
+            LogUtilKt.log(TAG, "closePreviewSession X");
         }
     }
 
@@ -480,7 +480,7 @@ public class CameraControl {
             @Override
             public void run() {
                 try {
-                    LogUtil.INSTANCE.log(TAG, "closeCamera");
+                    LogUtilKt.log(TAG, "closeCamera");
 
                     if (mImageReader != null) {
                         mImageReader.setOnImageAvailableListener(null, mCameraHandler);
@@ -493,7 +493,7 @@ public class CameraControl {
                         mCameraDevice.close();
                         mCameraDevice = null;
                     }
-                    LogUtil.INSTANCE.log(TAG, "closeCamera X");
+                    LogUtilKt.log(TAG, "closeCamera X");
                 } catch (Exception e) {
                     throw new RuntimeException("Interrupted while trying to lock camera closing.");
                 }
@@ -504,6 +504,6 @@ public class CameraControl {
     public void onDestroy() {
         activity = null;
         cameraControlListener = null;
-        LogUtil.INSTANCE.log(TAG, "destroy X");
+        LogUtilKt.log(TAG, "destroy X");
     }
 }

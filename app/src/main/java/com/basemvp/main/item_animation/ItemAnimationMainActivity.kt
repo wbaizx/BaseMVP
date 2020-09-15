@@ -1,9 +1,9 @@
 package com.basemvp.main.item_animation
 
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
+import com.base.common.util.launchARouter
 import com.base.common.util.normalNavigation
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_item_animation_main.*
@@ -15,15 +15,15 @@ class ItemAnimationMainActivity : BaseActivity() {
 
     override fun initView() {
         itemAnimation1.setOnClickListener {
-            ARouter.getInstance().build(RouteString.ITEM_ANIMATION1).normalNavigation()
+            launchARouter(RouteString.ITEM_ANIMATION1).normalNavigation(this)
         }
 
         itemAnimation2.setOnClickListener {
-            ARouter.getInstance().build(RouteString.ITEM_ANIMATION2).normalNavigation()
+            launchARouter(RouteString.ITEM_ANIMATION2).normalNavigation(this)
         }
 
         itemAnimation3.setOnClickListener {
-            ARouter.getInstance().build(RouteString.ITEM_ANIMATION3).normalNavigation()
+            launchARouter(RouteString.ITEM_ANIMATION3).normalNavigation(this)
         }
     }
 

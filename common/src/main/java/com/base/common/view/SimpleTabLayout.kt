@@ -17,7 +17,7 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.base.common.util.AndroidUtil
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 
 class SimpleTabLayout(context: Context, attrs: AttributeSet) : HorizontalScrollView(context, attrs) {
     private val TAG = "SimpleTabLayout"
@@ -59,7 +59,7 @@ class SimpleTabLayout(context: Context, attrs: AttributeSet) : HorizontalScrollV
 
     private val itemListener = OnClickListener {
         val tag = it.getTag() as Int
-        LogUtil.log(TAG, "itemClick $tag")
+        log(TAG, "itemClick $tag")
         if (tag != currentPos) {
             listener?.invoke(tag)
             movePosition(tag)
@@ -118,8 +118,8 @@ class SimpleTabLayout(context: Context, attrs: AttributeSet) : HorizontalScrollV
             textViewList.add(tex)
         }
         tabWidth = itemWidth * textList.size
-        LogUtil.log(TAG, "width  $lineWidth -- $itemWidth -- $screenWidth --$tabWidth")
-        LogUtil.log(TAG, "current  $currentPos -- $currentTex")
+        log(TAG, "width  $lineWidth -- $itemWidth -- $screenWidth --$tabWidth")
+        log(TAG, "current  $currentPos -- $currentTex")
     }
 
     private fun setUnSelectTextView(tex: TextView?) {
@@ -147,7 +147,7 @@ class SimpleTabLayout(context: Context, attrs: AttributeSet) : HorizontalScrollV
 
     private fun movePosition(toPos: Int) {
         if (!textViewList.isNullOrEmpty()) {
-            LogUtil.log(TAG, "movePosition $toPos")
+            log(TAG, "movePosition $toPos")
 
             setUnSelectTextView(currentTex)
 

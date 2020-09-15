@@ -6,7 +6,7 @@ import com.base.common.util.AndroidUtil
 import com.base.common.view.SimpleItemDecoration
 import com.basemvp.R
 
-class Coordinator1Decoration(adapter: Coordinator1Adapter) : SimpleItemDecoration<String, Coordinator1Adapter>(adapter) {
+class Coordinator1Decoration(adapter: Coordinator1Adapter) : SimpleItemDecoration<String>(adapter) {
 
     override var decorationHeight: Int = AndroidUtil.dp2px(90f).toInt()
 
@@ -16,7 +16,7 @@ class Coordinator1Decoration(adapter: Coordinator1Adapter) : SimpleItemDecoratio
     /**
      * 画笔
      */
-    private val mPaint: Paint
+    private val mPaint: Paint = Paint()
 
     private val textTitleColor = Color.BLACK
     private val textTitleSize = AndroidUtil.sp2px(18f)
@@ -53,7 +53,6 @@ class Coordinator1Decoration(adapter: Coordinator1Adapter) : SimpleItemDecoratio
 
 
     init {
-        mPaint = Paint()
         mPaint.style = Paint.Style.FILL
         mPaint.isAntiAlias = true
         mPaint.strokeCap = Paint.Cap.ROUND

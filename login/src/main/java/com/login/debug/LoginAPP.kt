@@ -1,7 +1,7 @@
 package com.login.debug
 
 import com.base.common.BaseAPP
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 
 /**
  * 对应模块的Application只有在配置Login组件是否可以独立运行时才生效
@@ -14,7 +14,7 @@ class LoginAPP : BaseAPP() {
      */
     override fun onCreate() {
         super.onCreate()
-        LogUtil.log("LoginAPP", "$baseAppContext")
+        log("LoginAPP", "$baseAppContext")
     }
 
     override fun initKoin() {

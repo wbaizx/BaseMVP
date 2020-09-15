@@ -5,7 +5,7 @@ import android.graphics.Rect
 import com.base.common.util.AndroidUtil
 import com.base.common.view.SimpleItemDecoration
 
-class CircleDecoration(adapter: CircleAdapter) : SimpleItemDecoration<String, CircleAdapter>(adapter) {
+class CircleDecoration(adapter: CircleAdapter) : SimpleItemDecoration<String>(adapter) {
 
     override var decorationHeight: Int = 0
 

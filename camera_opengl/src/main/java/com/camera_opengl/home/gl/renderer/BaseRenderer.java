@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.opengl.Matrix;
 import android.util.Size;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 
 abstract public class BaseRenderer {
     private static final String TAG = "BaseRenderer";
@@ -40,7 +40,7 @@ abstract public class BaseRenderer {
     }
 
     public void onSurfaceChanged(int viewWidth, int viewHeight) {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceChanged " + viewWidth + "--" + viewHeight);
+        LogUtilKt.log(TAG, "onSurfaceChanged " + viewWidth + "--" + viewHeight);
         this.viewWidth = viewWidth;
         this.viewHeight = viewHeight;
     }
@@ -49,7 +49,7 @@ abstract public class BaseRenderer {
      * 获取实际数据宽高
      */
     public void confirmReallySize(Size reallySize) {
-        LogUtil.INSTANCE.log(TAG, "confirmReallySize");
+        LogUtilKt.log(TAG, "confirmReallySize");
         this.reallyHeight = reallySize.getHeight();
         this.reallyWidth  = reallySize.getWidth();
     }
@@ -93,7 +93,7 @@ abstract public class BaseRenderer {
                 viewScale / cameraScale :
                 cameraScale / viewScale;
 
-        LogUtil.INSTANCE.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
+        LogUtilKt.log(TAG, "calculationMatrix aspectRatio " + aspectRatio);
         if (viewScale > cameraScale) {
             //视图的宽高比更大，同高下视图更宽，映射出来应该缩放宽度
             //高度已经全屏，只能使用正交投影

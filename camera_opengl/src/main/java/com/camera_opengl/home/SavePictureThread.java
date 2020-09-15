@@ -10,7 +10,7 @@ import android.os.Looper;
 
 import com.base.common.util.AndroidUtil;
 import com.base.common.util.ImageUtil;
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 
 import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -28,7 +28,7 @@ public class SavePictureThread extends Thread {
     public void putData(byte[] data, boolean horizontalMirror, boolean verticalMirror) {
         look.lock();
 
-        LogUtil.INSTANCE.log(TAG, "putData bytes");
+        LogUtilKt.log(TAG, "putData bytes");
         Picture picture = new Picture(horizontalMirror, verticalMirror);
         picture.data = data;
         queue.offer(picture);
@@ -40,7 +40,7 @@ public class SavePictureThread extends Thread {
     public void putData(Bitmap btm, boolean horizontalMirror, boolean verticalMirror) {
         look.lock();
 
-        LogUtil.INSTANCE.log(TAG, "putData bitmap");
+        LogUtilKt.log(TAG, "putData bitmap");
         Picture picture = new Picture(horizontalMirror, verticalMirror);
         picture.btm = btm;
         queue.offer(picture);
@@ -60,7 +60,7 @@ public class SavePictureThread extends Thread {
                 look.lock();
                 if (!queue.isEmpty()) {
                     Picture picture = queue.poll();
-                    LogUtil.INSTANCE.log(TAG, "run save");
+                    LogUtilKt.log(TAG, "run save");
 
                     if (picture != null) {
                         File file;
@@ -100,7 +100,7 @@ public class SavePictureThread extends Thread {
                         saveBmp.recycle();
                     }
                 } else {
-                    LogUtil.INSTANCE.log(TAG, "run await");
+                    LogUtilKt.log(TAG, "run await");
                     condition.await();
                 }
             } catch (InterruptedException e) {
@@ -112,7 +112,7 @@ public class SavePictureThread extends Thread {
         }
 
         queue.clear();
-        LogUtil.INSTANCE.log(TAG, "SavePictureThread close");
+        LogUtilKt.log(TAG, "SavePictureThread close");
     }
 
     /**

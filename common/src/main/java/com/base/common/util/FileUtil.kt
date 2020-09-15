@@ -20,7 +20,7 @@ object FileUtil {
             if (externalFilesDir != null) {
                 //外部文件存储，能看
                 path = externalFilesDir.absolutePath
-                LogUtil.log(TAG, "externalFilesDir - $path")
+                log(TAG, "externalFilesDir - $path")
                 return path
             }
         }
@@ -28,7 +28,7 @@ object FileUtil {
         //内部文件存储，不能看
         path = BaseAPP.baseAppContext.filesDir.absolutePath + File.separator + name
         checkExists(File(path))
-        LogUtil.log(TAG, "filesDir - $path")
+        log(TAG, "filesDir - $path")
         return path
     }
 

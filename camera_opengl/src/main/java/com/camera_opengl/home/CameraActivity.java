@@ -11,11 +11,10 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.base.common.base.BaseActivity;
 import com.base.common.config.RouteString;
 import com.base.common.util.ARouterUtilKt;
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraControlListener;
@@ -85,7 +84,8 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         findViewById(R.id.goVideoList).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouterUtilKt.normalNavigation(ARouter.getInstance().build(RouteString.VIDEO_LIST), null);
+                ARouterUtilKt.normalNavigation(
+                        ARouterUtilKt.launchARouter(RouteString.VIDEO_LIST), CameraActivity.this, 1, null);
             }
         });
 
@@ -180,7 +180,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         if (am != null && am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x30000) {
             look.lock();
 
-            LogUtil.INSTANCE.log(TAG, "begin");
+            LogUtilKt.log(TAG, "begin");
             hasPermissions = true;
             openCamera();
 
@@ -200,7 +200,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
         look.lock();
 
-        LogUtil.INSTANCE.log(TAG, "onResume");
+        LogUtilKt.log(TAG, "onResume");
         isResume = true;
         openCamera();
 
@@ -220,7 +220,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
         look.lock();
 
-        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
+        LogUtilKt.log(TAG, "onSurfaceCreated");
         isSurfaceCreated = true;
         openCamera();
 
@@ -228,9 +228,9 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
     }
 
     private void openCamera() {
-        LogUtil.INSTANCE.log(TAG, "try openCamera " + hasPermissions + "-" + isResume + "-" + isSurfaceCreated);
+        LogUtilKt.log(TAG, "try openCamera " + hasPermissions + "-" + isResume + "-" + isSurfaceCreated);
         if (hasPermissions && isResume && isSurfaceCreated) {
-            LogUtil.INSTANCE.log(TAG, "openCamera");
+            LogUtilKt.log(TAG, "openCamera");
             cameraControl.startCameraThread();
             cameraControl.openCamera();
         }
@@ -283,7 +283,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         super.onPause();
         look.lock();
 
-        LogUtil.INSTANCE.log(TAG, "onPause");
+        LogUtilKt.log(TAG, "onPause");
         recordManager.onPause();
 
         if (hasPermissions && isResume && isSurfaceCreated) {
@@ -297,7 +297,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
 
     @Override
     protected void onDestroy() {
-        LogUtil.INSTANCE.log(TAG, "onDestroy");
+        LogUtilKt.log(TAG, "onDestroy");
         recordManager.onDestroy();
         cameraControl.onDestroy();
         eglSurfaceView.onDestroy();

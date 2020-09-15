@@ -5,7 +5,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 @Route(path = RouteString.GALLERY, name = "recyclerView 仿Gallery效果，也可以使用PagerSnapHelper+滚动监听改变view大小实现")
@@ -19,7 +19,7 @@ class GalleryActivity : BaseActivity() {
         recyclerView.adapter = GalleryAdapter()
 
         GalleryHelper{
-            LogUtil.log(TAG,"$it")
+            log(TAG,"$it")
         }.attachToRecyclerView(recyclerView)
     }
 

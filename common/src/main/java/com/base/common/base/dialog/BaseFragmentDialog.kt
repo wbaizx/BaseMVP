@@ -7,7 +7,7 @@ import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.base.common.R
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 
 /**
  * 屏幕旋转后 会重建 Fragment ，可能导致字段，变量重置，需要注意！
@@ -43,7 +43,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
     private var backCancel = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        LogUtil.log(TAG, "onCreate")
+        log(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
         //屏幕旋转的字段控制
@@ -55,12 +55,12 @@ abstract class BaseFragmentDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        LogUtil.log(TAG, "onCreateDialog")
+        log(TAG, "onCreateDialog")
         return super.onCreateDialog(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        LogUtil.log(TAG, "onCreateView")
+        log(TAG, "onCreateView")
 
         dialog?.setOnKeyListener { dialog, keyCode, event ->
             //点击返回键也不关闭
@@ -75,11 +75,11 @@ abstract class BaseFragmentDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        LogUtil.log(TAG, "onViewCreated")
+        log(TAG, "onViewCreated")
     }
 
     override fun onStart() {
-        LogUtil.log(TAG, "onStart")
+        log(TAG, "onStart")
         val win = dialog!!.window
         if (win != null) {
             setWindowConfigure(win)
@@ -89,7 +89,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
     }
 
     override fun onResume() {
-        LogUtil.log(TAG, "onResume")
+        log(TAG, "onResume")
         super.onResume()
         //onSaveInstanceState调用后做了dimiss操作，在下次可见时执行操作
         isSaveInstanceState = false
@@ -148,7 +148,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
         //onSaveInstanceState调用后，最好不要调showDialog
         if (!isSaveInstanceState) {
             val tag = getDialogTag()
-            LogUtil.log(TAG, "showDialog  $tag")
+            log(TAG, "showDialog  $tag")
             val ft = mActivity.supportFragmentManager.beginTransaction()
             val prev = mActivity.supportFragmentManager.findFragmentByTag(tag)
             if (prev != null) {
@@ -174,7 +174,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
      * 屏幕旋转的字段控制
      */
     override fun onSaveInstanceState(outState: Bundle) {
-        LogUtil.log(TAG, "onSaveInstanceState")
+        log(TAG, "onSaveInstanceState")
         outState.putBoolean("show", isShow)
         super.onSaveInstanceState(outState)
         isSaveInstanceState = true
@@ -184,7 +184,7 @@ abstract class BaseFragmentDialog : DialogFragment() {
      * 点击外部或者返回键是会回调该方法
      */
     override fun onCancel(dialog: DialogInterface) {
-        LogUtil.log(TAG, "onCancel")
+        log(TAG, "onCancel")
         isShow = false
         super.onCancel(dialog)
         onDismissListener?.invoke()
@@ -207,12 +207,12 @@ abstract class BaseFragmentDialog : DialogFragment() {
     }
 
     override fun onDestroyView() {
-        LogUtil.log(TAG, "onDestroyView")
+        log(TAG, "onDestroyView")
         super.onDestroyView()
     }
 
     override fun onDestroy() {
-        LogUtil.log(TAG, "onDestroy")
+        log(TAG, "onDestroy")
         super.onDestroy()
     }
 

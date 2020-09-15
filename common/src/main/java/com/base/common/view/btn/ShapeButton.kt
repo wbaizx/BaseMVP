@@ -12,7 +12,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.base.common.R
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import kotlin.math.max
 import kotlin.math.min
 
@@ -63,7 +63,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
     private var bgShadowOffsetX: Float = 0f
 
     init {
-        LogUtil.log(TAG, "init")
+        log(TAG, "init")
 
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeButton)
 
@@ -71,7 +71,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         val bgShape = GradientDrawable()
         //形状
         val shapeType = t.getInt(R.styleable.ShapeButton_shapeType, 0)
-        LogUtil.log(TAG, "shapeType $shapeType")
+        log(TAG, "shapeType $shapeType")
         when (shapeType) {
             0 -> bgShape.setShape(GradientDrawable.RECTANGLE)
             1 -> bgShape.setShape(GradientDrawable.OVAL)
@@ -82,13 +82,13 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         val strokeWith = t.getDimension(R.styleable.ShapeButton_strokeWith, 0f)
         val dashGap = t.getDimension(R.styleable.ShapeButton_dashGap, 0f)
         val dashWidth = t.getDimension(R.styleable.ShapeButton_dashWidth, 0f)
-        LogUtil.log(TAG, "strokeColor $strokeColor  strokeWith $strokeWith")
+        log(TAG, "strokeColor $strokeColor  strokeWith $strokeWith")
         if (strokeWith > 0f) {
             bgShape.setStroke(strokeWith.toInt(), strokeColor, dashWidth, dashGap)
         }
         //圆角
         val radius = t.getDimension(R.styleable.ShapeButton_radius, 20f)
-        LogUtil.log(TAG, "radius $radius")
+        log(TAG, "radius $radius")
         val topLeftRadius = t.getDimension(R.styleable.ShapeButton_topLeftRadius, radius)
         val topRightRadius = t.getDimension(R.styleable.ShapeButton_topRightRadius, radius)
         val bottomRightRadius = t.getDimension(R.styleable.ShapeButton_bottomLeftRadius, radius)
@@ -113,7 +113,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             bgShape.setGradientType(GradientDrawable.LINEAR_GRADIENT)
             //设置渐变方向
             val colorAngle = t.getInt(R.styleable.ShapeButton_colorAngle, 6)
-            LogUtil.log(TAG, "colorAngle $colorAngle")
+            log(TAG, "colorAngle $colorAngle")
             when (colorAngle) {
                 0 -> bgShape.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM)
                 1 -> bgShape.setOrientation(GradientDrawable.Orientation.TR_BL)
@@ -132,7 +132,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
         } else {
             //纯背景色
             val solidColor = t.getColor(R.styleable.ShapeButton_solidColor, ContextCompat.getColor(context, R.color.color_DCD))
-            LogUtil.log(TAG, "shapeType $solidColor")
+            log(TAG, "shapeType $solidColor")
             bgShape.setColor(solidColor)
         }
         bgDrawable = bgShape
@@ -151,7 +151,7 @@ class ShapeButton(context: Context, attrs: AttributeSet?) : CommonButton(context
             bgShadowOffsetX = min(max(offsetX, -bgShadowRadius), bgShadowRadius)
             val bgShadowColor = t.getColor(R.styleable.ShapeButton_bgShadowColor, 0)
 
-            LogUtil.log(TAG, "offset $bgShadowOffsetY  $bgShadowOffsetX")
+            log(TAG, "offset $bgShadowOffsetY  $bgShadowOffsetX")
 
             //如果设置了阴影宽度而没设置阴影颜色，则通过反射获取背景填充色画笔设置阴影，此阴影效果会跟随背景色而变化
             if (bgShadowColor == 0) {

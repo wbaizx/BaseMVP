@@ -6,7 +6,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.basemvp.R
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import kotlinx.android.synthetic.main.activity_scroll_to_rc.*
 
 @Route(path = RouteString.SCROLL_TO_RC, name = "recyclerView滚动到指定位置")
@@ -57,7 +57,7 @@ class ScrollToRCActivity : BaseActivity() {
                         }
                     }
                 }
-                LogUtil.log(TAG, "onScrollStateChanged $newState")
+                log(TAG, "onScrollStateChanged $newState")
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

@@ -50,7 +50,7 @@ object AndroidUtil {
         val outMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getRealMetrics(outMetrics)
         var screenHeight = outMetrics.heightPixels
-        LogUtil.log(TAG, "getScreenHeight $screenHeight")
+        log(TAG, "getScreenHeight $screenHeight")
 
         if (ImmersionBar.hasNavigationBar(activity)) {
             //部分手机将导航栏变成小小的一条，并配合上手势操作，此时的导航栏高度不对，所以加上如下判断
@@ -61,7 +61,7 @@ object AndroidUtil {
                 screenHeight -= navigationBarHeight
             }
         }
-        LogUtil.log(TAG, "getScreenHeight $screenHeight")
+        log(TAG, "getScreenHeight $screenHeight")
         return screenHeight
     }
 
@@ -83,11 +83,11 @@ object AndroidUtil {
                 val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
                 if (networkCapabilities != null) {
                     if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        LogUtil.log(TAG, "is wifi")
+                        log(TAG, "is wifi")
                         return true
                     }
                     if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        LogUtil.log(TAG, "is mobile network")
+                        log(TAG, "is mobile network")
                         return true
                     }
                 }

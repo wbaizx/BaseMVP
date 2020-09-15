@@ -4,7 +4,7 @@ import com.base.common.base.mvp.contract.BaseMVPModelI
 import com.base.common.base.mvp.contract.BaseMVPPresenterI
 import com.base.common.base.mvp.contract.BaseMVPViewI
 import com.base.common.util.AndroidUtil
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import kotlinx.coroutines.*
 
 /**
@@ -77,7 +77,7 @@ abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V
      * 未手动捕获异常时，这里统一捕获，交给BaseView基类处理
      */
     fun runTaskError(e: Exception) {
-        LogUtil.log("BaseMVPPresenter", "runTaskError $e")
+        log("BaseMVPPresenter", "runTaskError $e")
 
         //CancellationException 协程取消异常，由于detachView主动取消了协程，此时view为空，无法在基类中捕获
         if (e is CancellationException) {
@@ -90,6 +90,6 @@ abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V
     override fun detachView() {
         cancel()
         view = null
-        LogUtil.log("BaseMVPPresenter", "detachView")
+        log("BaseMVPPresenter", "detachView")
     }
 }

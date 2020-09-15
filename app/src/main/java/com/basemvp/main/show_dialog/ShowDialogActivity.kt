@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_show_dialog.*
 
@@ -31,9 +31,9 @@ class ShowDialogActivity : BaseActivity() {
         //屏幕旋转的Fragment字段控制
         if (savedInstanceState != null) {
             val dialog = supportFragmentManager.findFragmentByTag(tag2) as? BottomDialog
-            LogUtil.log(TAG, "savedInstanceState  $dialog")
+            log(TAG, "savedInstanceState  $dialog")
             dialog?.setOnDismissListener {
-                LogUtil.log(TAG, "OnDismiss")
+                log(TAG, "OnDismiss")
             }
         }
     }
@@ -45,12 +45,12 @@ class ShowDialogActivity : BaseActivity() {
         dialog2.setOnClickListener {
             dialogFragment2.showDialog()
             tag2 = dialogFragment2.getDialogTag()
-            LogUtil.log(TAG, "initView  $tag2")
+            log(TAG, "initView  $tag2")
         }
 
 
         dialogFragment2.setOnDismissListener {
-            LogUtil.log(TAG, "OnDismiss")
+            log(TAG, "OnDismiss")
         }
     }
 

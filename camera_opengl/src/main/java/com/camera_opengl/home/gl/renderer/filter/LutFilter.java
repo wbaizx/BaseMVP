@@ -2,7 +2,7 @@ package com.camera_opengl.home.gl.renderer.filter;
 
 import android.opengl.GLES30;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.gl.GLHelper;
 
 public class LutFilter extends BaseFilter {
@@ -20,7 +20,7 @@ public class LutFilter extends BaseFilter {
     public void init() {
         GLHelper.createLUTFilterTexture(getLut(), filterTexture);
         program = GLHelper.compileAndLink("fbo/fbo_v_shader.glsl", "fbo/fbo_f_lut.glsl");
-        LogUtil.INSTANCE.log(TAG, "init");
+        LogUtilKt.log(TAG, "init");
     }
 
     @Override
@@ -35,7 +35,7 @@ public class LutFilter extends BaseFilter {
 
     @Override
     public void onSurfaceDestroy() {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy filterTexture");
+        LogUtilKt.log(TAG, "onSurfaceDestroy filterTexture");
         GLES30.glDeleteTextures(filterTexture.length, filterTexture, 0);
         super.onSurfaceDestroy();
     }

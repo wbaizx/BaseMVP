@@ -2,7 +2,7 @@ package com.camera_opengl.home.gl.renderer.filter;
 
 import android.opengl.GLES30;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 
 public abstract class BaseFilter {
     private static final String TAG = "BaseFilter";
@@ -23,18 +23,18 @@ public abstract class BaseFilter {
     public abstract void useFilter();
 
     public void release() {
-        LogUtil.INSTANCE.log(TAG, "release");
+        LogUtilKt.log(TAG, "release");
         onSurfaceDestroy();
         onDestroy();
     }
 
     public void onSurfaceDestroy() {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy");
+        LogUtilKt.log(TAG, "onSurfaceDestroy");
         GLES30.glDeleteProgram(program);
     }
 
     public void onDestroy() {
-        LogUtil.INSTANCE.log(TAG, "onDestroy");
+        LogUtilKt.log(TAG, "onDestroy");
     }
 
     public String getId() {

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.base.common.util.AndroidUtil
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import kotlinx.coroutines.*
 
 /**
@@ -48,7 +48,7 @@ abstract class BaseMVVMViewModel : ViewModel() {
                 runTaskError(e)
             }
         } finally {
-            LogUtil.log("BaseMVVMViewModel", "runTaskDialog finally")
+            log("BaseMVVMViewModel", "runTaskDialog finally")
             showLoad.postValue(false)
         }
     }
@@ -59,7 +59,7 @@ abstract class BaseMVVMViewModel : ViewModel() {
      * 未手动捕获异常时，这里统一捕获，交给BaseView基类处理
      */
     fun runTaskError(e: Exception) {
-        LogUtil.log("BaseMVVMViewModel", "runTaskError $e")
+        log("BaseMVVMViewModel", "runTaskError $e")
 
         //CancellationException 协程取消异常，由于detachView主动取消了协程，此时view为空，无法在基类中捕获
         if (e is CancellationException) {
@@ -70,7 +70,7 @@ abstract class BaseMVVMViewModel : ViewModel() {
     }
 
     override fun onCleared() {
-        LogUtil.log(TAG, "onCleared")
+        log(TAG, "onCleared")
         super.onCleared()
     }
 }

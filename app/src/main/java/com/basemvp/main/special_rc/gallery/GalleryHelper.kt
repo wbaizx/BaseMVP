@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import kotlin.math.abs
 
 class GalleryHelper(private var pageChangeListener: ((Int) -> Unit)? = null) {
@@ -98,7 +98,7 @@ class GalleryHelper(private var pageChangeListener: ((Int) -> Unit)? = null) {
         val childCenter = (viewStart + viewEnd) / 2
         val distance = abs(childCenter - centerX)
 
-        LogUtil.log(TAG, "calculateOffset  $centerX -- $distance")
+        log(TAG, "calculateOffset  $centerX -- $distance")
         if (distance > centerX)
             return STAY_SCALE
 
@@ -177,7 +177,7 @@ class GalleryHelper(private var pageChangeListener: ((Int) -> Unit)? = null) {
             }
 
             //计算ItemDecoration的大小，确保插入的大小正好使view的start + itemSize / 2等于parentCenter。
-            LogUtil.log("GalleryHelper", "getPeekWidth  $parentCenter -- $itemSize")
+            log("GalleryHelper", "getPeekWidth  $parentCenter -- $itemSize")
             val startOffset = parentCenter - itemSize / 2
             val endOffset = parentEnd - (startOffset + itemSize)
 

@@ -1,7 +1,7 @@
 package com.basemvp.main.mvvm
 
 import com.base.common.base.mvvm.BaseMVVMFragment
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.basemvp.R
 import com.basemvp.databinding.FragmentMvvmDemoFBinding
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
@@ -22,9 +22,9 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
     }
 
     override fun createView() {
-        LogUtil.log(TAG, "viewModel ${viewModel.hashCode()}")
+        log(TAG, "viewModel ${viewModel.hashCode()}")
         viewModel.name.observe(this, {
-            LogUtil.log(TAG, "name ${this.hashCode()}")
+            log(TAG, "name ${this.hashCode()}")
         })
     }
 

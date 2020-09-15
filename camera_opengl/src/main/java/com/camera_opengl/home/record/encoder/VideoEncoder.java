@@ -11,7 +11,7 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.MimeType;
 import com.camera_opengl.home.record.MuxerManager;
 import com.camera_opengl.home.record.RecordListener;
@@ -43,7 +43,7 @@ public class VideoEncoder {
     private MediaCodec.Callback callback = new MediaCodec.Callback() {
         @Override
         public void onInputBufferAvailable(@NonNull MediaCodec codec, int index) {
-            LogUtil.INSTANCE.log(TAG, "onInputBufferAvailable");
+            LogUtilKt.log(TAG, "onInputBufferAvailable");
         }
 
         @Override
@@ -51,10 +51,10 @@ public class VideoEncoder {
             ByteBuffer outputBuffer = mMediaCodec.getOutputBuffer(index);
 
             if (MediaCodec.BUFFER_FLAG_CODEC_CONFIG == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "codec config //sps,pps,csd...");
+                LogUtilKt.log(TAG, "codec config //sps,pps,csd...");
 
             } else if (MediaCodec.BUFFER_FLAG_KEY_FRAME == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "key frame");
+                LogUtilKt.log(TAG, "key frame");
                 muxerManager.writeVideoSampleData(outputBuffer, info);
 
             } else {
@@ -64,7 +64,7 @@ public class VideoEncoder {
             mMediaCodec.releaseOutputBuffer(index, false);
 
             if (MediaCodec.BUFFER_FLAG_END_OF_STREAM == info.flags) {
-                LogUtil.INSTANCE.log(TAG, "end stream");
+                LogUtilKt.log(TAG, "end stream");
                 release();
             }
         }
@@ -76,7 +76,7 @@ public class VideoEncoder {
 
         @Override
         public void onOutputFormatChanged(@NonNull MediaCodec codec, @NonNull MediaFormat format) {
-            LogUtil.INSTANCE.log(TAG, "onOutputFormatChanged");
+            LogUtilKt.log(TAG, "onOutputFormatChanged");
             muxerManager.addVideoTrack(format);
         }
     };
@@ -112,13 +112,13 @@ public class VideoEncoder {
             public void run() {
                 if (status == STATUS_READY) {
                     status = STATUS_START;
-                    LogUtil.INSTANCE.log(TAG, "startRecord");
+                    LogUtilKt.log(TAG, "startRecord");
 
                     mMediaFormat = MediaFormat.createVideoFormat(MimeType.H264, reallySize.getWidth(), reallySize.getHeight());
 
                     MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
                     String name = mediaCodecList.findEncoderForFormat(mMediaFormat);
-                    LogUtil.INSTANCE.log(TAG, "createCodec " + name);
+                    LogUtilKt.log(TAG, "createCodec " + name);
                     try {
                         mMediaCodec = MediaCodec.createByCodecName(name);
                     } catch (IOException e) {
@@ -143,13 +143,13 @@ public class VideoEncoder {
     }
 
     public void stopRecord() {
-        LogUtil.INSTANCE.log(TAG, "stopRecord  status " + status);
+        LogUtilKt.log(TAG, "stopRecord  status " + status);
         if (videoEncoderHandler != null) {
             videoEncoderHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (status == STATUS_START) {
-                        LogUtil.INSTANCE.log(TAG, "stopRecord");
+                        LogUtilKt.log(TAG, "stopRecord");
                         status = STATUS_SNAP;
 
                         mMediaCodec.signalEndOfInputStream();
@@ -167,7 +167,7 @@ public class VideoEncoder {
         surface.release();
         mMediaCodec.release();
         status = STATUS_READY;
-        LogUtil.INSTANCE.log(TAG, "release");
+        LogUtilKt.log(TAG, "release");
     }
 
     public void onDestroy() {

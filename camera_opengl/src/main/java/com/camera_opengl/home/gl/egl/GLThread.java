@@ -10,7 +10,7 @@ import android.opengl.GLES30;
 import android.util.Size;
 import android.view.Surface;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.camera.CameraControlListener;
 import com.camera_opengl.home.gl.GLHelper;
 import com.camera_opengl.home.gl.renderer.CodecRenderer;
@@ -85,7 +85,7 @@ public class GLThread extends Thread {
         super.run();
         setName(getName() + "-GLThread");
         guardedRun();
-        LogUtil.INSTANCE.log(TAG, getName() + " close");
+        LogUtilKt.log(TAG, getName() + " close");
     }
 
     public void surfaceCreated(Surface surface) {
@@ -95,7 +95,7 @@ public class GLThread extends Thread {
         this.isFirstSurfaceCreated = true;
         this.isSurfaceDestroyed = false;
         this.surface = surface;
-        LogUtil.INSTANCE.log(TAG, "surfaceCreated");
+        LogUtilKt.log(TAG, "surfaceCreated");
 
         condition.signal();
         look.unlock();
@@ -108,7 +108,7 @@ public class GLThread extends Thread {
         this.isFirstSurfaceChanged = true;
         this.viewWidth = width;
         this.viewHeight = height;
-        LogUtil.INSTANCE.log(TAG, "surfaceChanged  " + width + " -- " + height);
+        LogUtilKt.log(TAG, "surfaceChanged  " + width + " -- " + height);
 
         condition.signal();
         look.unlock();
@@ -120,7 +120,7 @@ public class GLThread extends Thread {
         this.isSurfaceDestroyed = true;
         this.isSurfaceCreated = false;
         this.isSurfaceChanged = false;
-        LogUtil.INSTANCE.log(TAG, "surfaceDestroyed");
+        LogUtilKt.log(TAG, "surfaceDestroyed");
 
         condition.signal();
         look.unlock();
@@ -133,7 +133,7 @@ public class GLThread extends Thread {
         this.isSurfaceDestroyed = true;
         this.isSurfaceCreated = false;
         this.isSurfaceChanged = false;
-        LogUtil.INSTANCE.log(TAG, "onDestroy");
+        LogUtilKt.log(TAG, "onDestroy");
 
         condition.signal();
         look.unlock();
@@ -143,7 +143,7 @@ public class GLThread extends Thread {
         try {
             look.lock();
             while (true) {
-                LogUtil.INSTANCE.log(TAG, "guardedRun");
+                LogUtilKt.log(TAG, "guardedRun");
 
                 while (!queue.isEmpty()) {
                     queue.poll().run();
@@ -161,7 +161,7 @@ public class GLThread extends Thread {
                         if (screenEglSurface == EGL14.EGL_NO_SURFACE) {
                             throw new RuntimeException("create screenEglSurface fail");
                         }
-                        LogUtil.INSTANCE.log(TAG, "create screenEglSurface X");
+                        LogUtilKt.log(TAG, "create screenEglSurface X");
                     }
 
                     if (isSurfaceChanged) {
@@ -173,7 +173,7 @@ public class GLThread extends Thread {
                             if (fboEglSurface == EGL14.EGL_NO_SURFACE) {
                                 throw new RuntimeException("create fboEglSurface fail");
                             }
-                            LogUtil.INSTANCE.log(TAG, "create fboEglSurface X");
+                            LogUtilKt.log(TAG, "create fboEglSurface X");
                         }
 
                         /*
@@ -256,7 +256,7 @@ public class GLThread extends Thread {
                                 if (codecEglSurface == EGL14.EGL_NO_SURFACE) {
                                     throw new RuntimeException("create codecEglSurface fail");
                                 }
-                                LogUtil.INSTANCE.log(TAG, "create codecEglSurface X");
+                                LogUtilKt.log(TAG, "create codecEglSurface X");
                             }
 
                             if (!EGL14.eglMakeCurrent(eglDisplay, codecEglSurface, codecEglSurface, eglContext)) {
@@ -271,7 +271,7 @@ public class GLThread extends Thread {
                                 codecRenderer.onSurfaceChanged(0, 0);
                                 //编码器分辨率需要使用实际宽高
                                 codecRenderer.confirmReallySize(reallySize);
-                                LogUtil.INSTANCE.log(TAG, "init codecRenderer");
+                                LogUtilKt.log(TAG, "init codecRenderer");
                             }
 
                             if (hasData && codecRenderer != null) {
@@ -292,7 +292,7 @@ public class GLThread extends Thread {
                     if (fboEglSurface != null || screenEglSurface != null) {
                         fboRenderer.onSurfaceDestroy();
                         screenRenderer.onSurfaceDestroy();
-                        LogUtil.INSTANCE.log(TAG, "destroyedSurface");
+                        LogUtilKt.log(TAG, "destroyedSurface");
 
                         EGL14.eglDestroySurface(eglDisplay, fboEglSurface);
                         EGL14.eglDestroySurface(eglDisplay, screenEglSurface);
@@ -310,9 +310,9 @@ public class GLThread extends Thread {
                             surfaceTexture.release();
                         }
                         surfaceTexture = null;
-                        LogUtil.INSTANCE.log(TAG, "delete camera texture X");
+                        LogUtilKt.log(TAG, "delete camera texture X");
                     }
-                    LogUtil.INSTANCE.log(TAG, "onDestroy");
+                    LogUtilKt.log(TAG, "onDestroy");
                     fboRenderer.onDestroy();
                     screenRenderer.onDestroy();
 
@@ -325,11 +325,11 @@ public class GLThread extends Thread {
                     return;
                 }
 
-                LogUtil.INSTANCE.log(TAG, "await");
+                LogUtilKt.log(TAG, "await");
                 condition.await();
             }
         } catch (InterruptedException e) {
-            LogUtil.INSTANCE.log(TAG, "guardedRun  Exception");
+            LogUtilKt.log(TAG, "guardedRun  Exception");
         } finally {
             look.unlock();
         }
@@ -386,7 +386,7 @@ public class GLThread extends Thread {
             throw new RuntimeException("eglCreateContext fail");
         }
 
-        LogUtil.INSTANCE.log(TAG, "eglCreateContext X");
+        LogUtilKt.log(TAG, "eglCreateContext X");
     }
 
     /**
@@ -399,7 +399,7 @@ public class GLThread extends Thread {
 
         isConfirmReallySize = true;
         this.reallySize = reallySize;
-        LogUtil.INSTANCE.log(TAG, "confirmCameraSize");
+        LogUtilKt.log(TAG, "confirmCameraSize");
 
         condition.signal();
         look.unlock();
@@ -409,7 +409,7 @@ public class GLThread extends Thread {
         look.lock();
 
         hasData = true;
-        LogUtil.INSTANCE.log(TAG, "requestRender");
+        LogUtilKt.log(TAG, "requestRender");
 
         condition.signal();
         look.unlock();
@@ -421,7 +421,7 @@ public class GLThread extends Thread {
      * @param surface
      */
     public void onEncoderSurfaceCreated(Surface surface) {
-        LogUtil.INSTANCE.log(TAG, "onEncoderSurfaceCreated");
+        LogUtilKt.log(TAG, "onEncoderSurfaceCreated");
         codecSurface = surface;
     }
 
@@ -447,7 +447,7 @@ public class GLThread extends Thread {
                     codecEglSurface = null;
                     codecRenderer = null;
 
-                    LogUtil.INSTANCE.log(TAG, "onEncoderSurfaceDestroy");
+                    LogUtilKt.log(TAG, "onEncoderSurfaceDestroy");
                 }
             }
         });
@@ -462,7 +462,7 @@ public class GLThread extends Thread {
         look.lock();
 
         queue.offer(event);
-        LogUtil.INSTANCE.log(TAG, "queueEvent");
+        LogUtilKt.log(TAG, "queueEvent");
 
         condition.signal();
         look.unlock();

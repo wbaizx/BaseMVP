@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.base.common.base.BaseActivity;
 import com.base.common.config.RouteString;
 import com.base.common.util.ARouterUtilKt;
@@ -58,9 +57,9 @@ public class VideoListActivity extends BaseActivity {
                     videoListAdapter.select(position);
                 } else {
                     ARouterUtilKt.normalNavigation(
-                            ARouter.getInstance().build(RouteString.VIDEO_PLAY)
+                            ARouterUtilKt.launchARouter(RouteString.VIDEO_PLAY)
                                     .withString("path", videoListAdapter.getData().get(position).getFile().getAbsolutePath()),
-                            null);
+                            VideoListActivity.this, 1, null);
                 }
             }
         });

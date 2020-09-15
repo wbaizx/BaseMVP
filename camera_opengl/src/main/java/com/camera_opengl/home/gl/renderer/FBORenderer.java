@@ -5,7 +5,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
 import android.util.Size;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.gl.GLHelper;
 import com.camera_opengl.home.gl.renderer.filter.BaseFilter;
 import com.camera_opengl.home.gl.renderer.filter.FilterType;
@@ -48,7 +48,7 @@ public class FBORenderer extends BaseRenderer {
 
     @Override
     public void onSurfaceCreated() {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
+        LogUtilKt.log(TAG, "onSurfaceCreated");
 
         filter.init();
 
@@ -59,7 +59,7 @@ public class FBORenderer extends BaseRenderer {
             renderer.onSurfaceCreated();
         }
 
-        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
+        LogUtilKt.log(TAG, "onSurfaceCreated X");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class FBORenderer extends BaseRenderer {
         if (fboArray[0] == 0) {
             throw new RuntimeException("创建fbo失败");
         }
-        LogUtil.INSTANCE.log(TAG, "createFBO X");
+        LogUtilKt.log(TAG, "createFBO X");
     }
 
     private void updateFBO() {
@@ -101,7 +101,7 @@ public class FBORenderer extends BaseRenderer {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, GLES30.GL_NONE);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
 
-        LogUtil.INSTANCE.log(TAG, "updateFBO X");
+        LogUtilKt.log(TAG, "updateFBO X");
     }
 
     @Override
@@ -154,7 +154,7 @@ public class FBORenderer extends BaseRenderer {
         for (BaseRenderer renderer : rendererList) {
             renderer.onSurfaceDestroy();
         }
-        LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
+        LogUtilKt.log(TAG, "onSurfaceDestroy X");
     }
 
     @Override
@@ -166,7 +166,7 @@ public class FBORenderer extends BaseRenderer {
         for (BaseRenderer renderer : rendererList) {
             renderer.onDestroy();
         }
-        LogUtil.INSTANCE.log(TAG, "onDestroy X");
+        LogUtilKt.log(TAG, "onDestroy X");
     }
 
     @Override
@@ -180,14 +180,14 @@ public class FBORenderer extends BaseRenderer {
         btm.copyPixelsFromBuffer(buf);
 
         buf.clear();
-        LogUtil.INSTANCE.log(TAG, "takePicture glReadPixels X");
+        LogUtilKt.log(TAG, "takePicture glReadPixels X");
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_NONE);
 
         return btm;
     }
 
     public void switchFilterType(FilterType type) {
-        LogUtil.INSTANCE.log(TAG, "switchFilterType " + type.getName());
+        LogUtilKt.log(TAG, "switchFilterType " + type.getName());
         if (!filter.getId().equals(type.getId())) {
             filter.release();
             filter = FilterType.getFilter(type);

@@ -5,7 +5,7 @@ import com.base.common.base.adapter.BaseViewPagerAdapter
 import com.base.common.base.mvvm.BaseMVVMActivity
 import com.base.common.config.RouteString
 import com.base.common.extension.setOnAvoidRepeatedClickListener
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.basemvp.R
 import com.basemvp.databinding.ActivityMvvmDemoBinding
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
@@ -27,7 +27,7 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
     }
 
     override fun initView() {
-        LogUtil.log(TAG, "viewModel ${viewModel.hashCode()}")
+        log(TAG, "viewModel ${viewModel.hashCode()}")
 
         save.setOnClickListener {
             viewModel.saveData()
@@ -47,13 +47,13 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
 
     override fun initData() {
         viewModel.name.observe(this, {
-            LogUtil.log(TAG, "name ${this.hashCode()}")
+            log(TAG, "name ${this.hashCode()}")
             finish()
         })
     }
 
     override fun onDestroy() {
-        LogUtil.log(TAG, "onDestroy ${this.hashCode()}")
+        log(TAG, "onDestroy ${this.hashCode()}")
         super.onDestroy()
     }
 }

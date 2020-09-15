@@ -2,7 +2,7 @@ package com.camera_opengl.home.play;
 
 import android.graphics.SurfaceTexture;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.play.decod.AudioDecoder;
 import com.camera_opengl.home.play.decod.VideoDecoder;
 
@@ -30,7 +30,7 @@ public class PlayManager {
         audioDecoder.setPlayListener(playListener);
         audioDecoder.init(path);
 
-        LogUtil.INSTANCE.log(TAG, "init X");
+        LogUtilKt.log(TAG, "init X");
     }
 
     public void play() {

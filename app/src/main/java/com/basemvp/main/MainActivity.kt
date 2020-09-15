@@ -1,14 +1,16 @@
 package com.basemvp.main
 
 import android.Manifest
-import android.content.Intent
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
 import com.base.common.base.dialog.DialogFactory
 import com.base.common.config.GlideApp
 import com.base.common.config.RouteString
+import com.base.common.config.RouteString.GOTO_MAIN
+import com.base.common.config.RouteString.OBJECT_BEAN
+import com.base.common.config.RouteString.PARCELABLE_BEAN
+import com.base.common.config.RouteString.SERIALIZABLE_BEAN
 import com.base.common.util.*
 import com.base.common.util.http.ObjectBean
 import com.base.common.util.http.ParcelableBean
@@ -21,7 +23,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.AfterPermissionGranted
-import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 private const val STORAGE_PERMISSION_CODE = 666
@@ -33,7 +34,7 @@ class MainActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
-        GlideApp.with(this).load(imgUrl).specialInto(mainImg)
+        GlideApp.with(this).load(imgUrl).blurInto(mainImg)
 
         saveImg.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
@@ -51,48 +52,48 @@ class MainActivity : BaseActivity() {
 
         login.setOnClickListener {
             //测试 ARouter 带参数跳转
-            ARouter.getInstance().build(RouteString.LOGIN)
+            launchARouter(RouteString.LOGIN)
                 .withBoolean(GOTO_MAIN, true)
                 .withSerializable(SERIALIZABLE_BEAN, SerializableBean("1", "2", arrayListOf("3", "4")))
                 .withParcelable(PARCELABLE_BEAN, ParcelableBean("1", "2", arrayListOf("3", "4"), ParcelableBean2("5", "6")))
                 .withObject(OBJECT_BEAN, ObjectBean("1", "2", arrayListOf("3", "4")))
-                .normalNavigation()
+                .normalNavigation(this)
         }
 
         fragmentExample.setOnClickListener {
-            ARouter.getInstance().build(RouteString.FRAGMENT_EXAMPLE).normalNavigation()
+            launchARouter(RouteString.FRAGMENT_EXAMPLE).normalNavigation(this)
         }
 
         coordinator.setOnClickListener {
-            ARouter.getInstance().build(RouteString.COORDINATOR).normalNavigation()
+            launchARouter(RouteString.COORDINATOR).normalNavigation(this)
         }
 
         recyclerViewItemAnimation.setOnClickListener {
-            ARouter.getInstance().build(RouteString.ITEM_ANIMATION).normalNavigation()
+            launchARouter(RouteString.ITEM_ANIMATION).normalNavigation(this)
         }
 
         specialRc.setOnClickListener {
-            ARouter.getInstance().build(RouteString.SPECIAL_RC).normalNavigation()
+            launchARouter(RouteString.SPECIAL_RC).normalNavigation(this)
         }
 
         showDialog.setOnClickListener {
-            ARouter.getInstance().build(RouteString.DIALOG).loginNavigation()
+            launchARouter(RouteString.DIALOG).loginNavigation(this)
         }
 
         mvpRoom.setOnClickListener {
-            ARouter.getInstance().build(RouteString.MVP_ROOM).loginNavigation()
+            launchARouter(RouteString.MVP_ROOM).loginNavigation(this)
         }
 
         mvvmRoom.setOnClickListener {
-            ARouter.getInstance().build(RouteString.MVVM_ROOM).loginNavigation()
+            launchARouter(RouteString.MVVM_ROOM).loginNavigation(this)
         }
 
         shapeBtn.setOnClickListener {
-            ARouter.getInstance().build(RouteString.SHAPE_BTN).loginNavigation()
+            launchARouter(RouteString.SHAPE_BTN).loginNavigation(this)
         }
 
         camera.setOnClickListener {
-            ARouter.getInstance().build(RouteString.CAMERA_HOME).loginNavigation()
+            launchARouter(RouteString.CAMERA_HOME).loginNavigation(this)
         }
 
 
@@ -109,6 +110,11 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initData() {
+        log("efaegfaw", System.currentTimeMillis().toString())
+        log("efaegfaw", System.currentTimeMillis().timeL2S(FORMAT1))
+        log("efaegfaw", System.currentTimeMillis().timeL2S(FORMAT2))
+        log("efaegfaw", "2018.09.15 15:13:05".timeS2L(FORMAT1))
+        log("efaegfaw", System.currentTimeMillis().getWeekCn())
         getPermissions()
     }
 
@@ -119,7 +125,7 @@ class MainActivity : BaseActivity() {
     @AfterPermissionGranted(STORAGE_PERMISSION_CODE)
     private fun getPermissions() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            LogUtil.log(TAG, "hasPermissions")
+            log(TAG, "hasPermissions")
         } else {
             EasyPermissions.requestPermissions(
                 this, "为了正常使用，需要获取以下权限",

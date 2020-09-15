@@ -6,7 +6,7 @@ import com.base.common.util.AndroidUtil
 import com.base.common.view.SimpleItemDecoration
 import com.basemvp.R
 
-class ConnectionDecoration(adapter: ConnectionAdapter) : SimpleItemDecoration<String, ConnectionAdapter>(adapter) {
+class ConnectionDecoration(adapter: ConnectionAdapter) : SimpleItemDecoration<String>(adapter) {
     override var decorationHeight: Int = AndroidUtil.dp2px(8f).toInt()
 
     private val icon = BitmapFactory.decodeResource(BaseAPP.baseAppContext.resources, R.mipmap.transit_icon)

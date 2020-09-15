@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.animation.LinearInterpolator
 import com.base.common.R
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 
 /**
  * 所有 button 的基类，项目所有使用的 button 都应该使用它，或者继承它
@@ -35,7 +35,7 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     private var allowPressEffect = true
 
     init {
-        LogUtil.log(TAG, "init")
+        log(TAG, "init")
 
         //允许小写
         isAllCaps = false
@@ -54,7 +54,7 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
             if (System.currentTimeMillis() - lastTime > clickInterval) {
                 lastTime = System.currentTimeMillis()
             } else {
-                LogUtil.log(TAG, "performClick false")
+                log(TAG, "performClick false")
                 return false
             }
         }
@@ -70,10 +70,10 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (isEnabled && allowPressEffect) {
             if (event?.action == MotionEvent.ACTION_DOWN) {
-                LogUtil.log(TAG, "onTouchEvent ${event.action} $isEnabled")
+                log(TAG, "onTouchEvent ${event.action} $isEnabled")
                 animate().setDuration(60).scaleX(0.95f).scaleY(0.95f).alpha(0.8f).setInterpolator(interpolator).start()
             } else if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_CANCEL) {
-                LogUtil.log(TAG, "onTouchEvent ${event.action} $isEnabled")
+                log(TAG, "onTouchEvent ${event.action} $isEnabled")
                 animate().setDuration(60).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setInterpolator(interpolator).start()
             }
         }

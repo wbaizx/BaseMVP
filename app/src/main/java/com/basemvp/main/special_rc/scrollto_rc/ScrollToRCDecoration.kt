@@ -7,7 +7,7 @@ import android.graphics.Rect
 import com.base.common.util.AndroidUtil
 import com.base.common.view.SimpleItemDecoration
 
-class ScrollToRCDecoration(adapter: ScrollToRCAdapter) : SimpleItemDecoration<String, ScrollToRCAdapter>(adapter) {
+class ScrollToRCDecoration(adapter: ScrollToRCAdapter) : SimpleItemDecoration<String>(adapter) {
 
     override var decorationHeight: Int = AndroidUtil.dp2px(90f).toInt()
 

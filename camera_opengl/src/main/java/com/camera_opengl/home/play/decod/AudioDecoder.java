@@ -11,7 +11,7 @@ import android.os.HandlerThread;
 
 import androidx.annotation.NonNull;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.play.PlayListener;
 import com.camera_opengl.home.play.extractor.AudioExtractor;
 import com.camera_opengl.home.play.extractor.Extractor;
@@ -89,7 +89,7 @@ public class AudioDecoder {
 
                     MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
                     String name = mediaCodecList.findDecoderForFormat(format);
-                    LogUtil.INSTANCE.log(TAG, "createCodec " + name);
+                    LogUtilKt.log(TAG, "createCodec " + name);
                     try {
                         mMediaCodec = MediaCodec.createByCodecName(name);
                     } catch (IOException e) {
@@ -99,7 +99,7 @@ public class AudioDecoder {
                     start();
                     status = STATUS_READY;
 
-                    LogUtil.INSTANCE.log(TAG, "AudioDecoder init X");
+                    LogUtilKt.log(TAG, "AudioDecoder init X");
                 }
             }
         });
@@ -108,7 +108,7 @@ public class AudioDecoder {
     private MediaCodec.Callback callback = new MediaCodec.Callback() {
         @Override
         public void onInputBufferAvailable(@NonNull MediaCodec codec, int index) {
-            LogUtil.INSTANCE.log(TAG, "onInputBufferAvailable");
+            LogUtilKt.log(TAG, "onInputBufferAvailable");
             ByteBuffer inputBuffer = mMediaCodec.getInputBuffer(index);
             int size = 0;
             if (inputBuffer != null) {
@@ -127,8 +127,8 @@ public class AudioDecoder {
         public void onOutputBufferAvailable(@NonNull MediaCodec codec, int index, @NonNull MediaCodec.BufferInfo info) {
             try {
                 look.lock();
-                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable time " + info.presentationTimeUs);
-                LogUtil.INSTANCE.log(TAG, "onOutputBufferAvailable flags " + info.flags);
+                LogUtilKt.log(TAG, "onOutputBufferAvailable time " + info.presentationTimeUs);
+                LogUtilKt.log(TAG, "onOutputBufferAvailable flags " + info.flags);
 
                 checkPlayStatus();
 
@@ -144,7 +144,7 @@ public class AudioDecoder {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                LogUtil.INSTANCE.log(TAG, "finally");
+                LogUtilKt.log(TAG, "finally");
 
                 look.unlock();
             }
@@ -157,13 +157,13 @@ public class AudioDecoder {
 
         @Override
         public void onOutputFormatChanged(@NonNull MediaCodec codec, @NonNull MediaFormat format) {
-            LogUtil.INSTANCE.log(TAG, "onOutputFormatChanged");
+            LogUtilKt.log(TAG, "onOutputFormatChanged");
         }
     };
 
     private void checkPlayStatus() throws InterruptedException {
         if (status != STATUS_START) {
-            LogUtil.INSTANCE.log(TAG, "checkPlayStatus await " + status);
+            LogUtilKt.log(TAG, "checkPlayStatus await " + status);
             condition.await();
         }
     }
@@ -183,8 +183,8 @@ public class AudioDecoder {
             long ft = presentationTimeUs - frameTime;//帧间隔
             long st = System.nanoTime() / 1000 - systemTime;//系统时间间隔
 
-            LogUtil.INSTANCE.log(TAG, "avSyncTime await time " + (ft - st) + " -- " + status);
-            LogUtil.INSTANCE.log(TAG, "avSyncTime await ft " + ft + " --st " + st);
+            LogUtilKt.log(TAG, "avSyncTime await time " + (ft - st) + " -- " + status);
+            LogUtilKt.log(TAG, "avSyncTime await ft " + ft + " --st " + st);
 
             if (ft > st) {
                 condition.await(ft - st, TimeUnit.MICROSECONDS);
@@ -211,7 +211,7 @@ public class AudioDecoder {
         mMediaCodec.setCallback(callback, audioDecoderHandler);
         mMediaCodec.configure(format, null, null, 0);
         mMediaCodec.start();
-        LogUtil.INSTANCE.log(TAG, "start");
+        LogUtilKt.log(TAG, "start");
     }
 
     private void playEnd() {
@@ -221,7 +221,7 @@ public class AudioDecoder {
         status = STATUS_STOP;
 
         playListener.playEnd();
-        LogUtil.INSTANCE.log(TAG, "stop");
+        LogUtilKt.log(TAG, "stop");
     }
 
     public void pause() {
@@ -248,7 +248,7 @@ public class AudioDecoder {
 
         status = STATUS_RELEASE;
 
-        LogUtil.INSTANCE.log(TAG, "release");
+        LogUtilKt.log(TAG, "release");
 
         condition.signal();
         look.unlock();

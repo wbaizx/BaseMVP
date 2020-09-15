@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.basemvp.R
 import com.google.android.material.appbar.AppBarLayout
 import com.gyf.immersionbar.ImmersionBar
@@ -59,15 +59,15 @@ class Coordinator1Activity : BaseActivity() {
             toolbar.alpha = off / appBar.totalScrollRange
             testArea.y = appBar.totalScrollRange.toFloat() + toolbar.paddingTop
             testArea.translationX = -off
-            LogUtil.log(TAG, "addOnOffsetChangedListener $off  -  ${appBar.totalScrollRange}")
+            log(TAG, "addOnOffsetChangedListener $off  -  ${appBar.totalScrollRange}")
         })
 
         toolbarImg.setOnClickListener {
-            LogUtil.log(TAG, "toolbarImg click")
+            log(TAG, "toolbarImg click")
         }
 
         testArea.setOnClickListener {
-            LogUtil.log(TAG, "testArea click")
+            log(TAG, "testArea click")
         }
     }
 

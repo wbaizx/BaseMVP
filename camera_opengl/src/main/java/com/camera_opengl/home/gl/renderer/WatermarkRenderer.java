@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.opengl.GLES30;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.gl.GLHelper;
 
 import java.nio.FloatBuffer;
@@ -49,7 +49,7 @@ public class WatermarkRenderer extends BaseRenderer {
 
     @Override
     public void onSurfaceCreated() {
-        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated");
+        LogUtilKt.log(TAG, "onSurfaceCreated");
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         program = GLHelper.compileAndLink("watermark/watermark_v_shader.glsl", "watermark/watermark_f_shader.glsl");
@@ -59,7 +59,7 @@ public class WatermarkRenderer extends BaseRenderer {
 
         GLHelper.createWatermarkTexture(createWatermarkBitmap(), watermarkTexture);
 
-        LogUtil.INSTANCE.log(TAG, "onSurfaceCreated X");
+        LogUtilKt.log(TAG, "onSurfaceCreated X");
     }
 
     private Bitmap createWatermarkBitmap() {
@@ -96,7 +96,7 @@ public class WatermarkRenderer extends BaseRenderer {
 
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_NONE);
 
-        LogUtil.INSTANCE.log(TAG, "createVBO X");
+        LogUtilKt.log(TAG, "createVBO X");
     }
 
     private void createVAO() {
@@ -118,7 +118,7 @@ public class WatermarkRenderer extends BaseRenderer {
         //解绑VAO
         GLES30.glBindVertexArray(GLES30.GL_NONE);
 
-        LogUtil.INSTANCE.log(TAG, "createVAO X");
+        LogUtilKt.log(TAG, "createVAO X");
     }
 
     @Override
@@ -152,7 +152,7 @@ public class WatermarkRenderer extends BaseRenderer {
         GLES30.glDeleteProgram(program);
         GLES30.glDeleteBuffers(2, vboArray, 0);
         GLES30.glDeleteVertexArrays(1, vaoArray, 0);
-        LogUtil.INSTANCE.log(TAG, "onSurfaceDestroy X");
+        LogUtilKt.log(TAG, "onSurfaceDestroy X");
     }
 
     @Override
@@ -160,6 +160,6 @@ public class WatermarkRenderer extends BaseRenderer {
         vertexBuffer.clear();
         textureCoordBuffer.clear();
 
-        LogUtil.INSTANCE.log(TAG, "onDestroy X");
+        LogUtilKt.log(TAG, "onDestroy X");
     }
 }

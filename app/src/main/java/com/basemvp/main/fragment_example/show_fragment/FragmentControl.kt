@@ -2,9 +2,9 @@ package com.basemvp.main.fragment_example.show_fragment
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import com.base.common.util.log
 import com.basemvp.main.fragment_example.fm.TestFragment
 import com.basemvp.main.fragment_example.fm.TestMVPFragment
-import com.base.common.util.LogUtil
 
 /**
  * 通过配合 setMaxLifecycle 控制生命周期
@@ -31,21 +31,21 @@ class FragmentControl(private val supportFragmentManager: FragmentManager, priva
                 if (fragmentList[currentPosition].isAdded) {
                     beginTransaction.hide(fragmentList[currentPosition])
                     beginTransaction.setMaxLifecycle(fragmentList[currentPosition], Lifecycle.State.STARTED)
-                    LogUtil.log(TAG, "hide  ${fragmentList[currentPosition]}")
+                    log(TAG, "hide  ${fragmentList[currentPosition]}")
                 }
             }
             if (fragmentList[position].isAdded) {
                 beginTransaction.show(fragmentList[position])
-                LogUtil.log(TAG, "show")
+                log(TAG, "show")
             } else {
                 beginTransaction.add(fragmentLayout, fragmentList[position])
-                LogUtil.log(TAG, "add")
+                log(TAG, "add")
             }
             beginTransaction.setMaxLifecycle(fragmentList[position], Lifecycle.State.RESUMED)
             beginTransaction.commit()
 
             currentPosition = position
-            LogUtil.log(TAG, "currentPosition $currentPosition")
+            log(TAG, "currentPosition $currentPosition")
         }
     }
 
@@ -54,7 +54,7 @@ class FragmentControl(private val supportFragmentManager: FragmentManager, priva
         fragmentList.forEach {
             if (it.isAdded) {
                 beginTransaction.remove(it)
-                LogUtil.log(TAG, "remove")
+                log(TAG, "remove")
             }
         }
         beginTransaction.commit()

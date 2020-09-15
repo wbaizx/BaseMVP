@@ -9,6 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
 import jp.wasabeef.glide.transformations.BlurTransformation
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 
 private const val TAG = "GlideUtil"
 
@@ -21,19 +22,32 @@ fun GlideRequest<Drawable>.normalInto(img: ImageView) {
         .placeholder(R.mipmap.placeholder_icon)
         .error(R.mipmap.test_icon)
         .transition(DrawableTransitionOptions.withCrossFade())
-        .into(BaseTarget(img))
+        .into(img)
 }
 
-fun GlideRequest<Drawable>.specialInto(img: ImageView) {
+fun GlideRequest<Drawable>.blurInto(img: ImageView) {
     //高斯模糊
     //如果需要对图片部分，比如底部做模糊，可以在图片上再盖一张图，上面的imageView包裹一层父布局，限制高度
     //然后上层imageView与下层imageView同高宽，同时与包裹的父布局底部对齐，达到只模糊底部的骚操作
     apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
-//        .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0))) //圆角
-        //圆图实现，尽量用下面这种，还有 CircleImageView 和 cardView 也能实现
-//        .apply(RequestOptions.circleCropTransform())
         .transition(DrawableTransitionOptions.withCrossFade())
-        .into(BaseTarget(img))
+        .into(img)
+}
+
+fun GlideRequest<Drawable>.circleInto(img: ImageView) {
+    //圆图实现，尽量用下面这种，还有 CircleImageView 和 cardView 也能实现
+    apply(RequestOptions.circleCropTransform())
+        //圆角
+//        .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0)))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(img)
+}
+
+fun GlideRequest<Drawable>.roundInto(img: ImageView) {
+    //圆角
+    apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0)))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(img)
 }
 
 /**
@@ -43,17 +57,17 @@ fun GlideRequest<Drawable>.specialInto(img: ImageView) {
  */
 private class BaseTarget(img: ImageView) : CustomViewTarget<ImageView, Drawable>(img) {
     override fun onLoadFailed(errorDrawable: Drawable?) {
-        LogUtil.log(TAG, "onLoadFailed $errorDrawable")
+        log(TAG, "onLoadFailed $errorDrawable")
         getView().setImageDrawable(errorDrawable)
     }
 
     override fun onResourceCleared(placeholder: Drawable?) {
         //这个方法在drawable被回收时调用，如果在除了imageView以外的地方引用了imageView中的bitmap，在这里清除引用以避免崩溃
-        LogUtil.log(TAG, "onResourceCleared $placeholder")
+        log(TAG, "onResourceCleared $placeholder")
     }
 
     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-        LogUtil.log(TAG, "onResourceReady $resource")
+        log(TAG, "onResourceReady $resource")
         getView().setImageDrawable(resource)
     }
 }

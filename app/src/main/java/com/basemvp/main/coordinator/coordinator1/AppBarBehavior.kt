@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.google.android.material.appbar.AppBarLayout
 
 class AppBarBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayout.Behavior(context, attrs) {
@@ -15,7 +15,7 @@ class AppBarBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayout.Beh
     }
 
     override fun onDependentViewChanged(parent: CoordinatorLayout, child: AppBarLayout, dependency: View): Boolean {
-        LogUtil.log(TAG, "onDependentViewChanged ${dependency.y}")
+        log(TAG, "onDependentViewChanged ${dependency.y}")
         return super.onDependentViewChanged(parent, child, dependency)
     }
 
@@ -28,7 +28,7 @@ class AppBarBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayout.Beh
         type: Int
     ): Boolean {
         val onStartNestedScroll = super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type)
-        LogUtil.log(TAG, "onStartNestedScroll $onStartNestedScroll")
+        log(TAG, "onStartNestedScroll $onStartNestedScroll")
         return onStartNestedScroll
     }
 }

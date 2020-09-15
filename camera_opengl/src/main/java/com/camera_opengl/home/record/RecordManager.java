@@ -2,7 +2,7 @@ package com.camera_opengl.home.record;
 
 import android.util.Size;
 
-import com.base.common.util.LogUtil;
+import com.base.common.util.LogUtilKt;
 import com.camera_opengl.home.record.encoder.AudioEncoder;
 import com.camera_opengl.home.record.encoder.VideoEncoder;
 
@@ -33,7 +33,7 @@ public class RecordManager {
 
     public void confirmReallySize(Size reallySize) {
         this.reallySize = reallySize;
-        LogUtil.INSTANCE.log(TAG, "confirmCameraSize " + reallySize.getWidth() + "  " + reallySize.getHeight());
+        LogUtilKt.log(TAG, "confirmCameraSize " + reallySize.getWidth() + "  " + reallySize.getHeight());
     }
 
     public void startRecord() {

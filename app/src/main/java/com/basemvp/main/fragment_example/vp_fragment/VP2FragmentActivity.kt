@@ -5,7 +5,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
 import com.base.common.base.adapter.BaseViewPagerAdapter
 import com.base.common.config.RouteString
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.basemvp.R
 import com.basemvp.main.fragment_example.fm.TestFragment
 import com.basemvp.main.fragment_example.fm.TestMVPFragment
@@ -34,14 +34,14 @@ class VP2FragmentActivity : BaseActivity() {
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-                LogUtil.log(TAG, "$position -- $positionOffset -- $positionOffsetPixels")
+                log(TAG, "$position -- $positionOffset -- $positionOffsetPixels")
             }
 
             //用这个
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 simpleTabLayout.setPosition(position)
-                LogUtil.log(TAG, "onPageSelected $position")
+                log(TAG, "onPageSelected $position")
             }
 
             override fun onPageScrollStateChanged(state: Int) {

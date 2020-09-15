@@ -3,7 +3,7 @@ package com.basemvp.main.shape_btn
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
-import com.base.common.util.LogUtil
+import com.base.common.util.log
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_show_shapebtn.*
 
@@ -15,15 +15,15 @@ class ShowShapeBtnActivity : BaseActivity() {
 
     override fun initView() {
         shapeButton.setOnClickListener {
-            LogUtil.log(TAG, "shapeButton OnClick")
+            log(TAG, "shapeButton OnClick")
         }
 
         shapeDrawableButton.setOnClickListener {
-            LogUtil.log(TAG, "shapeDrawableButton OnClick")
+            log(TAG, "shapeDrawableButton OnClick")
         }
 
         commonButton.setOnClickListener {
-            LogUtil.log(TAG, "commonButton OnClick")
+            log(TAG, "commonButton OnClick")
         }
     }
 
@@ -32,6 +32,6 @@ class ShowShapeBtnActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        LogUtil.log(TAG, "onDestroy")
+        log(TAG, "onDestroy")
     }
 }
