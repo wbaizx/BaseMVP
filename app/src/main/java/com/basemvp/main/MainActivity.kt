@@ -110,11 +110,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initData() {
-        log("efaegfaw", System.currentTimeMillis().toString())
-        log("efaegfaw", System.currentTimeMillis().timeL2S(FORMAT1))
-        log("efaegfaw", System.currentTimeMillis().timeL2S(FORMAT2))
-        log("efaegfaw", "2018.09.15 15:13:05".timeS2L(FORMAT1))
-        log("efaegfaw", System.currentTimeMillis().getWeekCn())
         getPermissions()
     }
 
