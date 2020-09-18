@@ -48,7 +48,6 @@ class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
     override fun initData() {
         viewModel.name.observe(this, {
             log(TAG, "name ${this.hashCode()}")
-            finish()
         })
     }
 

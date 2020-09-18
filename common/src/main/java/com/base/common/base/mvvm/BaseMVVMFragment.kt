@@ -18,8 +18,8 @@ abstract class BaseMVVMFragment<B : ViewDataBinding> : BaseFragment() {
         binding.lifecycleOwner = this
         bindModelId(binding)
 
-        //如果采用sharedViewModel共用viewModel,在fragment中不需要注册基本监听,以免重复接收
-        //统一交给activity注册的基本监听接收
+        //如果采用sharedViewModel共用viewModel，那么统一交给activity注册的基本监听接收
+        //在fragment中不需要注册基本监听,以免重复接收
         if ((activity as? BaseMVVMActivity<*>)?.viewModel != viewModel) {
             initBaseObserve()
         }

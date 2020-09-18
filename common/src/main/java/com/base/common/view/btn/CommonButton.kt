@@ -25,11 +25,6 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
     private var lastTime = 0L
 
     /**
-     * 点击时间间隔
-     */
-    private var clickInterval = 800L
-
-    /**
      * 是否允默认按下动画效果
      */
     private var allowPressEffect = true
@@ -51,7 +46,7 @@ open class CommonButton(context: Context, attrs: AttributeSet?) : androidx.appco
      */
     override fun performClick(): Boolean {
         if (!allowRepeatedClick) {
-            if (System.currentTimeMillis() - lastTime > clickInterval) {
+            if (System.currentTimeMillis() - lastTime > 800L) {
                 lastTime = System.currentTimeMillis()
             } else {
                 log(TAG, "performClick false")

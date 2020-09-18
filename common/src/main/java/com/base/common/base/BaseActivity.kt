@@ -5,7 +5,10 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +20,7 @@ import com.base.common.util.http.NoNetworkException
 import com.base.common.util.log
 import com.google.gson.stream.MalformedJsonException
 import com.gyf.immersionbar.ImmersionBar
+import kotlinx.android.synthetic.main.activity_base_layout.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.net.SocketTimeoutException
@@ -28,7 +32,10 @@ import java.net.UnknownHostException
  */
 abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
     private val TAG = "BaseActivity"
+
     private val loadDialog by lazy { LoadDialog(this) }
+
+    private lateinit var contentLayout: View
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +48,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
         configure()
 
-        bindView()
+        //绑定默认布局
+        setContentView(R.layout.activity_base_layout)
+        //添加content布局
+        contentLayout = bindView(LayoutInflater.from(this), baseRootLayout)
+        baseRootLayout.addView(contentLayout)
 
         setImmersionBar()
 
@@ -49,8 +60,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         initData()
     }
 
-    protected open fun bindView() {
-        setContentView(getContentView())
+    /**
+     * 初始化和绑定content布局
+     */
+    protected open fun bindView(inflater: LayoutInflater, container: ViewGroup): View {
+        return inflater.inflate(getContentView(), container, false)
     }
 
     /**
@@ -104,6 +118,30 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         ed.requestFocus()
         val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(ed, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    /**
+     * 展示内容视图布局
+     */
+    fun showContent() {
+        errorLayout.visibility = View.GONE
+        contentLayout.visibility = View.VISIBLE
+    }
+
+    /**
+     * 展示错误视图布局
+     */
+    fun showError(msg: String? = null) {
+        contentLayout.visibility = View.GONE
+        errorLayout.visibility = View.VISIBLE
+
+        if (!TextUtils.isEmpty(msg)) {
+            errorMsg.text = msg
+        }
+
+        errorBtn.setOnClickListener {
+            showContent()
+        }
     }
 
     fun showLoadDialog() {
