@@ -91,7 +91,11 @@ abstract class BaseFragment : Fragment() {
         (activity as? BaseActivity)?.hideLoadDialog()
     }
 
-    fun runError(e: Exception) {
+    /**
+     * 某些情况下需要继承，比如关闭下拉刷新状态
+     * 注意mvvm下使用sharedViewModel共用viewModel，那么统一交给activity注册的基本监听接收，此方法不会回调
+     */
+    open fun runError(e: Exception) {
         (activity as? BaseActivity)?.runError(e)
     }
 

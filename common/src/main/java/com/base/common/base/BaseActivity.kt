@@ -158,7 +158,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    fun runError(e: Exception) {
+    /**
+     * 某些情况下需要继承，比如关闭下拉刷新状态
+     */
+    open fun runError(e: Exception) {
         when (e) {
             is SocketTimeoutException -> AndroidUtil.showToast("连接超时")
             is UnknownHostException -> AndroidUtil.showToast("网络错误")
@@ -167,6 +170,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             is CodeException -> AndroidUtil.showToast("服务器code码错误 + code=${e.message}")
             else -> AndroidUtil.showToast("未知错误")
         }
+        showError()
     }
 
     /**

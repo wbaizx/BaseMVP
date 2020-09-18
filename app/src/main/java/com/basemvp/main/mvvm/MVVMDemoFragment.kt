@@ -1,12 +1,17 @@
 package com.basemvp.main.mvvm
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.base.common.base.mvvm.BaseMVVMFragment
 import com.base.common.util.log
 import com.basemvp.R
 import com.basemvp.databinding.FragmentMvvmDemoFBinding
-import kotlinx.android.synthetic.main.activity_mvvm_demo.*
+import com.basemvp.main.mvvm.adapter.MVMMListAdapter
+import kotlinx.android.synthetic.main.fragment_mvvm_demo_f.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ * 测试 mvvm 下的 adapter
+ */
 class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
     private val TAG = "MVVMDemoFragment"
 
@@ -22,20 +27,22 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
     }
 
     override fun createView() {
-        log(TAG, "viewModel ${viewModel.hashCode()}")
-        viewModel.name.observe(this, {
-            log(TAG, "name ${this.hashCode()}")
-        })
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = MVMMListAdapter()
+
+        //xml中设置了头部脚部
+//        refreshLayout.setRefreshHeader(ClassicsHeader(context))
+//        refreshLayout.setRefreshFooter(ClassicsFooter(context))
+
+        refreshLayout.setOnRefreshListener {
+            log(TAG, "Refresh")
+        }
+        refreshLayout.setOnLoadMoreListener {
+            log(TAG, "LoadMore")
+        }
     }
 
     override fun onFirstVisible() {
-        save.setOnClickListener {
-            viewModel.saveData()
-        }
-
-        query.setOnClickListener {
-            viewModel.queryData()
-        }
     }
 
     override fun onVisible() {
