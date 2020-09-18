@@ -3,8 +3,10 @@ package com.base.common
 import android.app.Activity
 import android.app.Application
 import android.content.pm.ApplicationInfo
+import android.os.Bundle
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.util.log
+import java.util.*
 
 /**
  * 基类 Application
@@ -18,22 +20,48 @@ abstract class BaseAPP : Application() {
         private val TAG = "BaseAPP-Application"
 
         lateinit var baseAppContext: BaseAPP
-        val allActivities = arrayListOf<Activity>()
 
-        fun registerActivity(activity: Activity) {
-            allActivities.add(activity)
-        }
+        private val allActivities = Stack<Activity>()
 
-        fun unregisterActivity(activity: Activity) {
-            allActivities.remove(activity)
+        private val activityLifecycleCallbacks = object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                allActivities.push(activity)
+                log(TAG, "onActivityCreated ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
+
+            override fun onActivityStarted(activity: Activity) {
+                log(TAG, "onActivityStarted ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
+
+            override fun onActivityResumed(activity: Activity) {
+                log(TAG, "onActivityResumed ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+                log(TAG, "onActivityPaused ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+                log(TAG, "onActivityStopped ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+                log(TAG, "onActivitySaveInstanceState ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+                allActivities.remove(activity)
+                log(TAG, "onActivityDestroyed ${activity.javaClass.simpleName} ${allActivities.size}")
+            }
         }
 
         fun exitApp() {
+            log(TAG, "exitApp ${allActivities.size}")
             allActivities.forEach {
                 it.finish()
             }
             allActivities.clear()
-            log(TAG, allActivities.size.toString())
+            log(TAG, "exitApp ${allActivities.size}")
         }
     }
 
@@ -41,8 +69,10 @@ abstract class BaseAPP : Application() {
         super.onCreate()
         baseAppContext = this
 
-        initARouter()
+        //注册Activity管理
+        registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
 
+        initARouter()
         initKoin()
     }
 

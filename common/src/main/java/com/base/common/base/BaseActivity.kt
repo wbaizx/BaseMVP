@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.android.arouter.launcher.ARouter
-import com.base.common.BaseAPP
 import com.base.common.R
 import com.base.common.util.AndroidUtil
 import com.base.common.util.http.CodeException
@@ -37,8 +36,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         //强制竖屏，这里用代码方式，有问题，首次打开页面可能并非竖屏导致闪屏
         //可以使用 xml 中 android:screenOrientation="portrait"，不过每个页面添加有点麻烦
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        BaseAPP.registerActivity(this)
 
         ARouter.getInstance().inject(this)
 
@@ -90,11 +87,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 在例如singleTask模式下重启activity，可能需要子类在这里做一些view和presenter的刷新重置清理等操作
      */
     protected open fun resetView() {
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        BaseAPP.unregisterActivity(this)
     }
 
     /**
