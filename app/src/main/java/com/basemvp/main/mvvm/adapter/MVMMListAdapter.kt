@@ -1,22 +1,18 @@
 package com.basemvp.main.mvvm.adapter
 
-import com.base.common.base.adapter.BaseBindingAdapter
+import com.base.common.base.adapter.BaseListAdapter
 import com.basemvp.R
-import com.basemvp.databinding.MvvmListItemBinding
-import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
-class MVMMListAdapter : BaseBindingAdapter<MVVMListBean, MvvmListItemBinding>(R.layout.mvvm_list_item) {
+class MVMMListAdapter : BaseListAdapter<MVVMBindBean, BaseViewHolder>(R.layout.mvvm_list_item) {
 
     init {
         repeat(20) {
-            data.add(MVVMListBean(it.toString()))
+            data.add(MVVMBindBean(it.toString()))
         }
     }
 
-    override fun bindModelId(binding: MvvmListItemBinding, item: MVVMListBean) {
-        binding.bean = item
-    }
-
-    override fun convertUI(holder: BaseDataBindingHolder<MvvmListItemBinding>, item: MVVMListBean) {
+    override fun convertUI(holder: BaseViewHolder, item: MVVMBindBean) {
+        holder.setText(R.id.tex, item.id)
     }
 }

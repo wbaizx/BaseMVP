@@ -159,7 +159,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
-     * 某些情况下需要继承，比如关闭下拉刷新状态
+     * 某些情况下需要继承此方法做后续操作，比如关闭下拉刷新状态
      */
     open fun runError(e: Exception) {
         when (e) {

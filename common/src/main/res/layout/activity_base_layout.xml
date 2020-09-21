@@ -13,10 +13,23 @@
         android:visibility="gone"
         tools:visibility="visible">
 
+        <ImageView
+            android:id="@+id/errorImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@mipmap/empty_icon"
+            app:layout_constraintBottom_toTopOf="@+id/errorMsg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
         <TextView
             android:id="@+id/errorMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="统一错误视图"
             android:textColor="@color/color_black"
@@ -24,8 +37,7 @@
             app:layout_constraintBottom_toTopOf="@+id/errorBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintTop_toBottomOf="@+id/errorImg" />
 
         <com.base.common.view.btn.ShapeButton
             android:id="@+id/errorBtn"
