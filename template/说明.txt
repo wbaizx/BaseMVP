@@ -3,3 +3,5 @@
 然后重启studio
 在新建activity时选择 新建对应模块即可
 如果需要模板fragment，先生成对应activity，在手动修改为fragment即可
+
+studio更新可能导致考进去的文件夹丢失，重新导入一次即可

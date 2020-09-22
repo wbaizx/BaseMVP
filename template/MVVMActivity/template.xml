@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<template
+    format="5"
+    revision="5"
+    name="MVVM Activity"
+    minApi="9"
+    minBuildApi="14"
+    description="创建一个MVVM模板activity">
+
+    <category value="Activity" />
+    <formfactor value="Mobile" />
+
+    <parameter
+        id="mvvmCommonName"
+        name="Common Name"
+        type="string"
+        default="MVVM"
+        help="mvvm模块名，影响ViewModel,Repository名等" />
+		
+    <parameter
+        id="activityClass"
+        name="Activity Name"
+        type="string"
+        constraints="class|unique|nonempty"
+        suggest="${mvvmCommonName}Activity"
+        default="MainActivity"
+        help="Activity类名，随mvvmCommonName名改变" />
+
+    <parameter
+        id="layoutName"
+        name="Layout Name"
+        type="string"
+        constraints="layout|unique|nonempty"
+        suggest="${activityToLayout(activityClass)}"
+        default="activity_main"
+        help="layout布局名，随activity类名改变" />
+
+    <parameter
+        id="packageName"
+        name="Package name"
+        type="string"
+        constraints="package"
+        default="com.mycompany.myapp" />
+
+    <!-- 128x128 thumbnails relative to template.xml -->
+    <thumbs>
+        <!-- default thumbnail is required -->
+        <thumb>template_blank_activity.png</thumb>
+    </thumbs>
+
+    <globals file="globals.xml.ftl" />
+    <execute file="recipe.xml.ftl" />
+
+</template>
