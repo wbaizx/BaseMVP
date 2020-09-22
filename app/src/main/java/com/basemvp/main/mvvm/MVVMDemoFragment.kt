@@ -37,6 +37,7 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
 //        refreshLayout1.setRefreshFooter(ClassicsFooter(context))
 
         recyclerView1.adapter = MVMMBindAdapter().apply {
+            setDefaultEmptyView(this@MVVMDemoFragment.context, recyclerView1)
             openRefreshAndLoadMore(refreshLayout1) {
                 Handler().postDelayed({ addPageData(null) }, 1500)
             }

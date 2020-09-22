@@ -21,18 +21,17 @@ abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val la
      * 分页加载的下标，从0开始
      */
     val pageDefaultIndex = 0
-    private var page: Int = pageDefaultIndex
+    var page: Int = pageDefaultIndex
+
+    /**
+     * 对应分页控件
+     */
     private var refreshLayout: SmartRefreshLayout? = null
 
     /**
      * adapter对应的RecyclerView
      */
     private lateinit var rcView: RecyclerView
-
-    /**
-     * 空布局点击事件
-     */
-    var emptyClick: (() -> Unit)? = null
 
     init {
         log(TAG, "init")
@@ -49,7 +48,7 @@ abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val la
     /**
      * 设置默认空布局
      */
-    fun setDefaultEmptyView(context: Context? = null, root: ViewGroup? = null) {
+    fun setDefaultEmptyView(context: Context? = null, root: ViewGroup? = null, emptyClick: (() -> Unit)? = null) {
         val view: View
         if (context == null || root == null) {
             if (this::rcView.isInitialized) {
