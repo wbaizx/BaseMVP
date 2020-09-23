@@ -21,11 +21,23 @@ abstract class BaseAPP : Application() {
 
         lateinit var baseAppContext: BaseAPP
 
-        private val allActivities = Stack<Activity>()
+        /**
+         * 线程安全ArrayList
+         * CopyOnWriteArrayList 耗
+         * 耗内存
+         * 只有写加锁，性能好
+         * 只能保证数据的最终一致性，不能保证数据的实时一致性
+         * 多读少写
+         *
+         * Collections.synchronizedList
+         * 全锁（遍历除外），性能差
+         * 多写少读
+         */
+        private val allActivities = Collections.synchronizedList(arrayListOf<Activity>())
 
         private val activityLifecycleCallbacks = object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                allActivities.push(activity)
+                allActivities.add(activity)
                 log(TAG, "onActivityCreated ${activity.javaClass.simpleName} ${allActivities.size}")
             }
 
@@ -50,6 +62,7 @@ abstract class BaseAPP : Application() {
             }
 
             override fun onActivityDestroyed(activity: Activity) {
+                //调用exitApp后这里还是会执行
                 allActivities.remove(activity)
                 log(TAG, "onActivityDestroyed ${activity.javaClass.simpleName} ${allActivities.size}")
             }
@@ -57,10 +70,15 @@ abstract class BaseAPP : Application() {
 
         fun exitApp() {
             log(TAG, "exitApp ${allActivities.size}")
-            allActivities.forEach {
-                it.finish()
+
+            //遍历需加同步锁，其内部锁对象就是自身
+            synchronized(allActivities) {
+                allActivities.forEach {
+                    it.finish()
+                }
+                allActivities.clear()
             }
-            allActivities.clear()
+
             log(TAG, "exitApp ${allActivities.size}")
         }
     }
