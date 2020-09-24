@@ -6,6 +6,7 @@ import com.basemvp.R
 import com.basemvp.databinding.FragmentMvvmDemoFBinding
 import com.basemvp.main.mvvm.adapter.MVMMBindAdapter
 import com.basemvp.main.mvvm.adapter.MVMMListAdapter
+import com.basemvp.main.mvvm.adapter.MVVMBindBean
 import kotlinx.android.synthetic.main.fragment_mvvm_demo_f.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -37,19 +38,25 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
 //        refreshLayout1.setRefreshFooter(ClassicsFooter(context))
 
         recyclerView1.adapter = MVMMBindAdapter().apply {
+
             setDefaultEmptyView(this@MVVMDemoFragment.context, recyclerView1)
-            openRefreshAndLoadMore(refreshLayout1) {
-                Handler().postDelayed({ addPageData(null) }, 1500)
+
+            setRefreshAndLoadMore(refreshLayout1) {
+                Handler().postDelayed({ addPageData(arrayListOf(MVVMBindBean("5"))) }, 1500)
             }
         }
     }
 
     private fun init2() {
         val adapter = MVMMListAdapter()
-        recyclerView2.adapter = adapter
-        adapter.setDefaultEmptyView()
 
-        adapter.openRefreshAndLoadMore(refreshLayout2) {
+        recyclerView2.adapter = adapter
+
+        adapter.setDefaultEmptyView(emptyClick = {
+            Handler().postDelayed({ adapter.addPageData(arrayListOf(MVVMBindBean("5"))) }, 1500)
+        })
+
+        adapter.setRefreshAndLoadMore(refreshLayout2) {
             Handler().postDelayed({ adapter.addPageData(null) }, 1500)
         }
     }

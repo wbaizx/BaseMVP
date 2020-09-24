@@ -21,7 +21,7 @@ abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val la
      * 分页加载的下标，从0开始
      */
     val pageDefaultIndex = 0
-    var page: Int = pageDefaultIndex
+    var page = pageDefaultIndex
 
     /**
      * 对应分页控件
@@ -47,69 +47,113 @@ abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val la
 
     /**
      * 设置默认空布局
+     *
+     * 如果在分页列表中使用自定义空布局并且有点击重新加载的功能，一定要注意调用resetPage()重置分页下标
      */
-    fun setDefaultEmptyView(context: Context? = null, root: ViewGroup? = null, emptyClick: (() -> Unit)? = null) {
+    fun setDefaultEmptyView(context: Context? = null, root: ViewGroup? = null, emptyClick: ((Int) -> Unit)? = null) {
         val view: View
         if (context == null || root == null) {
             if (this::rcView.isInitialized) {
                 view = LayoutInflater.from(this.context).inflate(R.layout.list_item_empty, rcView, false)
             } else {
-                throw RuntimeException("调用时机过早，rcView和context还未初始化，需要传递参数")
+                throw RuntimeException("调用时机过早，rcView和context还未初始化，需要传递context，root参数")
             }
         } else {
             view = LayoutInflater.from(context).inflate(R.layout.list_item_empty, root, false)
         }
 
         view.setOnClickListener {
-            log(TAG, "emptyClick")
             //空布局点击重新加载也应该重置分页下标
-            page = pageDefaultIndex
+            resetPage()
+            log(TAG, "emptyClick $page")
             //事件响应
-            emptyClick?.invoke()
+            emptyClick?.invoke(page)
         }
+
         setEmptyView(view)
         log(TAG, "set default emptyView")
     }
 
     /**
      * 设置分页事件
+     * 仅分页列表使用
      */
-    fun openRefreshAndLoadMore(refreshLayout: SmartRefreshLayout, request: (Int) -> Unit) {
+    fun setRefreshAndLoadMore(refreshLayout: SmartRefreshLayout, request: (Int) -> Unit) {
         this.refreshLayout = refreshLayout
 
         refreshLayout.setOnRefreshListener {
-            log(TAG, "Refresh")
-            page = pageDefaultIndex
+            resetPage()
+            log(TAG, "Refresh $page")
             request.invoke(page)
         }
         refreshLayout.setOnLoadMoreListener {
-            log(TAG, "LoadMore")
             page++
+            log(TAG, "LoadMore $page")
             request.invoke(page)
         }
     }
 
     /**
-     * 填充分页加载的数据
+     * 填充分页加载的数据，同时操作对应刷新布局控件
+     * 仅分页列表使用
      */
     fun addPageData(list: List<M>?) {
-        if (page == pageDefaultIndex) {
-            //如果是刷新，清空数据
+        if (page == pageDefaultIndex) { //刷新，或者空布局点击刷新
+            //是刷新需要清空数据
             data.clear()
-        }
-        if (!list.isNullOrEmpty()) {
-            data.addAll(list)
-        }
-        notifyDataSetChanged()
 
-        if (page != pageDefaultIndex) {//加载更多
             if (list.isNullOrEmpty()) {
-                refreshLayout?.finishLoadMoreWithNoMoreData()
+                //刷新的数据为空，此时应该禁止上拉加载
+                refreshLayout?.setEnableLoadMore(false)
+
+                log(TAG, "addPageData Refresh Null")
             } else {
-                refreshLayout?.finishLoadMore(true)
+                refreshLayout?.setEnableLoadMore(true)
+                //不为空添加数据
+                data.addAll(list)
+
+                log(TAG, "addPageData Refresh")
             }
-        } else {//刷新
+
             refreshLayout?.finishRefresh(true)
+
+        } else { //加载更多
+            if (list.isNullOrEmpty()) {
+                //加载更多的数据为空，此时应该标记没有数据了
+                refreshLayout?.finishLoadMoreWithNoMoreData()
+
+                log(TAG, "addPageData LoadMore Null")
+            } else {
+                //不为空添加数据
+                data.addAll(list)
+
+                refreshLayout?.finishLoadMore(true)
+
+                log(TAG, "addPageData LoadMore")
+            }
+        }
+
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 主动重置分页下标
+     */
+    fun resetPage() {
+        page = pageDefaultIndex
+    }
+
+    /**
+     * 刷新或加载数据失败时，手动调用此方法
+     */
+    fun loadPageError() {
+        if (page == pageDefaultIndex) { //刷新，或者空布局点击刷新
+            refreshLayout?.finishRefresh(false)
+
+        } else { //加载更多
+            refreshLayout?.finishLoadMore(false)
+            //如果是加载出错，page需要回退1
+            page--
         }
     }
 
