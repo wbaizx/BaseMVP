@@ -44,6 +44,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
     //路由跳转(每个需要的Module中需分别添加处理器)
     kapt 'com.alibaba:arouter-compiler:1.2.2'

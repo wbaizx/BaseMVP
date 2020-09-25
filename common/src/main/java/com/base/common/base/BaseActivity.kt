@@ -131,7 +131,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 展示错误视图布局
      */
-    fun showError(msg: String? = null) {
+    fun showErrorContent(msg: String? = null) {
         contentLayout.visibility = View.GONE
         errorLayout.visibility = View.VISIBLE
 
@@ -140,8 +140,15 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
 
         errorBtn.setOnClickListener {
-            showContent()
+            errorContentClick()
         }
+    }
+
+    /**
+     * 统一错误视图点击重试时回调，可在子类中重写完成自己的操作
+     */
+    protected open fun errorContentClick() {
+        showContent()
     }
 
     fun showLoadDialog() {
@@ -170,7 +177,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             is CodeException -> AndroidUtil.showToast("服务器code码错误 + code=${e.message}")
             else -> AndroidUtil.showToast("未知错误")
         }
-        showError()
+        showErrorContent()
     }
 
     /**

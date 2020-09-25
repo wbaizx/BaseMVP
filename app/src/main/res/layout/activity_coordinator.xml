@@ -15,6 +15,16 @@
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showDialog" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/coordinator2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="折叠滚动布局2"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coordinator1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

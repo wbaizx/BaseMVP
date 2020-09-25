@@ -17,6 +17,10 @@ class CoordinatorActivity : BaseActivity() {
         coordinator1.setOnClickListener {
             launchARouter(RouteString.COORDINATOR1).normalNavigation(this)
         }
+
+        coordinator2.setOnClickListener {
+            launchARouter(RouteString.COORDINATOR2).normalNavigation(this)
+        }
     }
 
     override fun initData() {

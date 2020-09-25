@@ -29,6 +29,7 @@
 
         <activity android:name=".main.coordinator.CoordinatorActivity" />
         <activity android:name=".main.coordinator.coordinator1.Coordinator1Activity" />
+        <activity android:name=".main.coordinator.coordinator2.Coordinator2Activity" />
 
         <activity android:name=".main.item_animation.ItemAnimationMainActivity" />
         <activity android:name=".main.item_animation.item_animation1.ItemAnimation1Activity" />

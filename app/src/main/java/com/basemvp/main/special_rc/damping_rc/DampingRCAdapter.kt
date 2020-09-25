@@ -1,8 +1,8 @@
 package com.basemvp.main.special_rc.damping_rc
 
+import com.base.common.base.adapter.BaseListAdapter
 import com.base.common.util.AndroidUtil
 import com.basemvp.R
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
 /**
@@ -10,12 +10,12 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
  * 注意全面屏和刘海屏适配
  */
 class DampingRCAdapter(private val dampingRCActivity: DampingRCActivity) :
-    BaseQuickAdapter<String, BaseViewHolder>(R.layout.damping_rc_item) {
+    BaseListAdapter<String, BaseViewHolder>(R.layout.damping_rc_item) {
     init {
         data = arrayListOf("", "", "", "", "", "", "")
     }
 
-    override fun convert(holder: BaseViewHolder, item: String) {
+    override fun convertUI(holder: BaseViewHolder, item: String) {
         holder.setText(R.id.item_text, "${holder.adapterPosition - headerLayoutCount}")
         if (holder.adapterPosition - headerLayoutCount == 2 || holder.adapterPosition - headerLayoutCount == 3) {
             holder.itemView.layoutParams.height = AndroidUtil.getScreenRealHeight(dampingRCActivity)

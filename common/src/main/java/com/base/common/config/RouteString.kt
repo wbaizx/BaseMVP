@@ -8,6 +8,7 @@ object RouteString {
     const val SHAPE_BTN = "/app/shape_btn"
     const val COORDINATOR = "/app/coordinator"
     const val COORDINATOR1 = "/app/coordinator1"
+    const val COORDINATOR2 = "/app/coordinator2"
     const val FRAGMENT_EXAMPLE = "/app/fragment_example"
     const val VP_FRAGMENT = "/app/viewpager+fragment"
     const val SHOW_FRAGMENT = "/app/show_add+fragment"

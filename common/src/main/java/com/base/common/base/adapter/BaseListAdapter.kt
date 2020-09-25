@@ -12,9 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
-abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val layoutResId: Int) :
-    BaseQuickAdapter<M, BH>(layoutResId) {
-
+abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val layoutResId: Int) : BaseQuickAdapter<M, BH>(layoutResId) {
     private val TAG = "BaseListAdapter"
 
     /**

@@ -1,12 +1,12 @@
 package com.basemvp.main.item_animation.item_animation2
 
 import android.widget.TextView
+import com.base.common.base.adapter.BaseListAdapter
 import com.base.common.util.AndroidUtil
 import com.basemvp.R
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
-class ItemAnimation2Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_anim2_layout_item) {
+class ItemAnimation2Adapter : BaseListAdapter<String, BaseViewHolder>(R.layout.item_anim2_layout_item) {
     private var isLine = true
 
     init {
@@ -15,7 +15,7 @@ class ItemAnimation2Adapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.
         }
     }
 
-    override fun convert(holder: BaseViewHolder, item: String) {
+    override fun convertUI(holder: BaseViewHolder, item: String) {
         val view = holder.getView<TextView>(R.id.sceneText)
         view.text = item
         if (isLine) {
