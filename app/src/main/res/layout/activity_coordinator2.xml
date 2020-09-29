@@ -2,19 +2,51 @@
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MotionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/scene"
-    tools:context=".main.coordinator.coordinator2.Coordinator2Activity">
+    tools:context=".main.coordinator.coordinator2.Coordinator2Activity"
+    tools:showPaths="true">
 
-    <FrameLayout
+    <View
         android:id="@+id/topLayout"
         android:layout_width="0dp"
         android:layout_height="400dp"
-        android:background="@color/color_black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/color_black" />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="text1"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="text2"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="text3"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="text4"
+        android:textColor="@color/color_336"
+        android:textSize="24sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
