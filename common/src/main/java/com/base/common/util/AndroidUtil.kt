@@ -135,6 +135,16 @@ object AndroidUtil {
         BaseAPP.baseAppContext.startActivity(intent)
     }
 
+    /**
+     * 跳转拨电话页
+     */
+    fun call(context: Context, photo: String) {
+        val intent = Intent(Intent.ACTION_DIAL)
+        val data: Uri = Uri.parse("tel:$photo")
+        intent.data = data
+        context.startActivity(intent)
+    }
+
     fun showToast(msg: String) {
         val toast = Toast.makeText(BaseAPP.baseAppContext, msg, Toast.LENGTH_SHORT)
         toast.setGravity(Gravity.CENTER, 0, 0)
