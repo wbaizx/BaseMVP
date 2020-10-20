@@ -7,8 +7,6 @@ if (isCameraRunAlone.toBoolean()) {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-
 
     defaultConfig {
         //配置Camera组件是否可以独立运行

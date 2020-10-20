@@ -1,2 +1,3 @@
+include ':ndk'
 include ':app', ':common', ':login', ':camera_opengl'
 rootProject.name='BaseMVP'

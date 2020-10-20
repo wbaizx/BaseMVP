@@ -1,4 +1,9 @@
-apply plugin: 'com.android.application'
+//配置ndk组件是否可以独立运行
+if (isNDKRunAlone.toBoolean()){
+    apply plugin: 'com.android.application'
+}else{
+    apply plugin: 'com.android.library'
+}
 
 apply plugin: 'kotlin-android'
 
@@ -10,20 +15,36 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.basemvp"
+        //配置ndk组件是否可以独立运行
+        if (isNDKRunAlone.toBoolean()){
+            applicationId "com.ndk"
+        }
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
 
         kapt {
             arguments {
                 arg("AROUTER_MODULE_NAME", project.getName())
-                arg("room.schemaLocation", "$projectDir/schemas".toString())
             }
         }
     }
+
+    //配置ndk组件是否可以独立运行
+    sourceSets{
+        main{
+            if (isNDKRunAlone.toBoolean()){
+                manifest.srcFile 'src/main/alone/AndroidManifest.xml'
+            }else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -35,25 +56,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    //使用dataBinding
-    dataBinding {
-        enabled = true
-    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     //路由跳转(每个需要的Module中需分别添加处理器)
     kapt 'com.alibaba:arouter-compiler:1.2.2'
 
-    //room(每个需要的Module中需分别添加处理器)
-    kapt "androidx.room:room-compiler:2.2.5"
-
     implementation project(path: ':common')
-
-    implementation project(path: ':login')
-    implementation project(path: ':camera_opengl')
-    implementation project(path: ':ndk')
 }

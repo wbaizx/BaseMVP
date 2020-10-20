@@ -31,6 +31,8 @@ object RouteString {
     const val VIDEO_LIST = "/camera/video_list"
     const val VIDEO_PLAY = "/camera/video_play"
 
+    const val NDK_HOME = "/ndk/ndk_home"
+
     const val isNeedLogin = 1
     const val isNeedLoginTag = "1"
 

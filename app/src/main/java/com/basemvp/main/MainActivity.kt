@@ -96,6 +96,10 @@ class MainActivity : BaseActivity() {
             launchARouter(RouteString.CAMERA_HOME).loginNavigation(this)
         }
 
+        ndk.setOnClickListener {
+            launchARouter(RouteString.NDK_HOME).loginNavigation(this)
+        }
+
 
         exit.setOnClickListener {
             DialogFactory.createNormalDialog(
