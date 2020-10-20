@@ -1,15 +1,28 @@
 package com.ndk.home
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.base.common.base.BaseActivity
 import com.base.common.config.RouteString
 import com.ndk.R
+import kotlinx.android.synthetic.main.activity_ndk_home.*
 
 @Route(path = RouteString.NDK_HOME, name = "NDK模块首页", extras = RouteString.isNeedLogin)
-class NDKHomeActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ndk_home)
+class NDKHomeActivity : BaseActivity() {
+
+    companion object {
+        init {
+            System.loadLibrary("native-lib")
+        }
     }
+
+    override fun getContentView() = R.layout.activity_ndk_home
+
+    override fun initView() {
+        text.text = stringFromJNI()
+    }
+
+    override fun initData() {
+    }
+
+    external fun stringFromJNI(): String
 }
