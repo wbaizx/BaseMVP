@@ -8,21 +8,12 @@ import kotlinx.android.synthetic.main.activity_ndk_home.*
 
 @Route(path = RouteString.NDK_HOME, name = "NDK模块首页", extras = RouteString.isNeedLogin)
 class NDKHomeActivity : BaseActivity() {
-
-    companion object {
-        init {
-            System.loadLibrary("native-lib")
-        }
-    }
-
     override fun getContentView() = R.layout.activity_ndk_home
 
     override fun initView() {
-        text.text = stringFromJNI()
+        text.text = NDKHelper.stringFromJNI()
     }
 
     override fun initData() {
     }
-
-    external fun stringFromJNI(): String
 }
