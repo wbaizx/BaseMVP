@@ -6,7 +6,7 @@ if (isCameraRunAlone.toBoolean()) {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         //配置Camera组件是否可以独立运行
@@ -14,7 +14,7 @@ android {
             applicationId "com.camera_opengl"
         }
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 

@@ -5,7 +5,7 @@ import com.base.common.base.mvp.BaseMVPActivity
 import com.base.common.config.RouteString
 import kotlinx.android.synthetic.main.${layoutName}.*
 
-@Route(path = RouteString.MVP, name = "description", extras = RouteString.isNeedLogin)
+@Route(path = RouteString.MVP, name = "description")
 class ${activityClass} : BaseMVPActivity<${mvpCommonName}PresenterInterface>(), ${mvpCommonName}ViewInterface {
     private val TAG = "${activityClass}"
 	

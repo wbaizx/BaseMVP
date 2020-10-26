@@ -6,7 +6,7 @@ import com.base.common.config.RouteString
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.android.synthetic.main.${layoutName}.*
 
-@Route(path = RouteString.MVP, name = "description", extras = RouteString.isNeedLogin)
+@Route(path = RouteString.MVVM, name = "description")
 class ${activityClass} : BaseMVVMActivity<Activity${mvvmCommonName}Binding>(){
     private val TAG = "${activityClass}"
 	

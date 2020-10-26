@@ -11,7 +11,7 @@ import com.basemvp.databinding.ActivityMvvmDemoBinding
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@Route(path = RouteString.MVVM_ROOM, name = "展示mvvm + room用法", extras = RouteString.isNeedLogin)
+@Route(path = RouteString.MVVM_ROOM, name = "展示mvvm + room用法")
 class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
     private val TAG = "MVVMDemoActivity"
 

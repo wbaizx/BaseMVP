@@ -33,10 +33,6 @@ object RouteString {
 
     const val NDK_HOME = "/ndk/ndk_home"
 
-    const val isNeedLogin = 1
-    const val isNeedLoginTag = "1"
-
-
     //---------测试跳转bean用---------------
     const val GOTO_MAIN = "is_goto_main"
     const val SERIALIZABLE_BEAN = "serializable_bean"

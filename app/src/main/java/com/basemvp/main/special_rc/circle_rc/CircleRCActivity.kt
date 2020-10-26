@@ -7,7 +7,7 @@ import com.base.common.config.RouteString
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_circle_rc.*
 
-@Route(path = RouteString.CIRCLE_RC, name = "重叠头像list", extras = RouteString.isNeedLogin)
+@Route(path = RouteString.CIRCLE_RC, name = "重叠头像list")
 class CircleRCActivity : BaseActivity() {
     private val TAG = "CircleRCActivity"
 

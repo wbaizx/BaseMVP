@@ -5,7 +5,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
 import com.base.common.base.dialog.DialogFactory
-import com.base.common.config.GlideApp
 import com.base.common.config.RouteString
 import com.base.common.config.RouteString.GOTO_MAIN
 import com.base.common.config.RouteString.OBJECT_BEAN
@@ -16,6 +15,7 @@ import com.base.common.util.http.ObjectBean
 import com.base.common.util.http.ParcelableBean
 import com.base.common.util.http.ParcelableBean2
 import com.base.common.util.http.SerializableBean
+import com.base.common.util.imageload.LoadImage
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
-        GlideApp.with(this).load(imgUrl).blurInto(mainImg)
+        LoadImage.load(LoadImage.imgUrl, mainImg, LoadImage.BLUR)
 
         saveImg.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {

@@ -81,6 +81,13 @@ abstract class BaseAPP : Application() {
 
             log(TAG, "exitApp ${allActivities.size}")
         }
+
+        /**
+         * 判断是否是 Debug 模式
+         * 也可以使用 BuildConfig.DEBUG 判断（有些情况不准，具体什么情况百度）
+         */
+        fun isDebug() =
+            baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
     }
 
     override fun onCreate() {
@@ -109,11 +116,4 @@ abstract class BaseAPP : Application() {
      * 参考MainApp
      */
     abstract fun initKoin()
-
-    /**
-     * 判断是否是 Debug 模式
-     * 也可以使用 BuildConfig.DEBUG 判断（有些情况不准，具体什么情况百度）
-     */
-    private fun isDebug() =
-        baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
 }

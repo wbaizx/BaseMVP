@@ -35,8 +35,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 //RouteString.CAMERA_HOME
-//RouteString.isNeedLogin
-@Route(path = "/camera/camera_home", name = "组件化camera首页", extras = 1)
+@Route(path = "/camera/camera_home", name = "组件化camera首页")
 public class CameraActivity extends BaseActivity implements CameraControlListener, GLSurfaceListener, RecordListener {
     private static final String TAG = "CameraActivity";
     private final int CAMERA_PERMISSION_CODE = 666;

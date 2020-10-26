@@ -10,8 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.base.common.config.GlideApp;
-import com.base.common.util.GlideUtilKt;
+import com.base.common.util.imageload.LoadImage;
 import com.camera_opengl.R;
 import com.camera_opengl.home.gl.renderer.filter.FilterType;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -37,7 +36,7 @@ public class FilterDialog {
             BaseQuickAdapter<FilterType, BaseViewHolder> adapter = new BaseQuickAdapter<FilterType, BaseViewHolder>(R.layout.bottom_filter_item) {
                 @Override
                 protected void convert(@NotNull BaseViewHolder holder, FilterType type) {
-                    GlideUtilKt.normalInto(GlideApp.with(getContext()).load(type.getPng()), holder.getView(R.id.filterItemImg));
+                    LoadImage.INSTANCE.load(type.getPng(), holder.getView(R.id.filterItemImg));
                     holder.setText(R.id.name, type.getName());
                 }
             };

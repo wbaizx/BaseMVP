@@ -1,10 +1,8 @@
 package com.login.home
 
 import com.base.common.base.mvp.BaseMVPFragment
-import com.base.common.config.GlideApp
+import com.base.common.util.imageload.LoadImage
 import com.base.common.util.log
-import com.base.common.util.imgUrl
-import com.base.common.util.normalInto
 import com.login.R
 import com.login.home.bean.LoginBean
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -23,7 +21,9 @@ class LoginFragment : BaseMVPFragment<LoginPresenterInterface>(), LoginViewInter
 
     override fun onFirstVisible() {
         log(TAG, "onFirstVisible")
-        GlideApp.with(this).load(imgUrl).normalInto(loginImg)
+
+        LoadImage.load(LoadImage.imgUrl, loginImg)
+
         loginBtn.setOnClickListener {
 //            presenter?.loginBean()
             presenter?.loginResponseBody()

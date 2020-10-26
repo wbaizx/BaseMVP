@@ -20,7 +20,7 @@ abstract class BaseHttp {
     private val TIMEOUT = 10
 
     //缓存大小2Mb
-    private val CACHEMAXSIZE = 1024 * 1024 * 2
+    private val CACHEMAXSIZE = 1024 * 1024 * 2L
 
     //缓存时间5秒
     private val CACHETIME = 5
@@ -89,7 +89,7 @@ abstract class BaseHttp {
 
         if (needCache) {
             val cacheFile = File(BaseAPP.baseAppContext.cacheDir, "${api.simpleName}Cache")
-            val cache = Cache(cacheFile, CACHEMAXSIZE.toLong())
+            val cache = Cache(cacheFile, CACHEMAXSIZE)
             clientBuilder.addNetworkInterceptor(cacheInterceptor)
                 .cache(cache)
         }

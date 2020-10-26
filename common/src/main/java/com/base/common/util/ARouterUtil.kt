@@ -22,22 +22,23 @@ fun launchARouter(path: String): Postcard = ARouter.getInstance().build(path)
  * 使用登录判断模式跳转
  */
 fun Postcard.loginNavigation(activity: Activity, request: Int = REQUEST_CODE, arrival: (() -> Unit)? = null) {
-    navigation(activity, request, object : NavCallback() {
-        override fun onInterrupt(postcard: Postcard?) {
-            //这个标志在拦截器中赋值
-            if (postcard?.tag == RouteString.isNeedLoginTag) {
-                log(TAG, "loginNavigation  登录拦截")
-                launchARouter(RouteString.LOGIN).normalNavigation(activity)
-            } else {
-                log(TAG, "loginNavigation  onInterrupt")
-            }
-        }
+    val isLogin = SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.LOGIN, false)
 
-        override fun onArrival(postcard: Postcard?) {
-            log(TAG, "loginNavigation  onArrival")
-            arrival?.invoke()
-        }
-    })
+    if (isLogin) {
+        navigation(activity, request, object : NavCallback() {
+            override fun onInterrupt(postcard: Postcard?) {
+            }
+
+            override fun onArrival(postcard: Postcard?) {
+                log(TAG, "loginNavigation  onArrival")
+                arrival?.invoke()
+            }
+        })
+
+    } else {
+        log(TAG, "loginNavigation  Intercept")
+        launchARouter(RouteString.LOGIN).normalNavigation(activity)
+    }
 }
 
 /**
@@ -45,6 +46,9 @@ fun Postcard.loginNavigation(activity: Activity, request: Int = REQUEST_CODE, ar
  */
 fun Postcard.normalNavigation(activity: Activity, request: Int = REQUEST_CODE, arrival: (() -> Unit)? = null) {
     greenChannel().navigation(activity, request, object : NavCallback() {
+        override fun onInterrupt(postcard: Postcard?) {
+        }
+
         override fun onArrival(postcard: Postcard?) {
             log(TAG, "normalNavigation  onArrival")
             arrival?.invoke()

@@ -18,7 +18,7 @@ import com.base.common.util.launchARouter
 import com.base.common.util.normalNavigation
 import com.login.R
 
-@Route(path = RouteString.LOGIN, name = "组件化登录模块首页", extras = -1)
+@Route(path = RouteString.LOGIN, name = "组件化登录模块首页")
 class LoginActivity : BaseActivity() {
     private val TAG = "LoginActivity"
 

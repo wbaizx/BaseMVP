@@ -7,7 +7,7 @@ import com.base.common.util.log
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_show_shapebtn.*
 
-@Route(path = RouteString.SHAPE_BTN, name = "展示shapeBtn", extras = RouteString.isNeedLogin)
+@Route(path = RouteString.SHAPE_BTN, name = "展示shapeBtn")
 class ShowShapeBtnActivity : BaseActivity() {
     private val TAG = "ShowShapeBtnActivity"
 
