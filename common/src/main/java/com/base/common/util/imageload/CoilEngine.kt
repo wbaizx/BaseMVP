@@ -31,7 +31,7 @@ class CoilEngine : LoadEngine {
 
     init {
         //通过配置imageLoader设置Gif和Svg支持，以及磁盘缓存配置
-        val imageLoader = ImageLoader.Builder(BaseAPP.baseAppContext)
+        val imageLoaderBuilder = ImageLoader.Builder(BaseAPP.baseAppContext)
             .availableMemoryPercentage(0.25) // Use 25% of the application's available memory.
             .componentRegistry {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -46,35 +46,35 @@ class CoilEngine : LoadEngine {
                 val cache = Cache(cacheDirectory, CACHEMAXSIZE)//缓存大小10Mb
                 val dispatcher = Dispatcher().apply { maxRequestsPerHost = maxRequests }
 
-                OkHttpClient.Builder()
-                    .cache(cache)
+                val clientBuilder = OkHttpClient.Builder()
+                clientBuilder.cache(cache)
                     .dispatcher(dispatcher)
-                    //和网络请求相同的网络log打印
-                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    //拦截器，设置缓存时间
-                    .addNetworkInterceptor(object : Interceptor {
-                        override fun intercept(chain: Interceptor.Chain): Response {
-                            log("CoilEngine", "cacheInterceptor  request")
-                            val response = chain.proceed(chain.request())
-                            val finalResponse = response.newBuilder().removeHeader("pragma")
-                                .header("Cache-Control", "max-age=$CACHETIME").build()
 
-                            log("CoilEngine", "cacheInterceptor  response")
-
-                            return finalResponse
-                        }
-                    })
-                    .build()
-            }
-            .apply {
                 if (BaseAPP.isDebug()) {
-                    logger(DebugLogger(Log.VERBOSE))
+                    //和网络请求相同的网络log打印
+                    clientBuilder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 }
-            }
-            .build()
 
+                //拦截器，设置缓存时间
+                clientBuilder.addNetworkInterceptor(object : Interceptor {
+                    override fun intercept(chain: Interceptor.Chain): Response {
+                        log("CoilEngine", "cacheInterceptor  request")
+                        val response = chain.proceed(chain.request())
+                        val finalResponse = response.newBuilder().removeHeader("pragma")
+                            .header("Cache-Control", "max-age=$CACHETIME").build()
+
+                        log("CoilEngine", "cacheInterceptor  response")
+
+                        return finalResponse
+                    }
+                })
+                clientBuilder.build()
+            }
+        if (BaseAPP.isDebug()) {
+            imageLoaderBuilder.logger(DebugLogger(Log.VERBOSE))
+        }
         //配置
-        Coil.setImageLoader(imageLoader)
+        Coil.setImageLoader(imageLoaderBuilder.build())
     }
 
     override fun load(url: String, img: ImageView, type: Int) {

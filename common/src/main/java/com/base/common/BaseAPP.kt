@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.os.Bundle
+import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.util.log
 import java.util.*
@@ -86,8 +87,20 @@ abstract class BaseAPP : Application() {
          * 判断是否是 Debug 模式
          * 也可以使用 BuildConfig.DEBUG 判断（有些情况不准，具体什么情况百度）
          */
-        fun isDebug() =
-            baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+        private var isDebug: Boolean? = null
+
+        fun isDebug(): Boolean {
+            if (isDebug == null) {
+                synchronized(this) {
+                    if (isDebug == null) {
+                        isDebug =
+                            baseAppContext.applicationInfo != null && baseAppContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+                        Log.d("isDebug", "$isDebug")
+                    }
+                }
+            }
+            return isDebug!!
+        }
     }
 
     override fun onCreate() {
@@ -103,7 +116,6 @@ abstract class BaseAPP : Application() {
 
     private fun initARouter() {
         if (isDebug()) {
-            log(TAG, "isDebug")
             ARouter.openLog()
             ARouter.openDebug()
         }

@@ -18,7 +18,7 @@ object LoadImage {
     private val glideEngine: LoadEngine by lazy { GlideEngine() }
     private val coilEngine: LoadEngine by lazy { CoilEngine() }
 
-    private var defaultEngine = coilEngine
+    private var defaultEngine = glideEngine
 
     //两个参数重载是为了方便java调用
     fun load(@RawRes @DrawableRes id: Int, img: ImageView) {

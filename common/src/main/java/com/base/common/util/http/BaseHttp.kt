@@ -68,8 +68,6 @@ abstract class BaseHttp {
      * 日志拦截
      * HttpLoggingInterceptor拦截器如果level设置成Body，则下载不会实时回调
      * 改成其他即可
-     *
-     * release 版本可以去掉
      */
     private val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
@@ -83,8 +81,12 @@ abstract class BaseHttp {
         clientBuilder.readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
             .addInterceptor(baseInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
+
+        if (BaseAPP.isDebug()) {
+            clientBuilder.addInterceptor(httpLoggingInterceptor)
+        }
+
+        clientBuilder.sslSocketFactory(SSLSocketClient.socketFactory, SSLSocketClient.trustAllCerts)
             .hostnameVerifier(SSLSocketClient.hostnameVerifier)
 
         if (needCache) {
