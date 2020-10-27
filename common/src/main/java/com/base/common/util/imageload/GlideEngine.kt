@@ -1,5 +1,6 @@
 package com.base.common.util.imageload
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.base.common.R
@@ -53,15 +54,18 @@ class GlideEngine : LoadEngine {
         loadFromType(transition, img, type)
     }
 
+    @SuppressLint("CheckResult")
     private fun loadFromType(transition: GlideRequest<Drawable>, img: ImageView, type: Int) {
+        log("GlideLoad", "loadFromType type $type")
+        transition
+            .thumbnail(0.2f)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .placeholder(R.mipmap.placeholder_icon)
+            .error(R.mipmap.test_icon)
+
         when (type) {
             LoadImage.NORMAL -> {
-                transition
-                    .thumbnail(0.2f)
-                    .placeholder(R.mipmap.placeholder_icon)
-                    .error(R.mipmap.test_icon)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(img)
+                transition.into(img)
             }
 
             LoadImage.BLUR -> {
@@ -70,7 +74,6 @@ class GlideEngine : LoadEngine {
                     //如果需要对图片部分，比如底部做模糊，可以在图片上再盖一张图，上面的imageView包裹一层父布局，限制高度
                     //然后上层imageView与下层imageView同高宽，同时与包裹的父布局底部对齐，达到只模糊底部的骚操作
                     .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
-                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(img)
             }
 
@@ -78,7 +81,6 @@ class GlideEngine : LoadEngine {
                 transition
                     //圆图实现，尽量用下面这种，还有 CircleImageView 和 cardView 也能实现
                     .apply(RequestOptions.circleCropTransform())
-                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(img)
             }
 
@@ -86,7 +88,6 @@ class GlideEngine : LoadEngine {
                 transition
                     //圆角
                     .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(50, 0)))
-                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(img)
             }
         }

@@ -8,12 +8,15 @@ aux_source_directory(. SRC_LIST)
 
 #添加自己的总库，c_home.cpp为入口c++文件
 add_library(testNDK-lib
-             SHARED
-             ${SRC_LIST})
+        SHARED
+        ${SRC_LIST})
 
 #添加自己的头文件
 #include_directories(.)
-target_include_directories(testNDK-lib PRIVATE ch)
+target_include_directories(
+        testNDK-lib
+        PRIVATE
+        ch)
 
 #关联三方库头文件
 #target_include_directories()
@@ -28,4 +31,4 @@ find_library(log-lib
 
 #将自己的入口库和导入的三方库（如果还添了其他三方库的话），一起链接到NDK中
 target_link_libraries(testNDK-lib
-             ${log-lib})
+        ${log-lib})

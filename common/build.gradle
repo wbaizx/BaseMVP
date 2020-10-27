@@ -58,6 +58,7 @@ dependencies {
     api 'androidx.constraintlayout:constraintlayout:2.0.2'
     api 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    //viewModel相关
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 //    api "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 //    api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"

@@ -1,6 +1,7 @@
 package com.basemvp.main.mvvm
 
 import android.os.Handler
+import android.os.Looper
 import com.base.common.base.mvvm.BaseMVVMFragment
 import com.basemvp.R
 import com.basemvp.databinding.FragmentMvvmDemoFBinding
@@ -42,7 +43,7 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
             setDefaultEmptyView(this@MVVMDemoFragment.context, recyclerView1)
 
             setRefreshAndLoadMore(refreshLayout1) {
-                Handler().postDelayed({ addPageData(arrayListOf(MVVMBindBean("5"))) }, 1500)
+                Handler(Looper.getMainLooper()).postDelayed({ addPageData(arrayListOf(MVVMBindBean("5"))) }, 1500)
             }
         }
     }
@@ -53,11 +54,11 @@ class MVVMDemoFragment : BaseMVVMFragment<FragmentMvvmDemoFBinding>() {
         recyclerView2.adapter = adapter
 
         adapter.setDefaultEmptyView(emptyClick = {
-            Handler().postDelayed({ adapter.addPageData(arrayListOf(MVVMBindBean("5"))) }, 1500)
+            Handler(Looper.getMainLooper()).postDelayed({ adapter.addPageData(arrayListOf(MVVMBindBean("5"))) }, 1500)
         })
 
         adapter.setRefreshAndLoadMore(refreshLayout2) {
-            Handler().postDelayed({ adapter.addPageData(null) }, 1500)
+            Handler(Looper.getMainLooper()).postDelayed({ adapter.addPageData(null) }, 1500)
         }
     }
 

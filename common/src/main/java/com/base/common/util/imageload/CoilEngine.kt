@@ -49,7 +49,7 @@ class CoilEngine : LoadEngine {
                 OkHttpClient.Builder()
                     .cache(cache)
                     .dispatcher(dispatcher)
-                     //和网络请求相同的网络log打印
+                    //和网络请求相同的网络log打印
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     //拦截器，设置缓存时间
                     .addNetworkInterceptor(object : Interceptor {
@@ -96,11 +96,13 @@ class CoilEngine : LoadEngine {
     }
 
     private fun loadFromType(builder: ImageRequest.Builder, img: ImageView, type: Int) {
+        log("CoilEngine", "loadFromType type $type")
+        builder.crossfade(250)
+            .placeholder(R.mipmap.placeholder_icon)
+            .error(R.mipmap.test_icon)
+
         when (type) {
             LoadImage.NORMAL -> {
-                builder.crossfade(true)
-                builder.placeholder(R.mipmap.placeholder_icon)
-                builder.error(R.mipmap.test_icon)
             }
             LoadImage.BLUR -> {
                 builder.transformations(BlurTransformation(img.context, 25f, 3f))
