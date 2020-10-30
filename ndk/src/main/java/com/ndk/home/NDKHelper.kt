@@ -6,4 +6,6 @@ object NDKHelper {
     }
 
     external fun stringFromJNI(): String
+
+    external fun test()
 }
