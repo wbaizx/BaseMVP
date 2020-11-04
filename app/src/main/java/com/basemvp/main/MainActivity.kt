@@ -1,6 +1,9 @@
 package com.basemvp.main
 
 import android.Manifest
+import android.annotation.SuppressLint
+import androidx.lifecycle.Observer
+import androidx.work.*
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
@@ -17,6 +20,7 @@ import com.base.common.util.http.ParcelableBean2
 import com.base.common.util.http.SerializableBean
 import com.base.common.util.imageload.LoadImage
 import com.basemvp.R
+import com.basemvp.main.workmanager.MainWork
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -24,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import java.util.concurrent.TimeUnit
 
 private const val STORAGE_PERMISSION_CODE = 666
 
@@ -111,6 +116,36 @@ class MainActivity : BaseActivity() {
                 "取消"
             )
         }
+
+        startWork()
+    }
+
+    /**
+     * 后台执行任务，保证一定能执行，及时清理后台也会在下次启动时续上上次的任务
+     */
+    @SuppressLint("IdleBatteryChargingConstraints")
+    private fun startWork() {
+        log("MainWork", "doWork")
+        // 创建约束条件
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)                 // 电量不低
+            .setRequiredNetworkType(NetworkType.CONNECTED)  // 连接了网络
+            .setRequiresCharging(true)                      // 充电中
+            .setRequiresStorageNotLow(true)                 // 储存空间不低
+//            .setRequiresDeviceIdle(true)                    // 设备空闲中
+            .build()
+
+        val mainWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<MainWork>()
+            .setConstraints(constraints)    // 约束条件
+            //重试任务时的策略
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
+            .build()
+
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(mainWorkRequest.id).observe(this, Observer {
+            log("MainWork", "${it.state}")
+            log("MainWork", "${it.progress.getInt("int", 0)}")
+        })
+        WorkManager.getInstance(this).enqueue(mainWorkRequest)
     }
 
     override fun initData() {

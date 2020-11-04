@@ -68,17 +68,17 @@ void testPointer() {
     __android_log_print(ANDROID_LOG_ERROR, "c_test_pointer", "%p %p", &a, &b);
     exchange(&a, &b);
     __android_log_print(ANDROID_LOG_ERROR, "c_test_pointer", "%d%d", a, b);
+
+
+    int *t = new int;
+    int *db = new int[10];
+
+    delete t;
+    delete[]db;
 }
 
 void exchange(int *a, int *b) {
     int c = *a;
     *a = *b;
     *b = c;
-
-    int *t = new int;
-    char ab[*a];
-    int *db = new int[10];
-
-    delete t;
-    delete[]db;
 }
