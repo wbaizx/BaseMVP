@@ -66,11 +66,7 @@ dependencies {
     //WorkManager
     api "androidx.work:work-runtime-ktx:2.4.0"
 
-    // hilt 依赖注入
-    api "com.google.dagger:hilt-android:2.28-alpha"
-    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
-
-    // Koin 依赖注入
+    // Koin 依赖注入，之后可替换成hilt注入
     api 'org.koin:koin-androidx-scope:2.1.6'
     api 'org.koin:koin-androidx-viewmodel:2.1.6'
 //    api 'org.koin:koin-androidx-fragment:2.1.6'
