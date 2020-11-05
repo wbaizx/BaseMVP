@@ -5,7 +5,7 @@ import com.base.common.base.mvp.contract.BaseMVPPresenterI
 import com.base.common.base.mvp.contract.BaseMVPViewI
 
 /**
- * 对于继承了 BaseViewActivity，但又不需要使用mvp功能
+ * 对于继承了 BaseMVPActivity，但又不需要使用mvp功能
  * 或者只复用其他的 Presenter实例的。泛型直接传 BaseMVPPresenterI ，presenter实例赋空值就可以
  */
 abstract class BaseMVPActivity<P : BaseMVPPresenterI> : BaseActivity(), BaseMVPViewI {

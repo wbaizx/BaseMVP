@@ -73,6 +73,11 @@ void testPointer() {
     int *t = new int;
     int *db = new int[10];
 
+    S *dbd = new S;
+    dbd->b = 5;
+    __android_log_print(ANDROID_LOG_ERROR, "c_test_pointer", "%d", dbd->b);
+
+    delete dbd;
     delete t;
     delete[]db;
 }
