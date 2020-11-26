@@ -114,7 +114,7 @@ class MainActivity : BaseActivity() {
                 "确定",
                 { BaseAPP.exitApp() },
                 "取消"
-            )
+            ).showDialog()
         }
 
         startWork()

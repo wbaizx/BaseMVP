@@ -138,11 +138,12 @@ abstract class BaseListAdapter<M, BH : BaseViewHolder>(@LayoutRes private val la
      * 主动重置分页下标
      */
     fun resetPage() {
+        log(TAG, "resetPage")
         page = pageDefaultIndex
     }
 
     /**
-     * 刷新或加载数据失败时，手动调用此方法
+     * 刷新失败或加载数据失败时，手动调用此方法
      */
     fun loadPageError() {
         if (page == pageDefaultIndex) { //刷新，或者空布局点击刷新
