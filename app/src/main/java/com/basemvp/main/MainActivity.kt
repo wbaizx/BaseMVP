@@ -118,8 +118,6 @@ class MainActivity : BaseActivity() {
         }
 
         startWork()
-
-        getNextDay(System.currentTimeMillis())
     }
 
     /**
