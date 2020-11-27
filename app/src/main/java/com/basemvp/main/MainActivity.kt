@@ -118,20 +118,22 @@ class MainActivity : BaseActivity() {
         }
 
         startWork()
+
+        getNextDay(System.currentTimeMillis())
     }
 
     /**
-     * 后台执行任务，保证一定能执行，及时清理后台也会在下次启动时续上上次的任务
+     * 后台执行任务，保证一定能执行，即使清理后台也会在下次启动时续上上次的任务
      */
     @SuppressLint("IdleBatteryChargingConstraints")
     private fun startWork() {
-        log("MainWork", "doWork")
+        log("MainWork", "startWork")
         // 创建约束条件
         val constraints = Constraints.Builder()
-            .setRequiresBatteryNotLow(true)                 // 电量不低
-            .setRequiredNetworkType(NetworkType.CONNECTED)  // 连接了网络
-            .setRequiresCharging(true)                      // 充电中
-            .setRequiresStorageNotLow(true)                 // 储存空间不低
+//            .setRequiresBatteryNotLow(true)                 // 电量不低
+//            .setRequiredNetworkType(NetworkType.CONNECTED)  // 连接了网络
+//            .setRequiresCharging(true)                      // 充电中
+//            .setRequiresStorageNotLow(true)                 // 储存空间不低
 //            .setRequiresDeviceIdle(true)                    // 设备空闲中
             .build()
 
