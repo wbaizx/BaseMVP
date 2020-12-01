@@ -56,22 +56,34 @@ fun String.timeS2L(format: String): Long {
  * 获取给定时间的下一天的起始时间戳
  */
 fun getNextDay(time: Long): Long {
+    //打印日期Log
+    fun dateLog(calendar: Calendar) {
+        log(
+            "getNextDay", "${calendar.get(Calendar.YEAR)}年" +
+                    "${calendar.get(Calendar.MONTH) + 1}月" +
+                    "${calendar.get(Calendar.DAY_OF_MONTH)}日" +
+                    "${calendar.get(Calendar.HOUR_OF_DAY)}时" +
+                    "${calendar.get(Calendar.MINUTE)}分" +
+                    "${calendar.get(Calendar.SECOND)}秒" +
+                    "${calendar.get(Calendar.MILLISECOND)}毫秒"
+        )
+    }
+
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = time
+
+    dateLog(calendar)
+
     //天数+1
     calendar.add(Calendar.DAY_OF_MONTH, 1)
+    //重置其他变量
     calendar.set(Calendar.HOUR_OF_DAY, 0)
     calendar.set(Calendar.MINUTE, 0)
     calendar.set(Calendar.SECOND, 0)
-    log(
-        "getNextDay", "${calendar.get(Calendar.YEAR)}年" +
-                "${calendar.get(Calendar.MONTH) + 1}月" +
-                "${calendar.get(Calendar.DAY_OF_MONTH)}日" +
-                "${calendar.get(Calendar.HOUR_OF_DAY)}时" +
-                "${calendar.get(Calendar.MINUTE)}分" +
-                "${calendar.get(Calendar.SECOND)}秒" +
-                "${calendar.get(Calendar.MILLISECOND)}毫秒"
-    )
+    calendar.set(Calendar.MILLISECOND, 0)
+
+    dateLog(calendar)
+
     return calendar.timeInMillis
 }
 

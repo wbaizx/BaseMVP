@@ -72,7 +72,8 @@ abstract class BaseAPP : Application() {
         fun exitApp() {
             log(TAG, "exitApp ${allActivities.size}")
 
-            //遍历需加同步锁，其内部锁对象就是自身
+            //Collections.synchronizedList转换同步锁原理就是对其本身加锁，但不包含遍历
+            //所以遍历需加同步锁，对象就是自身
             synchronized(allActivities) {
                 allActivities.forEach {
                     it.finish()

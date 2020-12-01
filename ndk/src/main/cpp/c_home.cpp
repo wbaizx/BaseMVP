@@ -7,7 +7,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_ndk_home_NDKHelper_stringFromJNI(
         JNIEnv *env,
-        jobject thiz) {
+        jclass thiz) {
 
     __android_log_print(ANDROID_LOG_ERROR, "c_home", "----------------home");
 
@@ -17,6 +17,6 @@ Java_com_ndk_home_NDKHelper_stringFromJNI(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_ndk_home_NDKHelper_test(JNIEnv *env, jobject thiz) {
-    testMain();
+Java_com_ndk_home_NDKHelper_replaceSpaceC(JNIEnv *env, jclass thiz) {
+    replaceSpaceC();
 }
