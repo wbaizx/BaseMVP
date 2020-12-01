@@ -9,7 +9,6 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
 import coil.load
-import coil.request.ImageRequest
 import coil.transform.BlurTransformation
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
@@ -77,43 +76,90 @@ class CoilEngine : LoadEngine {
         Coil.setImageLoader(imageLoaderBuilder.build())
     }
 
-    override fun load(url: String, img: ImageView, type: Int) {
+    override fun load(url: String, img: ImageView) {
         img.load(url) {
-            loadFromType(this, img, type)
+            crossfade(250)
+            placeholder(R.mipmap.placeholder_icon)
+            error(R.mipmap.test_icon)
         }
     }
 
-    override fun load(file: File, img: ImageView, type: Int) {
+    override fun load(file: File, img: ImageView) {
         img.load(file) {
-            loadFromType(this, img, type)
+            crossfade(250)
+            placeholder(R.mipmap.placeholder_icon)
+            error(R.mipmap.test_icon)
         }
     }
 
-    override fun load(id: Int, img: ImageView, type: Int) {
+    override fun load(id: Int, img: ImageView) {
         img.load(id) {
-            loadFromType(this, img, type)
+            crossfade(250)
+            placeholder(R.mipmap.placeholder_icon)
+            error(R.mipmap.test_icon)
         }
     }
 
-    private fun loadFromType(builder: ImageRequest.Builder, img: ImageView, type: Int) {
-        log("CoilEngine", "loadFromType type $type")
-        builder.crossfade(250)
-            .placeholder(R.mipmap.placeholder_icon)
-            .error(R.mipmap.test_icon)
-
-        when (type) {
-            LoadImage.NORMAL -> {
-            }
-            LoadImage.BLUR -> {
-                builder.transformations(BlurTransformation(img.context, 25f, 3f))
-            }
-            LoadImage.CIRCLE -> {
-                builder.transformations(CircleCropTransformation())
-            }
-            LoadImage.ROUND -> {
-                builder.transformations(RoundedCornersTransformation(50f, 50f, 50f, 50f))
-            }
+    override fun loadBlur(url: String, img: ImageView) {
+        img.load(url) {
+            crossfade(250)
+            transformations(BlurTransformation(img.context, 25f, 3f))
         }
     }
 
+    override fun loadBlur(file: File, img: ImageView) {
+        img.load(file) {
+            crossfade(250)
+            transformations(BlurTransformation(img.context, 25f, 3f))
+        }
+    }
+
+    override fun loadBlur(id: Int, img: ImageView) {
+        img.load(id) {
+            crossfade(250)
+            transformations(BlurTransformation(img.context, 25f, 3f))
+        }
+    }
+
+    override fun loadCircle(url: String, img: ImageView) {
+        img.load(url) {
+            crossfade(250)
+            transformations(CircleCropTransformation())
+        }
+    }
+
+    override fun loadCircle(file: File, img: ImageView) {
+        img.load(file) {
+            crossfade(250)
+            transformations(CircleCropTransformation())
+        }
+    }
+
+    override fun loadCircle(id: Int, img: ImageView) {
+        img.load(id) {
+            crossfade(250)
+            transformations(CircleCropTransformation())
+        }
+    }
+
+    override fun loadRound(url: String, img: ImageView) {
+        img.load(url) {
+            crossfade(250)
+            transformations(RoundedCornersTransformation(50f, 50f, 50f, 50f))
+        }
+    }
+
+    override fun loadRound(file: File, img: ImageView) {
+        img.load(file) {
+            crossfade(250)
+            transformations(RoundedCornersTransformation(50f, 50f, 50f, 50f))
+        }
+    }
+
+    override fun loadRound(id: Int, img: ImageView) {
+        img.load(id) {
+            crossfade(250)
+            transformations(RoundedCornersTransformation(50f, 50f, 50f, 50f))
+        }
+    }
 }

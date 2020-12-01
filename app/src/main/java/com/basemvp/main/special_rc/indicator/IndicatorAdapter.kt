@@ -14,6 +14,6 @@ class IndicatorAdapter : BaseListAdapter<String, BaseViewHolder>(R.layout.item_i
     }
 
     override fun convertUI(holder: BaseViewHolder, item: String) {
-        LoadImage.load(LoadImage.imgUrl, holder.itemView as ImageView, LoadImage.BLUR)
+        LoadImage.loadBlur(LoadImage.imgUrl, holder.itemView as ImageView)
     }
 }

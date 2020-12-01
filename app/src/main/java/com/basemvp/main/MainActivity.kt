@@ -39,7 +39,7 @@ class MainActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
-        LoadImage.load(LoadImage.imgUrl, mainImg, LoadImage.BLUR)
+        LoadImage.loadBlur(LoadImage.imgUrl, mainImg)
 
         saveImg.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {

@@ -12,8 +12,8 @@ int replaceSpaceC() {
 //    strlen(b);
 //    int *a = nullptr;
 
-    LOG("c_test_main", "----------------test")
-    log("c_test_main", "----------------test");
+    LOG("c_replaceSpaceC", "----------------test")
+    log("c_replaceSpaceC", "----------------test");
 
     return 0;
 }

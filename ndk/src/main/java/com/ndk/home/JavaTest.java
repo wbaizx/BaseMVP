@@ -9,6 +9,7 @@ public class JavaTest {
 
     private void replaceSpace() {
         long time = System.currentTimeMillis();
+        String aa="123 456 789 123 456 789";
         NDKHelper.replaceSpaceC();
 
         LogUtilKt.log("replaceSpace", System.currentTimeMillis() - time);
