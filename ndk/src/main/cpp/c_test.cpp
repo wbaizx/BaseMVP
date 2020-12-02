@@ -5,7 +5,7 @@ using namespace std;
 
 #define LOG(s1, s2) __android_log_print(ANDROID_LOG_ERROR, s1, s2);
 
-//可变参数只能是int
+//这里可变参数只能是int并且只有一个
 inline void log(const char *s1, const char *s2, ...) {
     va_list args;
     va_start(args, s2);
@@ -15,8 +15,6 @@ inline void log(const char *s1, const char *s2, ...) {
 }
 
 char *replaceSpaceC(const char *s) {
-//    __android_log_print(ANDROID_LOG_ERROR, "c_replaceSpaceC", "length %d", strlen(s));
-
     int count = 0;
     int len = strlen(s);
     for (int i = 0; i < len; ++i) {

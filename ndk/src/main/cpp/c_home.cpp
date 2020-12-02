@@ -41,4 +41,9 @@ Java_com_ndk_home_NDKHelper_reverseOrderC(JNIEnv *env, jclass clazz, jintArray a
     reverseOrder(nativeArray, len);
     //第三个参数为0, Java数组进行更新，并且释放C/C++数组
     env->ReleaseIntArrayElements(a0, nativeArray, 0);
+
+//    //创建jintArray
+//    env->NewIntArray(len);
+//    //填充jintArray
+//    env->SetIntArrayRegion();
 }
