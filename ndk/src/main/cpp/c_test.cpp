@@ -41,3 +41,13 @@ char *replaceSpaceC(const char *s) {
     }
     return returnString;
 }
+
+void reverseOrder(int *pInt, int len) {
+    int midpoint = len >> 1;
+    int t;
+    for (int i = 0, j = len - 1; i < midpoint; i++, j--) {
+        t = pInt[i];
+        pInt[i] = pInt[j];
+        pInt[j] = t;
+    }
+}
