@@ -16,7 +16,18 @@ Java_com_ndk_home_NDKHelper_stringFromJNI(
 }
 
 extern "C"
-JNIEXPORT void JNICALL
-Java_com_ndk_home_NDKHelper_replaceSpaceC(JNIEnv *env, jclass thiz) {
-    replaceSpaceC();
+JNIEXPORT jstring JNICALL
+Java_com_ndk_home_NDKHelper_replaceSpaceC(JNIEnv *env, jclass clazz, jstring a0) {
+    const char *nativeString = env->GetStringUTFChars(a0, nullptr);
+
+    char *returnString = replaceSpaceC(nativeString);
+    jstring newArgName = env->NewStringUTF(returnString);
+
+    //释放GetStringUTFChars开辟的内存
+    env->ReleaseStringUTFChars(a0, nativeString);
+    //释放replaceSpaceC中new的数据
+    delete[] returnString;
+    //返回给java层的对象不用释放
+//    env->DeleteLocalRef(newArgName);
+    return newArgName;
 }

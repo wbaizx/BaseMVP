@@ -1,1 +1,1 @@
-int replaceSpaceC();
+char *replaceSpaceC(const char *s);

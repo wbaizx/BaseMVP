@@ -8,12 +8,28 @@ public class JavaTest {
     }
 
     private void replaceSpace() {
-        long time = System.currentTimeMillis();
-        String aa="123 456 789 123 456 789";
-        NDKHelper.replaceSpaceC();
+        //NDK
+        long time = System.nanoTime();
+        String a0 = "123 456 789";
+        String a1 = NDKHelper.replaceSpaceC(a0);
+        LogUtilKt.log("replaceSpace", (System.nanoTime() - time) + " -- " + a1);
 
-        LogUtilKt.log("replaceSpace", System.currentTimeMillis() - time);
+        //java内置
+        time = System.nanoTime();
+        String a2 = a0.replace(" ", "%2");
+        LogUtilKt.log("replaceSpace", (System.nanoTime() - time) + " -- " + a2);
 
-        LogUtilKt.log("replaceSpace", System.currentTimeMillis() - time);
+        //手动
+        time = System.nanoTime();
+        char[] chars = a0.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (char aChar : chars) {
+            if (aChar == ' ') {
+                sb.append("%2");
+            } else {
+                sb.append(aChar);
+            }
+        }
+        LogUtilKt.log("replaceSpace", (System.nanoTime() - time) + " -- " + sb.toString());
     }
 }

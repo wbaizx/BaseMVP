@@ -7,5 +7,5 @@ public class NDKHelper {
 
    public static native String stringFromJNI();
 
-   public static native void replaceSpaceC();
+   public static native String replaceSpaceC(String a0);
 }
