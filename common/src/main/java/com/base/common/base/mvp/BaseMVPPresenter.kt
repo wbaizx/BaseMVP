@@ -28,36 +28,18 @@ abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V
      * error     手动捕获当次异常，运行在主线程
      */
     protected inline fun <T> runTask(
+        isShowDialog: Boolean = true,
         crossinline bgAction: suspend () -> T,
         noinline uiAction: ((T) -> Unit)? = null,
         noinline error: ((Exception) -> Unit)? = null
     ) = launch {
         try {
-            val v = withContext(Dispatchers.IO) { bgAction() }
-            uiAction?.invoke(v)
-        } catch (e: Exception) {
-            if (error != null) {
-                error(e)
-            } else {
-                runTaskError(e)
-            }
-        } finally {
-        }
-    }
+            if (isShowDialog) {
+                view?.showLoad()
 
-    /**
-     * bgAction  执行方法，运行在IO线程
-     * uiAction  执行方法，运行在主线程
-     * error     手动捕获当次异常，运行在主线程
-     */
-    protected inline fun <T> runTaskDialog(
-        crossinline bgAction: suspend () -> T,
-        noinline uiAction: ((T) -> Unit)? = null,
-        noinline error: ((Exception) -> Unit)? = null
-    ) = launch {
-        view?.showLoad()
-        try {
-            delay(1000)
+                //测试用
+                delay(1000)
+            }
             val v = withContext(Dispatchers.IO) { bgAction() }
             uiAction?.invoke(v)
         } catch (e: Exception) {
@@ -67,7 +49,9 @@ abstract class BaseMVPPresenter<V : BaseMVPViewI, M : BaseMVPModelI>(var view: V
                 runTaskError(e)
             }
         } finally {
-            view?.hideLoad()
+            if (isShowDialog) {
+                view?.hideLoad()
+            }
         }
     }
 

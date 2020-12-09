@@ -5,3 +5,9 @@
 如果需要模板fragment，先生成对应activity，在手动修改为fragment即可
 
 studio更新可能导致考进去的文件夹丢失，重新导入一次即可
+
+!! AS4.1取消了这种添加模板方式，该如何做还不清楚
+据说是Android Studio 4.1使用了一个新的模板化API，该模板可见但尚未公开
+可以等等看 https://github.com/JessYanCoding/MVPArmsTemplate 是怎么做的
+
+目前只能手动创建了~

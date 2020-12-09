@@ -8,9 +8,9 @@ class LoginPresenter(view: LoginViewInterface?) : BaseMVPPresenter<LoginViewInte
     LoginPresenterInterface {
     private val TAG = "LoginPresenter"
 
-    override fun loginBean() = runTaskDialog({ model.loginBean() }, { view?.loginSuccessBean(it) })
+    override fun loginBean() = runTask(bgAction = { model.loginBean() }, uiAction = { view?.loginSuccessBean(it) })
 
-    override fun loginResponseBody() = runTaskDialog({
+    override fun loginResponseBody() = runTask(bgAction = {
         val async1 = async(Dispatchers.IO) {
             model.loginResponseBody()
         }
@@ -21,5 +21,5 @@ class LoginPresenter(view: LoginViewInterface?) : BaseMVPPresenter<LoginViewInte
         //2元组 Pair
         Pair(async1.await(), async2.await())
         //3元组 Triple
-    }, { (one, two) -> view?.loginSuccessResponseBody(one, two) })
+    }, uiAction = { (one, two) -> view?.loginSuccessResponseBody(one, two) })
 }

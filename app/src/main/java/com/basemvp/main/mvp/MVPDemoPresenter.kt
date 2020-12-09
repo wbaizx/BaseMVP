@@ -9,13 +9,11 @@ class MVPDemoPresenter(view: MVPDemoViewInterface?) :
     private val TAG = "MvpRoomPresenter"
 
     override fun saveData() {
-        runTaskDialog({ model.insertUsers(User(2, "o", 3)) }, {
-            log(TAG, it)
-        })
+        runTask(bgAction = { model.insertUsers(User(2, "o", 3)) }, uiAction = { log(TAG, it) })
     }
 
     override fun queryData() {
-        runTask({
+        runTask(isShowDialog = false, bgAction = {
             model.getAllUsers().forEach { user -> log(TAG, user) }
         })
     }

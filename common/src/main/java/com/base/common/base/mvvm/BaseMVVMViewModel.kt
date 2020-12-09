@@ -18,28 +18,17 @@ abstract class BaseMVVMViewModel : ViewModel() {
 
     //crossinline action: suspend CoroutineScope.() -> Unit, 带接收者参数形式 T.()->Unit
     inline fun runTask(
+        isShowDialog: Boolean = true,
         crossinline action: suspend () -> Unit,
         noinline error: ((Exception) -> Unit)? = null
     ) = viewModelScope.launch {
         try {
-            withContext(Dispatchers.IO) { action() }
-        } catch (e: Exception) {
-            if (error != null) {
-                error(e)
-            } else {
-                runTaskError(e)
-            }
-        } finally {
-        }
-    }
+            if (isShowDialog) {
+                showLoad.postValue(true)
 
-    inline fun runTaskDialog(
-        crossinline action: suspend () -> Unit,
-        noinline error: ((Exception) -> Unit)? = null
-    ) = viewModelScope.launch {
-        showLoad.postValue(true)
-        try {
-            delay(1000)
+                //测试用
+                delay(1000)
+            }
             withContext(Dispatchers.IO) { action() }
         } catch (e: Exception) {
             if (error != null) {
@@ -48,8 +37,10 @@ abstract class BaseMVVMViewModel : ViewModel() {
                 runTaskError(e)
             }
         } finally {
-            log("BaseMVVMViewModel", "runTaskDialog finally")
-            showLoad.postValue(false)
+            if (isShowDialog) {
+                log("BaseMVVMViewModel", "runTaskDialog finally")
+                showLoad.postValue(false)
+            }
         }
     }
 
