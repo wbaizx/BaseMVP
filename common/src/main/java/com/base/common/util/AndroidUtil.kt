@@ -46,9 +46,16 @@ object AndroidUtil {
      * 如果有导航栏，不包含导航栏高度
      */
     fun getScreenRealHeight(activity: Activity): Int {
-        val windowManager: WindowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val outMetrics = DisplayMetrics()
+
+        val windowManager: WindowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getRealMetrics(outMetrics)
+
+        //TODO 上面过时部分替代（未验证）
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            activity.display?.getRealMetrics(outMetrics)
+//        }
+
         var screenHeight = outMetrics.heightPixels
         log(TAG, "getScreenHeight $screenHeight")
 

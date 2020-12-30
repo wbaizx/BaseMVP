@@ -49,7 +49,7 @@ fun String.timeS2L(format: String): Long {
         }
     } catch (e: Exception) {
     }
-    return 1
+    return 0
 }
 
 /**

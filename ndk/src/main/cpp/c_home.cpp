@@ -17,12 +17,12 @@ Java_com_ndk_home_NDKHelper_stringFromJNI(
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_ndk_home_NDKHelper_replaceSpaceC(JNIEnv *env, jclass clazz, jstring a0) {
-    const char *nativeString = env->GetStringUTFChars(a0, nullptr);
+Java_com_ndk_home_NDKHelper_replaceSpaceC(JNIEnv *env, jclass clazz, jstring a) {
+    const char *nativeString = env->GetStringUTFChars(a, nullptr);
 
     char *returnString = replaceSpaceC(nativeString);
     //释放GetStringUTFChars开辟的内存
-    env->ReleaseStringUTFChars(a0, nativeString);
+    env->ReleaseStringUTFChars(a, nativeString);
 
     jstring newArgName = env->NewStringUTF(returnString);
 
@@ -35,12 +35,12 @@ Java_com_ndk_home_NDKHelper_replaceSpaceC(JNIEnv *env, jclass clazz, jstring a0)
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_ndk_home_NDKHelper_reverseOrderC(JNIEnv *env, jclass clazz, jintArray a0) {
-    int len = env->GetArrayLength(a0);
-    int *nativeArray = env->GetIntArrayElements(a0, nullptr);
+Java_com_ndk_home_NDKHelper_reverseOrderC(JNIEnv *env, jclass clazz, jintArray a) {
+    int len = env->GetArrayLength(a);
+    int *nativeArray = env->GetIntArrayElements(a, nullptr);
     reverseOrder(nativeArray, len);
     //第三个参数为0, Java数组进行更新，并且释放C/C++数组
-    env->ReleaseIntArrayElements(a0, nativeArray, 0);
+    env->ReleaseIntArrayElements(a, nativeArray, 0);
 
 //    //创建jintArray
 //    env->NewIntArray(len);

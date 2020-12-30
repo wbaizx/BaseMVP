@@ -7,7 +7,7 @@ public class NDKHelper {
 
     public static native String stringFromJNI();
 
-    public static native String replaceSpaceC(String a0);
+    public static native String replaceSpaceC(String a);
 
-    public static native void reverseOrderC(int[] a0);
+    public static native void reverseOrderC(int[] a);
 }
