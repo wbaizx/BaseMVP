@@ -5,6 +5,7 @@ import com.base.common.util.LogUtilKt;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  * 冒泡排序  稳定  O(N2)
@@ -20,6 +21,11 @@ import java.util.LinkedList;
  * 根据希尔增量分组，各组进行插入排序，直到增量为1那次排完
  * <p>
  * 快速排序  不稳定  O(NlogN)
+ * 1.基准值定为最右边，i和j从最左边开始，如果j小于基准值，则i和j交换位置，并且i++，j++。否则i保持不动，j++。
+ * 最终当j移动到基准值所在位置后，基准值与i交换位置
+ * 2.基准值在最左边，“哨兵”i在最左边，“哨兵”j在最右边，从右边（注意要从右边开始）先开始（j--），
+ * 如果“哨兵”j所在的数据小于基准值则停止；“哨兵”i开始（i++），如果“哨兵”i所在的数据大于基准值则停止，i与j交换位置；
+ * 如果i和j相遇，则基准值与i或j（因为两者现在一致）交换位置
  */
 public class JavaTest {
     public void start() {
@@ -28,6 +34,7 @@ public class JavaTest {
         linkedReverse();
         findNoRepetitionString();
         quickSort();
+        hillSort();
     }
 
     private void replaceSpace() {
@@ -157,12 +164,23 @@ public class JavaTest {
     }
 
     private void quickSort() {
-        int[] a = {9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 6, 6, 6};
+        int a[] = getArray();
 
         long time = System.nanoTime();
         beginSort1(a, 0, a.length - 1);
 //        beginSort2(a, 0, a.length - 1);
         LogUtilKt.log("quickSort", (System.nanoTime() - time) + " -- " + Arrays.toString(a));
+    }
+
+    private int[] getArray() {
+        int num = 5000;
+        int[] a = new int[num];
+        Random r = new Random();
+        for (int i = 0; i < num; i++) {
+            a[i] = r.nextInt();
+        }
+
+        return a;
     }
 
     /**
@@ -195,7 +213,6 @@ public class JavaTest {
         //如果所有的值全小于基准值，那么i指向的就是基准值
         swap(a, i, end);
 
-        LogUtilKt.log("beginSort1", i + " ---- " + j + " -- " + Arrays.toString(a));
         beginSort1(a, start, i - 1);
         beginSort1(a, i + 1, end);
     }
@@ -226,7 +243,6 @@ public class JavaTest {
             }
             swap(a, i, j);
         }
-        LogUtilKt.log("beginSort2", i + " ---- " + j + " -- " + Arrays.toString(a));
 
         //循环结束i将指向最后一个小于基准值的下标，
         //如果所有的值全大于基准值，那么i指向的就是基准值
@@ -243,5 +259,30 @@ public class JavaTest {
             a[j] = a[i];
             a[i] = temp;
         }
+    }
+
+    private void hillSort() {
+        int[] a = getArray();
+
+        long time = System.nanoTime();
+
+        int gap = a.length / 2;
+
+        while (gap > 0) {
+            for (int i = 0; i < gap; i++) {
+                for (int j = i; j < a.length; j += gap) {
+                    int index = j;
+                    int t = a[index];
+                    while (index - gap >= i && a[index - gap] > t) {
+                        a[index] = a[index - gap];
+                        index -= gap;
+                    }
+                    a[index] = t;
+                }
+            }
+            gap /= 2;
+        }
+
+        LogUtilKt.log("hillSort", (System.nanoTime() - time) + " -- " + Arrays.toString(a));
     }
 }
