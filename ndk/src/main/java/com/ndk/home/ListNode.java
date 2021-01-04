@@ -1,10 +1,32 @@
 package com.ndk.home;
 
+import com.base.common.util.LogUtilKt;
+
 public class ListNode {
-    int a;
+    int val;
     ListNode next = null;
 
-    public ListNode(int a) {
-        this.a = a;
+    static ListNode getList(int[] array) {
+        ListNode node = null;
+        ListNode first = null;
+        for (int i = 0; i < array.length; i++) {
+            if (node == null) {
+                node = new ListNode();
+                first = node;
+
+            } else {
+                node.next = new ListNode();
+                node = node.next;
+            }
+            node.val = array[i];
+        }
+        return first;
+    }
+
+    static void logLinked(ListNode l) {
+        LogUtilKt.log("logLinked", l.val);
+        if (l.next != null) {
+            logLinked(l.next);
+        }
     }
 }

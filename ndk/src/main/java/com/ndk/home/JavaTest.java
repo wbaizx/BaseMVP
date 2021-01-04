@@ -35,6 +35,7 @@ public class JavaTest {
         findNoRepetitionString();
         quickSort();
         hillSort();
+        fib(2);
     }
 
     private void replaceSpace() {
@@ -86,31 +87,24 @@ public class JavaTest {
     }
 
     private void linkedReverse() {
-        ListNode l1 = new ListNode(1);
-        ListNode l2 = new ListNode(2);
-        ListNode l3 = new ListNode(3);
-        l1.next = l2;
-        l2.next = l3;
+        ListNode l1 = ListNode.getList(new int[]{1, 2, 3});
 
-        logLinked(l1);
+        ListNode.logLinked(l1);
 
-        reverseLinked(l1, null);
+        l1 = reverseLinked(l1, null);
 
-        logLinked(l3);
+        ListNode.logLinked(l1);
     }
 
-    private void reverseLinked(ListNode my, ListNode top) {
+    private ListNode reverseLinked(ListNode my, ListNode top) {
+        ListNode head;
         if (my.next != null) {
-            reverseLinked(my.next, my);
+            head = reverseLinked(my.next, my);
+        } else {
+            head = my;
         }
         my.next = top;
-    }
-
-    private void logLinked(ListNode l) {
-        LogUtilKt.log("LinkedReverse", l.a);
-        if (l.next != null) {
-            logLinked(l.next);
-        }
+        return head;
     }
 
     private void findNoRepetitionString() {
@@ -284,5 +278,25 @@ public class JavaTest {
         }
 
         LogUtilKt.log("hillSort", (System.nanoTime() - time) + " -- " + Arrays.toString(a));
+    }
+
+    private void fib(int n) {
+        int n0 = 0, n1 = 1;
+        int num = 0;
+
+        if (n == 0) {
+            num = n0;
+
+        } else if (n == 1) {
+            num = n1;
+
+        } else {
+            for (int i = 2; i <= n; i++) {
+                num = n0 + n1;
+                n0 = n1;
+                n1 = num;
+            }
+        }
+        LogUtilKt.log("fib", num);
     }
 }
