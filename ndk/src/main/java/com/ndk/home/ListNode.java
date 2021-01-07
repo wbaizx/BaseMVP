@@ -29,4 +29,11 @@ public class ListNode {
             logLinked(l.next);
         }
     }
+
+    static void logLinked(ListNode l, String msg) {
+        LogUtilKt.log("logLinked", msg + " -- " + l.val);
+        if (l.next != null) {
+            logLinked(l.next);
+        }
+    }
 }
