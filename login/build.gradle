@@ -1,14 +1,11 @@
 //配置Login组件是否可以独立运行
-if (isLoginRunAlone.toBoolean()){
+if (isLoginRunAlone.toBoolean()) {
     apply plugin: 'com.android.application'
-}else{
+} else {
     apply plugin: 'com.android.library'
 }
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -16,7 +13,7 @@ android {
 
     defaultConfig {
         //配置Login组件是否可以独立运行
-        if (isLoginRunAlone.toBoolean()){
+        if (isLoginRunAlone.toBoolean()) {
             applicationId "com.login"
         }
         minSdkVersion 23
@@ -35,11 +32,11 @@ android {
     }
 
     //配置Login组件是否可以独立运行
-    sourceSets{
-        main{
-            if (isLoginRunAlone.toBoolean()){
+    sourceSets {
+        main {
+            if (isLoginRunAlone.toBoolean()) {
                 manifest.srcFile 'src/main/alone/AndroidManifest.xml'
-            }else {
+            } else {
                 manifest.srcFile 'src/main/AndroidManifest.xml'
             }
         }

@@ -1,14 +1,11 @@
 //配置ndk组件是否可以独立运行
-if (isNDKRunAlone.toBoolean()){
+if (isNDKRunAlone.toBoolean()) {
     apply plugin: 'com.android.application'
-}else{
+} else {
     apply plugin: 'com.android.library'
 }
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -16,7 +13,7 @@ android {
 
     defaultConfig {
         //配置ndk组件是否可以独立运行
-        if (isNDKRunAlone.toBoolean()){
+        if (isNDKRunAlone.toBoolean()) {
             applicationId "com.ndk"
         }
         minSdkVersion 23
@@ -36,7 +33,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags ""
-                abiFilters "armeabi-v7a" , "arm64-v8a", "x86", "x86_64"
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
             }
         }
     }
@@ -49,11 +46,11 @@ android {
     }
 
     //配置ndk组件是否可以独立运行
-    sourceSets{
-        main{
-            if (isNDKRunAlone.toBoolean()){
+    sourceSets {
+        main {
+            if (isNDKRunAlone.toBoolean()) {
                 manifest.srcFile 'src/main/alone/AndroidManifest.xml'
-            }else {
+            } else {
                 manifest.srcFile 'src/main/AndroidManifest.xml'
             }
         }
