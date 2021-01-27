@@ -36,6 +36,7 @@ public class JavaTest {
         quickSort();
         hillSort();
         fib(2);
+        ListNode.logLinked(rotateRight(ListNode.getList(new int[]{1, 2, 3, 4, 5}), 2), "rotateRight");
     }
 
     private void replaceSpace() {
@@ -298,5 +299,28 @@ public class JavaTest {
             }
         }
         LogUtilKt.log("fib", num);
+    }
+
+    private ListNode rotateRight(ListNode head, int k) {
+        if (head == null) return head;
+
+        ListNode h = head;
+        int len = 1;
+        while (h.next != null) {
+            h = h.next;
+            len++;
+        }
+        int move = k % len;
+
+        if (len == 1 || move == 0) return head;
+
+        h.next = head;
+        h = head;
+        for (int i = 0; i < len - move - 1; i++) {
+            h = h.next;
+        }
+        head = h.next;
+        h.next = null;
+        return head;
     }
 }
