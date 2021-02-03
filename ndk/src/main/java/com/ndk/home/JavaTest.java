@@ -37,6 +37,7 @@ public class JavaTest {
         hillSort();
         fib(2);
         ListNode.logLinked(rotateRight(ListNode.getList(new int[]{1, 2, 3, 4, 5}), 2), "rotateRight");
+        ListNode.logLinked(sortLinkedList(ListNode.getList(new int[]{-1, 5, 3, 4, 0, 8, 1, 0, 2, 0, 0, 3})), "sortLinkedList");
     }
 
     private void replaceSpace() {
@@ -322,5 +323,23 @@ public class JavaTest {
         head = h.next;
         h.next = null;
         return head;
+    }
+
+    private ListNode sortLinkedList(ListNode head) {
+        if (head == null) return head;
+
+        ListNode h = new ListNode(Integer.MIN_VALUE, null);
+        while (head != null) {
+            ListNode root = h;
+            while (root.next != null && head.val > root.next.val) {
+                root = root.next;
+            }
+            ListNode node = head.next;
+            head.next = root.next;
+            root.next = head;
+            head = node;
+            ListNode.logLinked(h, "sortLinkedList----------");
+        }
+        return h.next;
     }
 }

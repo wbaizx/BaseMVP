@@ -4,7 +4,16 @@ import com.base.common.util.LogUtilKt;
 
 public class ListNode {
     int val;
-    ListNode next = null;
+    ListNode next;
+
+    public ListNode() {
+        this(0, null);
+    }
+
+    public ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
 
     static ListNode getList(int[] array) {
         ListNode node = null;
@@ -24,16 +33,16 @@ public class ListNode {
     }
 
     static void logLinked(ListNode l) {
-        LogUtilKt.log("logLinked", l.val);
-        if (l.next != null) {
-            logLinked(l.next);
-        }
+        logLinked(l, "logLinked");
     }
 
     static void logLinked(ListNode l, String msg) {
-        LogUtilKt.log(msg, l.val);
-        if (l.next != null) {
-            logLinked(l.next, msg);
+        StringBuilder sb = new StringBuilder();
+        while (l != null) {
+            sb.append(l.val);
+            sb.append(" - ");
+            l = l.next;
         }
+        LogUtilKt.log(msg, sb.toString());
     }
 }
