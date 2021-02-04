@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme">
 
         <!-- 如果 LAUNCHER主页面的 launchMode="singleTask" 只要切换后台重进都会退回到 LAUNCHER主页面-->
-        <activity android:name=".main.MainActivity">
+        <activity android:name=".main.MainActivity"
+            android:theme="@style/optimizationTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

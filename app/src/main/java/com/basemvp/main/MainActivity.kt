@@ -38,6 +38,9 @@ class MainActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_main
 
+    override fun setImmersionBar() {
+    }
+
     override fun initView() {
         LoadImage.loadBlur(LoadImage.imgUrl, mainImg)
 

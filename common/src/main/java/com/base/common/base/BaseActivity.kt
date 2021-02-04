@@ -14,6 +14,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.android.arouter.launcher.ARouter
 import com.base.common.R
+import com.base.common.extension.setOnAvoidRepeatedClick
 import com.base.common.util.AndroidUtil
 import com.base.common.util.http.CodeException
 import com.base.common.util.http.NoNetworkException
@@ -139,7 +140,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             errorMsg.text = msg
         }
 
-        errorBtn.setOnClickListener {
+        errorBtn.setOnAvoidRepeatedClick {
             errorContentClick()
         }
     }
@@ -177,7 +178,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             is CodeException -> AndroidUtil.showToast("服务器code码错误 + code=${e.message}")
             else -> AndroidUtil.showToast("未知错误")
         }
-        showErrorContent()
     }
 
     /**

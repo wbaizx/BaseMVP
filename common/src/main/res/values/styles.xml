@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="optimizationTheme" parent="AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/start_bg</item>
+    </style>
+
     <!--fragmentdialog默认主题-->
     <style name="default_fragmentdialog_style" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
