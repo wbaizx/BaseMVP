@@ -22,6 +22,7 @@ import com.base.common.util.log
 import com.google.gson.stream.MalformedJsonException
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_base_layout.*
+import kotlinx.android.synthetic.main.base_stub_error_layout.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.net.SocketTimeoutException
@@ -37,6 +38,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     private val loadDialog by lazy { LoadDialog(this) }
 
     private lateinit var contentLayout: View
+
+    private var isLoadErrorLayout = false
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,7 +128,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 展示内容视图布局
      */
     fun showContent() {
-        errorLayout.visibility = View.GONE
+        if (isLoadErrorLayout) {
+            errorLayout.visibility = View.GONE
+        }
         contentLayout.visibility = View.VISIBLE
     }
 
@@ -133,16 +138,24 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 展示错误视图布局
      */
     fun showErrorContent(msg: String? = null) {
+        if (isLoadErrorLayout) {
+            errorLayout.visibility = View.VISIBLE
+        } else {
+            errorLayoutStub.inflate()
+//            errorLayoutStub.visibility = View.VISIBLE
+
+            errorBtn.setOnAvoidRepeatedClick {
+                errorContentClick()
+            }
+        }
+
         contentLayout.visibility = View.GONE
-        errorLayout.visibility = View.VISIBLE
 
         if (!TextUtils.isEmpty(msg)) {
             errorMsg.text = msg
         }
 
-        errorBtn.setOnAvoidRepeatedClick {
-            errorContentClick()
-        }
+        isLoadErrorLayout = true
     }
 
     /**
