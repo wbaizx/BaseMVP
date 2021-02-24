@@ -2,6 +2,7 @@ package com.basemvp.main
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Debug
 import androidx.lifecycle.Observer
 import androidx.work.*
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -42,7 +43,10 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initView() {
+        //adb pull /sdcard/Android/data/com.basemvp/files/basemvp.trace  可用Profiler查看分析文件
+        Debug.startMethodTracing("basemvp")
         LoadImage.loadBlur(LoadImage.imgUrl, mainImg)
+        Debug.stopMethodTracing()
 
         saveImg.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
