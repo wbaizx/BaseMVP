@@ -25,7 +25,6 @@ import com.basemvp.main.shape_btn.ShowShapeBtnActivity
 import com.basemvp.main.show_dialog.ShowDialogActivity
 import com.basemvp.main.special_rc.SpecialRCActivity
 import com.basemvp.main.workmanager.MainWork
-import com.camera_opengl.home.CameraActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
