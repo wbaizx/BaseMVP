@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
 import com.base.common.util.log
 import com.basemvp.R
 import com.google.android.material.appbar.AppBarLayout
@@ -18,7 +16,6 @@ import kotlin.math.abs
  * 注意!
  * 折叠布局下方的滚动子View如果是嵌套recyclerView，会影响折叠布局滚动顺序逻辑
  */
-@Route(path = RouteString.COORDINATOR1, name = "折叠滚动布局第一种 coordinator1")
 class Coordinator1Activity : BaseActivity() {
     private val TAG = "Coordinator1Activity"
 

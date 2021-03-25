@@ -1,17 +1,14 @@
 package com.basemvp.main.fragment_example.vp_fragment
 
 import androidx.viewpager2.widget.ViewPager2
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
 import com.base.common.base.adapter.BaseViewPagerAdapter
-import com.base.common.config.RouteString
 import com.base.common.util.log
 import com.basemvp.R
 import com.basemvp.main.fragment_example.fm.TestFragment
 import com.basemvp.main.fragment_example.fm.TestMVPFragment
 import kotlinx.android.synthetic.main.activity_vpfragment.*
 
-@Route(path = RouteString.VP_FRAGMENT, name = "viewPager2 + Fragment + Lifecycle 测试懒加载base类的生命周期")
 class VP2FragmentActivity : BaseActivity() {
     private val TAG = "VP2FragmentActivity"
 

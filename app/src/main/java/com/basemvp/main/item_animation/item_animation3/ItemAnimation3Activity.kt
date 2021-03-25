@@ -4,13 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
+import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_item_animation3.*
 
-@Route(path = RouteString.ITEM_ANIMATION3, name = "recyclerView布局切换item动画")
 class ItemAnimation3Activity : BaseActivity() {
     private var isLine = true
     private var duration = 500L

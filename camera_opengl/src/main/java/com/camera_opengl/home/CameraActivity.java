@@ -12,9 +12,8 @@ import android.widget.Button;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
-import com.base.common.config.RouteString;
-import com.base.common.util.ARouterUtilKt;
 import com.base.common.util.LogUtilKt;
+import com.base.common.util.RouterUtilKt;
 import com.camera_opengl.R;
 import com.camera_opengl.home.camera.CameraControl;
 import com.camera_opengl.home.camera.CameraControlListener;
@@ -23,6 +22,7 @@ import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.camera_opengl.home.gl.renderer.filter.FilterType;
 import com.camera_opengl.home.record.RecordListener;
 import com.camera_opengl.home.record.RecordManager;
+import com.camera_opengl.home.videolist.VideoListActivity;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -34,7 +34,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-//RouteString.CAMERA_HOME
 @Route(path = "/camera/camera_home", name = "组件化camera首页")
 public class CameraActivity extends BaseActivity implements CameraControlListener, GLSurfaceListener, RecordListener {
     private static final String TAG = "CameraActivity";
@@ -83,8 +82,7 @@ public class CameraActivity extends BaseActivity implements CameraControlListene
         findViewById(R.id.goVideoList).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouterUtilKt.normalNavigation(
-                        ARouterUtilKt.launchARouter(RouteString.VIDEO_LIST), CameraActivity.this, 1, null);
+                RouterUtilKt.launchActivity(CameraActivity.this, VideoListActivity.class, 1);
             }
         });
 

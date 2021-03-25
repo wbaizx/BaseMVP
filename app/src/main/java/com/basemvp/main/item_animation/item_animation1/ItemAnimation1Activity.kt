@@ -1,14 +1,11 @@
 package com.basemvp.main.item_animation.item_animation1
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
+import com.basemvp.R
 import jp.wasabeef.recyclerview.animators.ScaleInAnimator
 import kotlinx.android.synthetic.main.activity_item_animation1.*
 
-@Route(path = RouteString.ITEM_ANIMATION1, name = "recyclerView item动画")
 class ItemAnimation1Activity : BaseActivity() {
     override fun getContentView() = R.layout.activity_item_animation1
 

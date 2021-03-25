@@ -1,18 +1,15 @@
 package com.basemvp.main.special_rc.damping_rc
 
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
 import com.base.common.util.AndroidUtil
 import com.base.common.util.log
+import com.basemvp.R
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_damping_rc.*
 
 /**
  * 需要注意全面屏和刘海屏适配
  */
-@Route(path = RouteString.DAMPING_RC, name = "带阻尼和标题栏，类似竖直viewpager的RecyclerView item必须至少占全屏")
 class DampingRCActivity : BaseActivity() {
     private val TAG = "DampingRCActivity"
 

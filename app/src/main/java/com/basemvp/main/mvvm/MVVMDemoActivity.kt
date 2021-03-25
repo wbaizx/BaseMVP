@@ -1,9 +1,7 @@
 package com.basemvp.main.mvvm
 
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.adapter.BaseViewPagerAdapter
 import com.base.common.base.mvvm.BaseMVVMActivity
-import com.base.common.config.RouteString
 import com.base.common.extension.setOnAvoidRepeatedClick
 import com.base.common.util.log
 import com.basemvp.R
@@ -11,7 +9,6 @@ import com.basemvp.databinding.ActivityMvvmDemoBinding
 import kotlinx.android.synthetic.main.activity_mvvm_demo.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@Route(path = RouteString.MVVM_ROOM, name = "展示mvvm + room用法")
 class MVVMDemoActivity : BaseMVVMActivity<ActivityMvvmDemoBinding>() {
     private val TAG = "MVVMDemoActivity"
 

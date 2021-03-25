@@ -2,14 +2,11 @@ package com.basemvp.main.special_rc.scrollto_rc
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.basemvp.R
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
 import com.base.common.util.log
+import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_scroll_to_rc.*
 
-@Route(path = RouteString.SCROLL_TO_RC, name = "recyclerView滚动到指定位置")
 class ScrollToRCActivity : BaseActivity() {
     private val TAG = "ScrollToRCActivity"
 

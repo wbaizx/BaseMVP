@@ -1,41 +1,38 @@
 package com.login.home
 
 import androidx.lifecycle.Lifecycle
+import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.facade.callback.NavCallback
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
-import com.base.common.config.RouteString.GOTO_MAIN
-import com.base.common.config.RouteString.OBJECT_BEAN
-import com.base.common.config.RouteString.PARCELABLE_BEAN
-import com.base.common.config.RouteString.SERIALIZABLE_BEAN
-import com.base.common.util.log
 import com.base.common.util.SharedPreferencesUtil
 import com.base.common.util.http.ObjectBean
 import com.base.common.util.http.ParcelableBean
 import com.base.common.util.http.SerializableBean
 import com.base.common.util.launchARouter
+import com.base.common.util.log
 import com.base.common.util.normalNavigation
 import com.login.R
 
-@Route(path = RouteString.LOGIN, name = "组件化登录模块首页")
+@Route(path = "/login/login_home", name = "组件化登录模块首页")
 class LoginActivity : BaseActivity() {
     private val TAG = "LoginActivity"
 
     @JvmField
-    @Autowired(name = GOTO_MAIN)
+    @Autowired(name = "is_goto_main")
     var isGotoMain: Boolean = false
 
     @JvmField
-    @Autowired(name = SERIALIZABLE_BEAN)
+    @Autowired(name = "serializable_bean")
     var Sb: SerializableBean? = null
 
     @JvmField
-    @Autowired(name = PARCELABLE_BEAN)
+    @Autowired(name = "parcelable_bean")
     var pb: ParcelableBean? = null
 
     @JvmField
-    @Autowired(name = OBJECT_BEAN)
+    @Autowired(name = "object_bean")
     var ob: ObjectBean? = null
 
     override fun getContentView() = R.layout.activity_login
@@ -59,7 +56,11 @@ class LoginActivity : BaseActivity() {
     fun loginSuccess() {
         SharedPreferencesUtil.putData(SharedPreferencesUtil.LOGIN, true)
         if (isGotoMain) {
-            launchARouter(RouteString.MAIN).normalNavigation(this, arrival = { finish() })
+            launchARouter("/main/main_home").normalNavigation(this, navCallback = object : NavCallback() {
+                override fun onArrival(postcard: Postcard?) {
+                    finish()
+                }
+            })
         } else {
             finish()
         }

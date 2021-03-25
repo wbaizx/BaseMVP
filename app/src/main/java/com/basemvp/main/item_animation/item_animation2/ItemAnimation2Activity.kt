@@ -2,14 +2,10 @@ package com.basemvp.main.item_animation.item_animation2
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_item_animation2.*
 
-
-@Route(path = RouteString.ITEM_ANIMATION2, name = "recyclerView布局切换item动画")
 class ItemAnimation2Activity : BaseActivity() {
     private var isLine = true
 

@@ -1,14 +1,11 @@
 package com.basemvp.main.show_dialog
 
 import android.os.Bundle
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
 import com.base.common.util.log
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_show_dialog.*
 
-@Route(path = RouteString.DIALOG, name = "展示FragmentDialog")
 class ShowDialogActivity : BaseActivity() {
     private val TAG = "ShowDialogActivity"
 

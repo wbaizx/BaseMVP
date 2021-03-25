@@ -1,17 +1,17 @@
 package com.camera_opengl.home.videolist;
 
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
-import com.base.common.config.RouteString;
-import com.base.common.util.ARouterUtilKt;
 import com.base.common.util.FileUtil;
+import com.base.common.util.RouterUtilKt;
 import com.camera_opengl.R;
+import com.camera_opengl.home.play.PlayActivity;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
@@ -19,8 +19,6 @@ import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import java.io.File;
 import java.util.ArrayList;
 
-//RouteString.VIDEO_LIST
-@Route(path = "/camera/video_list", name = "组件化camera 视频列表查看页")
 public class VideoListActivity extends BaseActivity {
 
     private VideoListAdapter videoListAdapter = new VideoListAdapter();
@@ -56,10 +54,9 @@ public class VideoListActivity extends BaseActivity {
                 if (videoListAdapter.isSelectMode()) {
                     videoListAdapter.select(position);
                 } else {
-                    ARouterUtilKt.normalNavigation(
-                            ARouterUtilKt.launchARouter(RouteString.VIDEO_PLAY)
-                                    .withString("path", videoListAdapter.getData().get(position).getFile().getAbsolutePath()),
-                            VideoListActivity.this, 1, null);
+                    Intent intent = new Intent(VideoListActivity.this, PlayActivity.class);
+                    intent.putExtra("path", videoListAdapter.getData().get(position).getFile().getAbsolutePath());
+                    RouterUtilKt.launchActivity(VideoListActivity.this, intent, 1);
                 }
             }
         });

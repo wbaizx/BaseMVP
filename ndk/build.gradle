@@ -70,5 +70,5 @@ dependencies {
     //路由跳转(每个需要的Module中需分别添加处理器)
     kapt 'com.alibaba:arouter-compiler:1.2.2'
 
-    implementation project(path: ':common')
+    implementation 'com.github.wbaizx.Module_Common:common:1.0.5'
 }

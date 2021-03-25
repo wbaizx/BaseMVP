@@ -88,7 +88,7 @@ public class SavePictureThread extends Thread {
                             mMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    AndroidUtil.INSTANCE.showToast("拍照成功");
+                                    AndroidUtil.INSTANCE.showToast(null, "拍照成功");
                                 }
                             });
                         }

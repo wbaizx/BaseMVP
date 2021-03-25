@@ -1,29 +1,28 @@
 package com.basemvp.main.item_animation
 
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
-import com.base.common.util.launchARouter
-import com.base.common.util.normalNavigation
+import com.base.common.util.launchActivity
 import com.basemvp.R
+import com.basemvp.main.item_animation.item_animation1.ItemAnimation1Activity
+import com.basemvp.main.item_animation.item_animation2.ItemAnimation2Activity
+import com.basemvp.main.item_animation.item_animation3.ItemAnimation3Activity
 import kotlinx.android.synthetic.main.activity_item_animation_main.*
 
-@Route(path = RouteString.ITEM_ANIMATION, name = "item动画展示汇总")
 class ItemAnimationMainActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_item_animation_main
 
     override fun initView() {
         itemAnimation1.setOnClickListener {
-            launchARouter(RouteString.ITEM_ANIMATION1).normalNavigation(this)
+            launchActivity(this, ItemAnimation1Activity::class.java)
         }
 
         itemAnimation2.setOnClickListener {
-            launchARouter(RouteString.ITEM_ANIMATION2).normalNavigation(this)
+            launchActivity(this, ItemAnimation2Activity::class.java)
         }
 
         itemAnimation3.setOnClickListener {
-            launchARouter(RouteString.ITEM_ANIMATION3).normalNavigation(this)
+            launchActivity(this, ItemAnimation3Activity::class.java)
         }
     }
 

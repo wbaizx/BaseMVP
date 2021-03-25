@@ -5,7 +5,6 @@ import android.util.Size;
 import android.view.View;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
-import com.alibaba.android.arouter.facade.annotation.Route;
 import com.base.common.base.BaseActivity;
 import com.camera_opengl.R;
 import com.camera_opengl.home.gl.egl.EGLSurfaceView;
@@ -13,8 +12,6 @@ import com.camera_opengl.home.gl.egl.GLSurfaceListener;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
-//RouteString.VIDEO_PLAY
-@Route(path = "/camera/video_play", name = "组件化camera 视频播放页")
 public class PlayActivity extends BaseActivity implements GLSurfaceListener, PlayListener {
     private static final String TAG = "PlayActivity";
 

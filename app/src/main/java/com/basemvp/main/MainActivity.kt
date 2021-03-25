@@ -9,11 +9,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.BaseAPP
 import com.base.common.base.BaseActivity
 import com.base.common.base.dialog.DialogFactory
-import com.base.common.config.RouteString
-import com.base.common.config.RouteString.GOTO_MAIN
-import com.base.common.config.RouteString.OBJECT_BEAN
-import com.base.common.config.RouteString.PARCELABLE_BEAN
-import com.base.common.config.RouteString.SERIALIZABLE_BEAN
 import com.base.common.util.*
 import com.base.common.util.http.ObjectBean
 import com.base.common.util.http.ParcelableBean
@@ -21,6 +16,14 @@ import com.base.common.util.http.ParcelableBean2
 import com.base.common.util.http.SerializableBean
 import com.base.common.util.imageload.LoadImage
 import com.basemvp.R
+import com.basemvp.main.coordinator.CoordinatorActivity
+import com.basemvp.main.fragment_example.FragmentExampleActivity
+import com.basemvp.main.item_animation.ItemAnimationMainActivity
+import com.basemvp.main.mvp.MVPDemoActivity
+import com.basemvp.main.mvvm.MVVMDemoActivity
+import com.basemvp.main.shape_btn.ShowShapeBtnActivity
+import com.basemvp.main.show_dialog.ShowDialogActivity
+import com.basemvp.main.special_rc.SpecialRCActivity
 import com.basemvp.main.workmanager.MainWork
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +36,7 @@ import java.util.concurrent.TimeUnit
 
 private const val STORAGE_PERMISSION_CODE = 666
 
-@Route(path = RouteString.MAIN, name = "功能选择页")
+@Route(path = "/main/main_home", name = "功能选择页")
 class MainActivity : BaseActivity() {
     private val TAG = "MainActivity"
 
@@ -54,7 +57,7 @@ class MainActivity : BaseActivity() {
                 val file = ImageUtil.savePicture(bitmap, "test.jpg")
                 if (ImageUtil.updateGallery(file, bitmap.width, bitmap.height)) {
                     withContext(Dispatchers.Main) {
-                        AndroidUtil.showToast("保存成功")
+                        AndroidUtil.showToast(this@MainActivity, "保存成功")
                     }
                 }
                 //注意如果是 ImageView 直接返回的 bitmap，用完后不要 recycle
@@ -64,52 +67,52 @@ class MainActivity : BaseActivity() {
 
         login.setOnClickListener {
             //测试 ARouter 带参数跳转
-            launchARouter(RouteString.LOGIN)
-                .withBoolean(GOTO_MAIN, true)
-                .withSerializable(SERIALIZABLE_BEAN, SerializableBean("1", "2", arrayListOf("3", "4")))
-                .withParcelable(PARCELABLE_BEAN, ParcelableBean("1", "2", arrayListOf("3", "4"), ParcelableBean2("5", "6")))
-                .withObject(OBJECT_BEAN, ObjectBean("1", "2", arrayListOf("3", "4")))
+            launchARouter("/login/login_home")
+                .withBoolean("is_goto_main", true)
+                .withSerializable("serializable_bean", SerializableBean("1", "2", arrayListOf("3", "4")))
+                .withParcelable("parcelable_bean", ParcelableBean("1", "2", arrayListOf("3", "4"), ParcelableBean2("5", "6")))
+                .withObject("object_bean", ObjectBean("1", "2", arrayListOf("3", "4")))
                 .normalNavigation(this)
         }
 
         fragmentExample.setOnClickListener {
-            launchARouter(RouteString.FRAGMENT_EXAMPLE).normalNavigation(this)
+            launchActivity(this, FragmentExampleActivity::class.java)
         }
 
         coordinator.setOnClickListener {
-            launchARouter(RouteString.COORDINATOR).normalNavigation(this)
+            launchActivity(this, CoordinatorActivity::class.java)
         }
 
         recyclerViewItemAnimation.setOnClickListener {
-            launchARouter(RouteString.ITEM_ANIMATION).normalNavigation(this)
+            launchActivity(this, ItemAnimationMainActivity::class.java)
         }
 
         specialRc.setOnClickListener {
-            launchARouter(RouteString.SPECIAL_RC).normalNavigation(this)
+            launchActivity(this, SpecialRCActivity::class.java)
         }
 
         showDialog.setOnClickListener {
-            launchARouter(RouteString.DIALOG).loginNavigation(this)
+            launchActivity(this, ShowDialogActivity::class.java)
         }
 
         mvpRoom.setOnClickListener {
-            launchARouter(RouteString.MVP_ROOM).loginNavigation(this)
+            launchActivity(this, MVPDemoActivity::class.java)
         }
 
         mvvmRoom.setOnClickListener {
-            launchARouter(RouteString.MVVM_ROOM).loginNavigation(this)
+            launchActivity(this, MVVMDemoActivity::class.java)
         }
 
         shapeBtn.setOnClickListener {
-            launchARouter(RouteString.SHAPE_BTN).loginNavigation(this)
+            launchActivity(this, ShowShapeBtnActivity::class.java)
         }
 
         camera.setOnClickListener {
-            launchARouter(RouteString.CAMERA_HOME).loginNavigation(this)
+            launchARouter("/camera/camera_home").loginNavigation(this)
         }
 
         ndk.setOnClickListener {
-            launchARouter(RouteString.NDK_HOME).loginNavigation(this)
+            launchARouter("/ndk/ndk_home").loginNavigation(this)
         }
 
 

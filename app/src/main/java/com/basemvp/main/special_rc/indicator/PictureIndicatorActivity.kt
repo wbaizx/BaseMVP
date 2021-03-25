@@ -1,13 +1,10 @@
 package com.basemvp.main.special_rc.indicator
 
 import androidx.viewpager2.widget.ViewPager2
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
 import com.basemvp.R
 import kotlinx.android.synthetic.main.activity_picture_indicator.*
 
-@Route(path = RouteString.PICTURE_INDICATOR, name = "根据图片翻页而变化的的下标指示器")
 class PictureIndicatorActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_picture_indicator

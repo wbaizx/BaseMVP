@@ -1,45 +1,47 @@
 package com.basemvp.main.special_rc
 
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
-import com.base.common.config.RouteString
-import com.base.common.util.launchARouter
-import com.base.common.util.loginNavigation
-import com.base.common.util.normalNavigation
+import com.base.common.util.launchActivity
 import com.basemvp.R
+import com.basemvp.main.special_rc.circle_rc.CircleRCActivity
+import com.basemvp.main.special_rc.connection_rc.ConnectionRCActivity
+import com.basemvp.main.special_rc.damping_rc.DampingRCActivity
+import com.basemvp.main.special_rc.gallery.GalleryActivity
+import com.basemvp.main.special_rc.indicator.PictureIndicatorActivity
+import com.basemvp.main.special_rc.qq_album.QQAlbumActivity
+import com.basemvp.main.special_rc.scrollto_rc.ScrollToRCActivity
 import kotlinx.android.synthetic.main.activity_special_rc.*
 
-@Route(path = RouteString.SPECIAL_RC, name = "各种特殊效果的recycleView效果展示汇总")
 class SpecialRCActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_special_rc
 
     override fun initView() {
         dampingRc.setOnClickListener {
-            launchARouter(RouteString.DAMPING_RC).normalNavigation(this)
+            launchActivity(this, DampingRCActivity::class.java)
         }
 
         recyclerViewGallery.setOnClickListener {
-            launchARouter(RouteString.GALLERY).normalNavigation(this)
+            launchActivity(this, GalleryActivity::class.java)
         }
 
         scrollToRecyclerView.setOnClickListener {
-            launchARouter(RouteString.SCROLL_TO_RC).normalNavigation(this)
+            launchActivity(this, ScrollToRCActivity::class.java)
         }
 
         qqAlbum.setOnClickListener {
-            launchARouter(RouteString.QQ_ALBUM).normalNavigation(this)
+            launchActivity(this, QQAlbumActivity::class.java)
         }
 
         connectionRecyclerView.setOnClickListener {
-            launchARouter(RouteString.CONNECTION_RC).loginNavigation(this)
+            launchActivity(this, ConnectionRCActivity::class.java)
         }
 
         overlappingRecyclerView.setOnClickListener {
-            launchARouter(RouteString.CIRCLE_RC).loginNavigation(this)
+            launchActivity(this, CircleRCActivity::class.java)
         }
 
         pictureIndicator.setOnClickListener {
-            launchARouter(RouteString.PICTURE_INDICATOR).loginNavigation(this)
+            launchActivity(this, PictureIndicatorActivity::class.java)
         }
     }
 

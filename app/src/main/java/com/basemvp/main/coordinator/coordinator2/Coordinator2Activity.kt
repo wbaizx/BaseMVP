@@ -1,10 +1,8 @@
 package com.basemvp.main.coordinator.coordinator2
 
 import androidx.constraintlayout.motion.widget.MotionLayout
-import com.alibaba.android.arouter.facade.annotation.Route
 import com.base.common.base.BaseActivity
 import com.base.common.base.adapter.BaseListAdapter
-import com.base.common.config.RouteString
 import com.base.common.util.log
 import com.basemvp.R
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -13,7 +11,6 @@ import kotlinx.android.synthetic.main.activity_coordinator2.*
 /**
  * 目前为止，绝大部分动画通过 View.animate() 或者 MotionLayout都能完成了
  */
-@Route(path = RouteString.COORDINATOR2, name = "折叠滚动布局第二种 coordinator2 使用MotionLayout")
 class Coordinator2Activity : BaseActivity() {
     private val TAG = "Coordinator2Activity"
 

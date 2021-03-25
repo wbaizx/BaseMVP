@@ -125,7 +125,7 @@ public class MuxerManager {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        AndroidUtil.INSTANCE.showToast("录制成功 " + thisPath);
+                        AndroidUtil.INSTANCE.showToast(null, "录制成功 " + thisPath);
                     }
                 });
             } catch (Exception e) {
@@ -136,7 +136,7 @@ public class MuxerManager {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        AndroidUtil.INSTANCE.showToast("录制失败");
+                        AndroidUtil.INSTANCE.showToast(null, "录制失败");
                     }
                 });
             } finally {
