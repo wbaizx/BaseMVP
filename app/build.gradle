@@ -46,9 +46,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     //路由跳转(每个需要的Module中需分别添加处理器)
-    kapt 'com.alibaba:arouter-compiler:1.2.2'
+    kapt 'com.alibaba:arouter-compiler:1.5.1'
 
     //room(每个需要的Module中需分别添加处理器)
     kapt "androidx.room:room-compiler:2.2.5"

@@ -134,6 +134,13 @@
                 android:text="ndk模块"
                 android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/test"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="demo测试用"
+                android:textAllCaps="false" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

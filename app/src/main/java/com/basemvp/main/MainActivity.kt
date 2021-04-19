@@ -68,11 +68,11 @@ class MainActivity : BaseActivity() {
         login.setOnClickListener {
             //测试 ARouter 带参数跳转
             launchARouter("/login/login_home")
-                .withBoolean("is_goto_main", true)
-                .withSerializable("serializable_bean", SerializableBean("1", "2", arrayListOf("3", "4")))
-                .withParcelable("parcelable_bean", ParcelableBean("1", "2", arrayListOf("3", "4"), ParcelableBean2("5", "6")))
-                .withObject("object_bean", ObjectBean("1", "2", arrayListOf("3", "4")))
-                .normalNavigation(this)
+                    .withBoolean("is_goto_main", true)
+                    .withSerializable("serializable_bean", SerializableBean("1", "2", arrayListOf("3", "4")))
+                    .withParcelable("parcelable_bean", ParcelableBean("1", "2", arrayListOf("3", "4"), ParcelableBean2("5", "6")))
+                    .withObject("object_bean", ObjectBean("1", "2", arrayListOf("3", "4")))
+                    .normalNavigation(this)
         }
 
         fragmentExample.setOnClickListener {
@@ -115,14 +115,17 @@ class MainActivity : BaseActivity() {
             launchARouter("/ndk/ndk_home").loginNavigation(this)
         }
 
+        test.setOnClickListener {
+        }
+
         exit.setOnClickListener {
             DialogFactory.createNormalDialog(
-                this,
-                "警告",
-                "确认退出？",
-                "确定",
-                { BaseAPP.exitApp() },
-                "取消"
+                    this,
+                    "警告",
+                    "确认退出？",
+                    "确定",
+                    { BaseAPP.exitApp() },
+                    "取消"
             ).showDialog()
         }
 
@@ -142,13 +145,13 @@ class MainActivity : BaseActivity() {
 //            .setRequiresCharging(true)                      // 充电中
 //            .setRequiresStorageNotLow(true)                 // 储存空间不低
 //            .setRequiresDeviceIdle(true)                    // 设备空闲中
-            .build()
+                .build()
 
         val mainWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<MainWork>()
-            .setConstraints(constraints)    // 约束条件
-            //重试任务时的策略
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
-            .build()
+                .setConstraints(constraints)    // 约束条件
+                //重试任务时的策略
+                .setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
+                .build()
 
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(mainWorkRequest.id).observe(this, Observer {
             log("MainWork", "${it.state}")
@@ -171,8 +174,8 @@ class MainActivity : BaseActivity() {
             log(TAG, "hasPermissions")
         } else {
             EasyPermissions.requestPermissions(
-                this, "为了正常使用，需要获取以下权限",
-                STORAGE_PERMISSION_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    this, "为了正常使用，需要获取以下权限",
+                    STORAGE_PERMISSION_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         }
     }

@@ -12,9 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup">
-
-        <!-- 如果 LAUNCHER主页面的 launchMode="singleTask" 只要切换后台重进都会退回到 LAUNCHER主页面-->
+        tools:ignore="AllowBackup"
+        tools:replace="android:label">
+        <!-- 如果 LAUNCHER主页面的 launchMode="singleTask" 只要切换后台重进都会退回到 LAUNCHER主页面 -->
         <activity
             android:name=".main.MainActivity"
             android:theme="@style/optimizationTheme">
@@ -25,25 +25,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".main.show_dialog.ShowDialogActivity" />
         <activity android:name=".main.mvp.MVPDemoActivity" />
         <activity android:name=".main.mvvm.MVVMDemoActivity" />
         <activity android:name=".main.shape_btn.ShowShapeBtnActivity" />
-
         <activity android:name=".main.coordinator.CoordinatorActivity" />
         <activity android:name=".main.coordinator.coordinator1.Coordinator1Activity" />
         <activity android:name=".main.coordinator.coordinator2.Coordinator2Activity" />
-
         <activity android:name=".main.item_animation.ItemAnimationMainActivity" />
         <activity android:name=".main.item_animation.item_animation1.ItemAnimation1Activity" />
         <activity android:name=".main.item_animation.item_animation2.ItemAnimation2Activity" />
         <activity android:name=".main.item_animation.item_animation3.ItemAnimation3Activity" />
-
         <activity android:name=".main.fragment_example.FragmentExampleActivity" />
         <activity android:name=".main.fragment_example.show_fragment.ControlFragmentActivity" />
         <activity android:name=".main.fragment_example.vp_fragment.VP2FragmentActivity" />
-
         <activity android:name=".main.special_rc.SpecialRCActivity" />
         <activity android:name=".main.special_rc.damping_rc.DampingRCActivity" />
         <activity android:name=".main.special_rc.gallery.GalleryActivity" />
@@ -52,17 +47,14 @@
         <activity android:name=".main.special_rc.scrollto_rc.ScrollToRCActivity" />
         <activity android:name=".main.special_rc.connection_rc.ConnectionRCActivity" />
         <activity android:name=".main.special_rc.circle_rc.CircleRCActivity" />
-
         <!-- 全面屏 -->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
-
         <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"
             android:value="true" />
-
         <!-- 适配小米（xiaomi）刘海屏 -->
         <meta-data
             android:name="notch.config"
